@@ -27,4 +27,4 @@ Other:
 Thats it. Thanks for using it.
 
 ## I've found a more effective way to do sh. | I've created a new feature that I wanted to share.
-Cool. You can tell me more about it and if I think, that is a good addition, I will add it and credit you, ofcause.
+Cool. You can tell me more about it in a issue with the right label and if I think, that is a good addition, I will add it and credit you, ofcause.
