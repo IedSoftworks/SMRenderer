@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using SMRenderer.Animations;
+using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// The object that need to be render.
         /// </summary>
-        public Object obj = ObjectManager.OB["Quad"];
+        public Object obj = OM.OB["Quad"];
 
         /// <summary>
         /// Specifies the position of the object
@@ -83,7 +84,9 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// Contains all arguments for visual effects
         /// </summary>
-        public Dictionary<string, object> EffectArgs = VisualEffectArgs.DefaultEffectArgs.ToDictionary(a => a.Key, b => b.Value);
+        public VisualEffectArgs effectArgs = new VisualEffectArgs();
+
+        public Form Form = OM.Forms["Circle"];
 
         /// <summary>
         /// Tell the program to actual draw the object
@@ -96,12 +99,10 @@ namespace SMRenderer.Drawing
             if (RenderPosition == RenderPosition.DynamicBackground || RenderPosition == RenderPosition.HUD) view = GLWindow.Window.viewProjectionHUD;
             else view = GLWindow.Window.ViewProjection;
 
-            Dictionary<string, object> tmp = EffectArgs.Concat(VisualEffectArgs.DefaultEffectArgs.Where(x => !EffectArgs.ContainsKey(x.Key))).ToDictionary(a => a.Key, a => a.Value);
-
-            GLWindow.Window.Renderer.Draw(obj, this, view, modelMatrix, tmp);
+            Renderer.program.Draw(obj, this, view, modelMatrix);
         }
 
-        override public void Prepare()
+        override public void Prepare(double i)
         {
             _actualRotation = Rotation + Region.GetRotation();
             _actualRotation %= 360;

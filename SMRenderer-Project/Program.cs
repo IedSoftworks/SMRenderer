@@ -16,59 +16,35 @@ namespace SMRenderer
 {
     class Program
     {
-        static DrawItem item;
+        static Particle item; static DrawItem item2;
         static void Main(string[] args)
         {
             Configure.defaultTexture = new TextureItem(new Bitmap("draconier_logo.png"));
+            Configure.UseGameController = true;
+            //Configure.UseScale = false;
 
             GLWindow window = new GLWindow(500, 500);
-            window.WindowState = WindowState.Normal;
+            window.controller.Connect += (a) => Console.WriteLine(a + " is connected!");
+            window.controller.Disconnect += (a) => Console.WriteLine(a + " is disconnected!");
             window.KeyDown += (a,b) =>
             {
-                item.Animations["Rot1"].Start();
-                item.Animations["Motion"].Start();
             };
-            window.Load += (a, b) =>
+            window.Load += (ra, b) =>
             {
-                item = new DrawItem
+                item2 = new DrawItem
                 {
-                    obj = ObjectManager.OB["Quad"],
-                    Position = new Vector2(50, 50),
-                    Rotation = 0,
-                    Size = new Vector2(200, 200),
-                    ZIndex = 5,
-                    Texture = Configure.defaultTexture.texture,
-                    positionAnchor = "lu",
-                    EffectArgs = new Dictionary<string, object>()
+                    Position = new Vector2(250, 250),
+                    Color = Color.Red,
+                    Size = new Vector2(5,10) * new Vector2(50),
+                    effectArgs = new VisualEffectArgs()
                     {
-                        { "BloomUsage", EffectBloomUsage.None },
-                        {"BorderUsage", EffectBorderUsage.QuadEdgeBorder }
+                        BorderUsage = EffectBorderUsage.QuadEdgeBorder,
+                        BorderWidth = 5,
+                        
                     }
                 };
-                item.Animations = new Dictionary<string, Animation>
-                {
-                    {"Rot1", new Value1Animation(TimeSpan.FromSeconds(2), 0,360, SFPresets.Rotation(item)) },
-                    {"Motion", new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(500), new Vector2(200), SFPresets.Position(item)) }
-                };
-                //item.Animations["Rot1"].End += (v) => item.Animations["Rot1"].Start(); 
-                SM.Add(item);
-                //window.camera.anchor = item;
+                SM.Add(item2);
 
-                Region region = new Region
-                {
-                    anchor = item
-                };
-                DrawItem item1 = new DrawItem
-                {
-                    obj = ObjectManager.OB["Quad"],
-                    Color = Color.Blue,
-                    Position = new Vector2(0, 50),
-                    Region = region,
-                    EffectArgs = new Dictionary<string, object>()
-                    {
-                        {"UseColorAsBloom", true }
-                    }
-                };
             };
             window.Run();
         }

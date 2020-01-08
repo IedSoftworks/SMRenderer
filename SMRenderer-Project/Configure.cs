@@ -35,8 +35,12 @@ namespace SMRenderer
         /// </summary>
         public static bool OnlyRenderIfFocused = true;
         /// <summary>
-        /// Determante what color will be rendered, when not object is before it.
+        /// Determante what color will be rendered, when no object is before it.
         /// </summary>
         public static Color4 ClearColor = Color4.Black;
+        /// <summary>
+        /// Determante if the GameController is allowed
+        /// </summary>
+        public static bool UseGameController = false;
     }
 }

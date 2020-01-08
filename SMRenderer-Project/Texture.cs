@@ -28,7 +28,7 @@ namespace SMRenderer
         /// Creates a texture
         /// </summary>
         /// <param name="bm"></param>
-        public Texture(Bitmap bm)
+        public Texture(Bitmap bm, bool autodispose = false)
         {
                 BitmapData data;
 
@@ -58,6 +58,7 @@ namespace SMRenderer
                 GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
                 GL.BindTexture(TextureTarget.Texture2D, 0);
                 bm.UnlockBits(data);
+            if (autodispose) bm.Dispose();
         }
         /// <summary>
         /// Deletes the texture
@@ -81,7 +82,11 @@ namespace SMRenderer
     {
         private Texture _tex;
         public Bitmap bitmap;
-        public Texture texture { get { if (_tex == null) _tex = new Texture(bitmap); return _tex; } }
+        /// <summary>
+        /// Dispose automaticly the bitmap after the texture was created
+        /// </summary>
+        public bool AutoDispose = false;
+        public Texture texture { get { if (_tex == null) _tex = new Texture(bitmap, AutoDispose); return _tex; } }
         public Vector2 size { get {
                 if (_tex == null) _tex = new Texture(bitmap);
                 return new Vector2(_tex.Width, _tex.Height);

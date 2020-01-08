@@ -35,7 +35,7 @@ namespace SMRenderer.Drawing
         {
             Texture = item;
         }
-        public override void Prepare()
+        public override void Prepare(double i)
         {
             float aspect = (float)Texture.Width / Texture.Height;
             if (Width != 0 && Height == 0)
@@ -53,7 +53,7 @@ namespace SMRenderer.Drawing
             }
             Size = _actualSize;
 
-            base.Prepare();
+            base.Prepare(i);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using OpenTK;
 
-namespace SMRenderer
+namespace SMRenderer.Input
 {
     public class Mouse
     {

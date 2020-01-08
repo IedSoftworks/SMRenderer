@@ -18,3 +18,13 @@ C:\Users\user.Michel\source\repos\TDRS-OpenGLRemake\SMRenderer\bin\Debug\OpenTK.
 C:\Users\user.Michel\source\repos\TDRS-OpenGLRemake\SMRenderer\bin\Debug\OpenTK.pdb
 C:\Users\user.Michel\source\repos\TDRS-OpenGLRemake\SMRenderer\bin\Debug\OpenTK.xml
 C:\Users\user.Michel\source\repos\TDRS-OpenGLRemake\SMRenderer\obj\Debug\SMRenderer.csproj.CopyComplete
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\obj\Debug\SMRenderer.csprojAssemblyReference.cache
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\obj\Debug\SMRenderer.csproj.CoreCompileInputs.cache
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\obj\Debug\SMRenderer.exe
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\obj\Debug\SMRenderer.pdb
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\bin\Debug\SMRenderer.exe.config
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\bin\Debug\SMRenderer.exe
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\bin\Debug\SMRenderer.pdb
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\bin\Debug\OpenTK.pdb
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\bin\Debug\OpenTK.xml
+C:\Users\user.Michel\source\repos\SMRenderer\SMRenderer-Project\obj\Debug\SMRenderer.csproj.CopyComplete

@@ -14,11 +14,8 @@ namespace SMRenderer.Renderers
 {
     public sealed class Renderer : GenericRenderer
     {
-        private int _fragShader = -1;
-        private int _vertShader = -1;
-
-        static public List<string> fragment = new List<string>();
-        static public List<string> vertex = new List<string>();
+        static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.NormalFragment, DefaultShaders.NormalVertex);
+        static public Renderer program;
 
         private int 
             uMVP,
@@ -26,6 +23,7 @@ namespace SMRenderer.Renderers
 
             uTexture, 
             uTexSize, 
+            uForm,
 
             uObjectSize,
             uWindowSize,
@@ -46,13 +44,12 @@ namespace SMRenderer.Renderers
         {
             this.window = window;
 
+            int _fragShader, _vertShader = -1;
+
             mProgramId = GL.CreateProgram();
 
-            if (fragment.Count == 0) fragment.Add(DefaultShaders.NormalFragment);
-            if (vertex.Count == 0) vertex.Add(DefaultShaders.NormalVertex);
-
-            _fragShader = Load(fragment[0], ShaderType.FragmentShader);
-            _vertShader = Load(vertex[0], ShaderType.VertexShader);
+            _fragShader = Load(files.fragment, ShaderType.FragmentShader);
+            _vertShader = Load(files.vertex, ShaderType.VertexShader);
 
             if (_vertShader != -1 && _fragShader != -1)
             {
@@ -72,6 +69,7 @@ namespace SMRenderer.Renderers
             uColor = GL.GetUniformLocation(mProgramId, "uColor");
 
             uTexture = GL.GetUniformLocation(mProgramId, "uTexture");
+            uForm = GL.GetUniformLocation(mProgramId, "uForm");
             uTexSize = GL.GetUniformLocation(mProgramId, "uTexSize");
 
             uWindowSize = GL.GetUniformLocation(mProgramId, "uWindowSize");
@@ -85,7 +83,7 @@ namespace SMRenderer.Renderers
             uBorderWidth = GL.GetUniformLocation(mProgramId, "uBorderWidth");
             uBorderLength = GL.GetUniformLocation(mProgramId, "uBorderLength");
 
-            GL.UseProgram(mProgramId);
+            program = this;
         }
 
         
@@ -96,8 +94,9 @@ namespace SMRenderer.Renderers
         /// <param name="drawitem">The DrawItem</param>
         /// <param name="view">The view matrix</param>
         /// <param name="model">The model matrix</param>
-        internal void Draw(Object quad, DrawItem drawitem, Matrix4 view, Matrix4 model, Dictionary<string, object> effectArgs)
+        internal void Draw(Object quad, DrawItem drawitem, Matrix4 view, Matrix4 model)
         {
+            GL.UseProgram(mProgramId);
             Matrix4 modelview = model * view;
             GL.UniformMatrix4(uMVP, false, ref modelview);
             GL.Uniform4(uColor, drawitem.Color);
@@ -105,24 +104,30 @@ namespace SMRenderer.Renderers
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, drawitem.Texture.TexId);
             GL.Uniform1(uTexture, 0);
+
+            GL.ActiveTexture(TextureUnit.Texture1);
+            GL.BindTexture(TextureTarget.Texture2D, drawitem.Form.texture.TexId);
+            GL.Uniform1(uForm, 1);
+
             GL.Uniform2(uTexSize, new Vector2(drawitem.Texture.Width, drawitem.Texture.Height));
 
             GL.Uniform2(uWindowSize, window.Size.ToVector2());
             GL.Uniform2(uObjectSize, drawitem.Size);
 
-            GL.Uniform1(uBloomUsage, (int)(EffectBloomUsage)effectArgs["BloomUsage"]);
-            GL.Uniform4(uBloomColor, (Color4)effectArgs["BloomColor"]);
+            GL.Uniform1(uBloomUsage, (int)drawitem.effectArgs.BloomUsage);
+            GL.Uniform4(uBloomColor, drawitem.effectArgs.BloomColor);
 
-            GL.Uniform1(uBorderUsage, (int)(EffectBorderUsage)effectArgs["BorderUsage"]);
-            GL.Uniform4(uBorderColor, (Color4)effectArgs["BorderColor"]);
-            GL.Uniform1(uBorderWidth, (int)effectArgs["BorderWidth"]);
-            GL.Uniform1(uBorderLength, (int)effectArgs["BorderLength"]);
+            GL.Uniform1(uBorderUsage, (int)drawitem.effectArgs.BorderUsage);
+            GL.Uniform4(uBorderColor, drawitem.effectArgs.BorderColor);
+            GL.Uniform1(uBorderWidth, drawitem.effectArgs.BorderWidth);
+            GL.Uniform1(uBorderLength, drawitem.effectArgs.BorderLength);
 
             GL.BindVertexArray(quad.VAO);
             GL.DrawArrays(quad.primitiveType, 0, quad.VerticesCount);
 
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.UseProgram(0);
         }
     }
 }

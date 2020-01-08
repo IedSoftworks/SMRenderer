@@ -43,7 +43,7 @@ namespace SMRenderer.Drawing
 
             if (args.combined)
             {
-                if (draw == null) draw = new DrawItem { obj = ObjectManager.OB["Quad"], Rotation = 0, Region = region, connected = this, positionAnchor = args.positionAnchor  };
+                if (draw == null) draw = new DrawItem { obj = OM.OB["Quad"], Rotation = 0, Region = region, connected = this, positionAnchor = args.positionAnchor  };
                 else draw.Texture.Dispose();
                 Bitmap txt = new Bitmap(Width, Height);
                 using (Graphics g = Graphics.FromImage(txt))
@@ -85,10 +85,10 @@ namespace SMRenderer.Drawing
             if (args.combined) draw.Draw();
             else container.Draw();
         }
-        public override void Prepare()
+        public override void Prepare(double i)
         {
-            if (args.combined) draw.Prepare();
-            else container.Prepare();
+            if (args.combined) draw.Prepare(i);
+            else container.Prepare(i);
         }
     }
     public class FontChar : TextureItem

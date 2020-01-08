@@ -97,12 +97,12 @@ namespace SMRenderer
         public virtual void Draw() { }
         virtual public void Activate()
         {
-
+            SM.List.Add(this);
         }
         virtual public void Deactivate()
         {
-
+            SM.List.Remove(this);
         }
-        virtual public void Prepare() { }
+        virtual public void Prepare(double RenderSec) { }
     }
 }

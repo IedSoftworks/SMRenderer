@@ -1,6 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
@@ -8,27 +10,14 @@ namespace SMRenderer
 {
     public class ObjectManager
     {
-        static public ObjectManager ObjectBank { get; private set; }
-        /// <summary>
-        /// Just a shorter way to get the ObjectBank
-        /// </summary>
-        static public ObjectManager OB { get { return ObjectBank; } }
-        public Object this[string ID]
-        {
-            get
-            {
-                return _objectBank[ID];
-            }
-        }
-        static Dictionary<string, Object> _objectBank = new Dictionary<string, Object>();
+        public static Dictionary<string, Object> OB{ get; private set; } = new Dictionary<string, Object>();
         /// <summary>
         /// DO NOT RUN THIS COMMAND!
         /// IT WILL BE AUTOMATICLY RUN WHEN LOAD THE WINDOW!
         /// </summary>
         public static void LoadObj()
         {
-            ObjectBank = new ObjectManager();
-            _objectBank = new Dictionary<string, Object>();
+            OB = new Dictionary<string, Object>();
 
             foreach (Type type in Assembly.GetAssembly(typeof(Object)).GetTypes().Where(a => a.IsClass && !a.IsAbstract && a.IsSubclassOf(typeof(Object))))
             {
@@ -66,10 +55,25 @@ namespace SMRenderer
 
                 GL.BindVertexArray(0);
                 obj.VAO = VAO;
-                _objectBank.Add(type.Name, obj);
+                OB.Add(type.Name, obj);
             };
         }
+        public static Dictionary<string, Bitmap> insertForms = new Dictionary<string, Bitmap>();
+        public static Dictionary<string, Form> Forms { get; private set; } = new Dictionary<string, Form>();
+        public static void LoadForms()
+        {
+            Assembly ass = typeof(ObjectManager).Assembly;
+            string name = ass.GetName().Name;
+            insertForms.Add("Circle", new Bitmap(ass.GetManifestResourceStream(name + ".Form.Circle.png")));
+            insertForms.Add("Quad", new Bitmap(ass.GetManifestResourceStream(name + ".Form.Quad.png")));
+
+            foreach (KeyValuePair<string, Bitmap> map in insertForms)
+            {
+                Forms.Add(map.Key, new Form(map.Value) { AutoDispose = true });
+            }
+        }
     }
+    public class OM : ObjectManager { }
     public class Object
     {
         virtual public float[] Vertices { get; set; }
@@ -79,4 +83,5 @@ namespace SMRenderer
         public int VAO { get; set; } = -1;
         public int VerticesCount { get { return Vertices.Length / 3; } }
     }
+    public class Form : TextureItem { public Form(Bitmap bitmap) : base(bitmap) { } }
 }

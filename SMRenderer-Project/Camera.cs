@@ -16,7 +16,7 @@ namespace SMRenderer
                 if (anchor != null)
                     return new Vector2(anchor.Position.X, anchor.Position.Y);
                 else
-                    return new Vector2(window.pxSize.X / 2, window.pxSize.Y / 2);
+                    return new Vector2(0, 0);
             } }
         private float _zoom = 1f;
         public GLWindow window = null;

@@ -13,7 +13,9 @@ namespace SMRenderer.Drawing
         None,
         BloomColor,
         ObjectColor,
-        Texture
+        Texture,
+        RenderedTexture,
+        Render,
     }
     public enum EffectBorderUsage
     {
@@ -27,20 +29,13 @@ namespace SMRenderer.Drawing
     /// </summary>
     public class VisualEffectArgs
     {
-        public static Dictionary<string, object> DefaultEffectArgs = new Dictionary<string, object>
-        {
-            // Bloom Args
-            {"BloomColor", Color4.White },
-            {"BloomUsage", EffectBloomUsage.None },
+        public Color4 BloomColor = Color4.White;
+        public EffectBloomUsage BloomUsage = EffectBloomUsage.None;
 
-            // Border Args
-            {"BorderUsage", EffectBorderUsage.None },
-            {"BorderColor", Color4.Blue },
-            {"BorderWidth", 5 },
-            {"BorderLength", -1 },
+        public EffectBorderUsage BorderUsage = EffectBorderUsage.None;
+        public Color4 BorderColor = Color4.White;
+        public int BorderWidth = 1;
+        public int BorderLength = -1;
 
-            // Textures
-            {"TextureRepeat", false }
-        };
     }
 }

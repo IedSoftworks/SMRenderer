@@ -61,15 +61,19 @@
     <Compile Include="Drawing\DrawContainer.cs" />
     <Compile Include="Drawing\DrawItem.cs" />
     <Compile Include="Drawing\Image.cs" />
+    <Compile Include="Drawing\Particles.cs" />
     <Compile Include="Drawing\Text.cs" />
     <Compile Include="Drawing\VisualEffectArgs.cs" />
     <Compile Include="GLWindow.cs" />
     <Compile Include="Helper\Rotation.cs" />
-    <Compile Include="Input.cs" />
+    <Compile Include="Input\GameController.cs" />
+    <Compile Include="Input\Mouse.cs" />
     <Compile Include="ObjectManager.cs" />
+    <Compile Include="Objects\QuadRepeat.cs" />
     <Compile Include="Objects\Quad.cs" />
     <Compile Include="Renderers\BloomRenderer.cs" />
     <Compile Include="Renderers\DefaultShaders.cs" />
+    <Compile Include="Renderers\ParticleRenderer.cs" />
     <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="Renderers\GenericRenderer.cs" />
     <Compile Include="SMContainer.cs" />
@@ -88,9 +92,15 @@
     <EmbeddedResource Include="Shaders\shader_bloom_vertex.glsl" />
     <EmbeddedResource Include="Shaders\shader_fragment.glsl" />
     <EmbeddedResource Include="Shaders\shader_vertex.glsl" />
+    <EmbeddedResource Include="Shaders\shader_particle_vertex.glsl" />
+    <EmbeddedResource Include="Shaders\shader_particle_fragment.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Form\Circle.png" />
+    <EmbeddedResource Include="Form\Quad.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

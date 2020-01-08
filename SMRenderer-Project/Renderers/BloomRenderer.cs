@@ -12,8 +12,8 @@ namespace SMRenderer.Renderers
 {
     public class BloomRenderer : GenericRenderer
     {
-        static public List<string> fragment = new List<string>();
-        static public List<string> vertex = new List<string>();
+        static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.BloomFragment, DefaultShaders.BloomVertex);
+        static public BloomRenderer program;
 
         private int _fragShader = -1;
         private int _vertShader = -1;
@@ -32,11 +32,8 @@ namespace SMRenderer.Renderers
         {
             mProgramId = GL.CreateProgram();
 
-            if (fragment.Count == 0) fragment.Add(DefaultShaders.BloomFragment);
-            if (vertex.Count == 0) vertex.Add(DefaultShaders.BloomVertex);
-
-            _fragShader = Load(fragment[0], ShaderType.FragmentShader);
-            _vertShader = Load(vertex[0], ShaderType.VertexShader);
+            _fragShader = Load(files.fragment, ShaderType.FragmentShader);
+            _vertShader = Load(files.vertex, ShaderType.VertexShader);
 
             Console.WriteLine(GL.GetShaderInfoLog(_fragShader));
             Console.WriteLine(GL.GetShaderInfoLog(_vertShader));
@@ -63,6 +60,7 @@ namespace SMRenderer.Renderers
             uMerge = GL.GetUniformLocation(mProgramId, "uMerge");
             uHorizontal = GL.GetUniformLocation(mProgramId, "uHorizontal");
             uResolution = GL.GetUniformLocation(mProgramId, "uResolution");
+            program = this;
         }
 
         internal void DrawBloom(Object obj, ref Matrix4 mvp, bool bloomDirectionHorizontal, bool merge, int width, int height, int sceneTexture, int bloomTexture)

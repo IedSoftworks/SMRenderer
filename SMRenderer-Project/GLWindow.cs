@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using SMRenderer.Renderers;
+using System.Collections.Generic;
+using SMRenderer.Input;
 
 namespace SMRenderer
 {
@@ -25,22 +27,17 @@ namespace SMRenderer
 
         private static GLWindow M_WINDOW;
 
-        private Renderer renderProgram;
+        private List<GenericRenderer> rendererList;
 
         private Object _bloomObj;
-        private BloomRenderer _bloomRenderer;
         private Matrix4 _modelMatrixBloom = new Matrix4();
 
         public Mouse mouse;
         public Camera camera;
+        public GameController controller;
 
         public Matrix4 ViewProjection { get { return _viewProjectionMatrix; } }
         public Matrix4 Projection { get { return _projectionMatrix; } }
-
-        /// <summary>
-        /// Represens the renderer to the public
-        /// </summary>
-        public Renderer Renderer { get { return renderProgram; } }
 
         /// <summary>
         /// Represens the current window to the public
@@ -59,6 +56,7 @@ namespace SMRenderer
 
             mouse = new Mouse { window = this };
             camera = new Camera { window = this };
+            if (Configure.UseGameController) controller = new GameController(this);
 
             MouseMove += mouse.SaveMousePosition;
         }
@@ -68,6 +66,7 @@ namespace SMRenderer
 
             Timer.TickChange(e.Time);
             Animations.Animation.Update(e.Time);
+            if (controller != null) controller.Check();
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
@@ -76,8 +75,7 @@ namespace SMRenderer
 
             _viewProjectionMatrix = camera.Calculate();
 
-            GL.UseProgram(renderProgram.mProgramId);
-            SM.List.ForEach(a => a.Prepare());
+            SM.List.ToList().ForEach(a => a.Prepare(e.Time));
             foreach(SMItem item in SM.List.OrderBy(a => a._RenderOrder))
             {
                 item.Draw();
@@ -90,23 +88,27 @@ namespace SMRenderer
         }
         protected override void OnLoad(EventArgs e)
         {
-            renderProgram = new Renderer(this);
-            Preload();
+            rendererList = new List<GenericRenderer>
+            {
+                new Renderer(this),
+                new BloomRenderer(),
+                new ParticleRenderer(this),
+            };
 
-            _bloomRenderer = new BloomRenderer();
-            _bloomObj = ObjectManager.OB["Quad"];
+            Preload();
+            _bloomObj = OM.OB["Quad"];
+
 
             if (Configure.UseScale)
             {
                 float aspect = (float)Width / Height;
                 pxSize = new Vector2(Configure.Scale, Configure.Scale / aspect);
-                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, 0.1f, 100f);
             }
             else
             {
                 pxSize = new Vector2(Width, Height);
-                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, Width, Height, 0, 0.1f, 100f);
             }
+            camera.CalcOrtho();
             camera.zoomfactor = 1;
 
             viewProjectionHUD = _viewHUD * _projectionHUD;
@@ -126,6 +128,7 @@ namespace SMRenderer
             if (!_preloaded)
             {
                 ObjectManager.LoadObj();
+                ObjectManager.LoadForms();
                 Texture.CreateEmpty();
                 _preloaded = true;
             }
@@ -138,12 +141,10 @@ namespace SMRenderer
             {
                 float aspect = (float)Width / Height;
                 pxSize = new Vector2(Configure.Scale, Configure.Scale / aspect);
-                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, 0.1f, 100f);
             }
             else
             {
                 pxSize = new Vector2(Width, Height);
-                 _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, Width, Height, 0, 0.1f, 100f);
             }
             camera.CalcOrtho();
 
@@ -157,7 +158,7 @@ namespace SMRenderer
         #endregion
         private void ApplyBloom()
         {
-            GL.UseProgram(_bloomRenderer.mProgramId);
+            GL.UseProgram(rendererList[1].mProgramId);
 
             int loopCount = 4;
             int sourceTex;
@@ -176,7 +177,7 @@ namespace SMRenderer
                     else GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom2);
                 }
 
-                _bloomRenderer.DrawBloom(
+                BloomRenderer.program.DrawBloom(
                     _bloomObj,
                     ref _modelMatrixBloom,
                     i % 2 == 0,

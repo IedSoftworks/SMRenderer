@@ -25,9 +25,9 @@ namespace SMRenderer.Drawing
         {
             SM.List.Remove(this);
         }
-        public override void Prepare()
+        public override void Prepare(double i)
         {
-            items.ForEach(a => a.Prepare());
+            items.ForEach(a => a.Prepare(i));
         }
     }
 }

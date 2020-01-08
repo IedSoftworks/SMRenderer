@@ -10,8 +10,14 @@ namespace SMRenderer.Renderers
 {
     public class ShaderProgramFiles
     {
-        public List<string> fragment = new List<string>();
-        public List<string> vertex = new List<string>();
+        public string fragment = "";
+        public string vertex = "";
+
+        public ShaderProgramFiles(string fragment1, string vertex1)
+        {
+            fragment = fragment1;
+            vertex = vertex1;
+        }
     }
     public class GenericRenderer
     {

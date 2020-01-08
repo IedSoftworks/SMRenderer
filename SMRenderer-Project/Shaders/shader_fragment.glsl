@@ -4,6 +4,7 @@ in vec4 gl_FragCoord;
 in vec4 vPosition;
 
 uniform sampler2D uTexture;
+uniform sampler2D uForm;
 uniform vec2 uWindowSize;
 uniform vec2 uTexSize;
 uniform vec2 uObjSize;
@@ -24,6 +25,8 @@ void main(){
 	vec2 pos = vPosition.xy * uObjSize + vec2(uObjSize.x / 2, uObjSize.y /2);
 
 	vec4 texColor = texture(uTexture, vTexture);
+	texColor.w *= texture(uForm, vTexture).w;
+
 	color = texColor * uColor;
 	if (uBorderUsage > 0) {
 		if (uBorderUsage == 1 && texColor.w == 0) {
@@ -68,5 +71,9 @@ void main(){
 		if (texColor.w > 0) bloom = uColor;
 	} else if (uBloomUsage == 3) {
 		bloom = texColor;
+	} else if (uBloomUsage == 4) {
+		bloom = texColor * uColor;
+	} else if (uBloomUsage == 5) {
+		bloom = color;
 	}
 }
