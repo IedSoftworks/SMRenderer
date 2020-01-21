@@ -12,7 +12,7 @@ namespace SMRenderer
     /// <summary>
     /// Configuration for the SMRenderer
     /// </summary>
-    public class Configure
+    public class GeneralConfig
     {
         /// <summary>
         /// Allow / Disallow the scale of the window
@@ -23,10 +23,6 @@ namespace SMRenderer
         /// </summary>
         public static int Scale = 1600;
         /// <summary>
-        /// Saves the default texture. Must be set, before the window was created.
-        /// </summary>
-        public static TextureItem defaultTexture;
-        /// <summary>
         /// Determante how often the 'OnUpdateFrame'-function runs in a second.
         /// </summary>
         public static int UpdatePerSecond = 100;
@@ -35,12 +31,21 @@ namespace SMRenderer
         /// </summary>
         public static bool OnlyRenderIfFocused = true;
         /// <summary>
+        /// Determante if the GameController is allowed
+        /// </summary>
+        public static bool UseGameController = false;
+    }
+    public class GraficalConfig
+    {
+        /// <summary>
         /// Determante what color will be rendered, when no object is before it.
         /// </summary>
         public static Color4 ClearColor = Color4.Black;
         /// <summary>
-        /// Determante if the GameController is allowed
+        /// Saves the default texture. Must be set, before the window was created.
         /// </summary>
-        public static bool UseGameController = false;
+        public static TextureItem defaultTexture;
+
+        public static bool AllowBloom = false;
     }
 }

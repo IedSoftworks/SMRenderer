@@ -84,7 +84,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// Contains all arguments for visual effects
         /// </summary>
-        public VisualEffectArgs effectArgs = new VisualEffectArgs();
+        public VisualEffectArgs effectArgs = VisualEffectArgs.Default;
 
         public Form Form = OM.Forms["Circle"];
 
@@ -99,7 +99,7 @@ namespace SMRenderer.Drawing
             if (RenderPosition == RenderPosition.DynamicBackground || RenderPosition == RenderPosition.HUD) view = GLWindow.Window.viewProjectionHUD;
             else view = GLWindow.Window.ViewProjection;
 
-            Renderer.program.Draw(obj, this, view, modelMatrix);
+            GeneralRenderer.program.Draw(obj, this, view, modelMatrix);
         }
 
         override public void Prepare(double i)

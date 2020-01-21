@@ -74,6 +74,7 @@
     <Compile Include="Renderers\BloomRenderer.cs" />
     <Compile Include="Renderers\DefaultShaders.cs" />
     <Compile Include="Renderers\ParticleRenderer.cs" />
+    <Compile Include="Renderers\SkyboxRenderer.cs" />
     <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="Renderers\GenericRenderer.cs" />
     <Compile Include="SMContainer.cs" />
@@ -90,10 +91,12 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Shaders\shader_bloom_fragment.glsl" />
     <EmbeddedResource Include="Shaders\shader_bloom_vertex.glsl" />
-    <EmbeddedResource Include="Shaders\shader_fragment.glsl" />
-    <EmbeddedResource Include="Shaders\shader_vertex.glsl" />
+    <EmbeddedResource Include="Shaders\shader_general_fragment.glsl" />
+    <EmbeddedResource Include="Shaders\shader_general_vertex.glsl" />
     <EmbeddedResource Include="Shaders\shader_particle_vertex.glsl" />
     <EmbeddedResource Include="Shaders\shader_particle_fragment.glsl" />
+    <EmbeddedResource Include="Shaders\shader_skybox_fragment.glsl" />
+    <EmbeddedResource Include="Shaders\shader_skybox_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />

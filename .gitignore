@@ -1,0 +1,17 @@
+
+*/obj/
+.vs/*
+*.pdb
+*.csproj.user
+*.dll
+*.xml
+
+*/bin/*/data/
+*/bin/*/*.exe
+*/bin/*/*.exe.config
+
+TDRS-TestingArea
+TDRS-TestingArea/*
+
+SMRenderer/SMRenderer/*
+*.cache

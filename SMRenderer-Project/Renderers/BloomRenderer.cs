@@ -15,74 +15,68 @@ namespace SMRenderer.Renderers
         static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.BloomFragment, DefaultShaders.BloomVertex);
         static public BloomRenderer program;
 
-        private int _fragShader = -1;
-        private int _vertShader = -1;
-
-        private int mAttr_vpos = -1;
-        private int mAttr_vtex = -1;
-
-        private int uMVP = -1;
-        private int uTextureBloom = -1;
-        private int uTextureScene = -1;
-        private int uMerge = -1;
-        private int uHorizontal = -1;
-        private int uResolution = -1;
+        public int mAttr_vpos, mAttr_vtex = -1;
 
         public BloomRenderer()
         {
-            mProgramId = GL.CreateProgram();
 
-            _fragShader = Load(files.fragment, ShaderType.FragmentShader);
-            _vertShader = Load(files.vertex, ShaderType.VertexShader);
-
-            Console.WriteLine(GL.GetShaderInfoLog(_fragShader));
-            Console.WriteLine(GL.GetShaderInfoLog(_vertShader));
-
-            if (_vertShader >= 0 && _fragShader >= 0)
+            RequestedAttrib = new List<string>()
             {
-                GL.BindAttribLocation(mProgramId, 0, "aPosition");
-                GL.BindAttribLocation(mProgramId, 2, "aTexture");
-
-                GL.BindFragDataLocation(mProgramId, 0, "color");
-                GL.LinkProgram(mProgramId);
-            }
-            else
+                "aPosition",
+                "aTexture"
+            };
+            RequestedFragData = new List<string>()
             {
-                throw new Exception("!!!FATAL ERROR!!!\nCreating and linking shaders failed.");
-            }
+                "color"
+            };
+            RequestedUniforms = new List<string>()
+            {
+                "uMVP",
+                "uEnable",
+                "uTextureScene",
+                "uTextureBloom",
+                "uMerge",
+                "uHorizontal",
+                "uResolution"
+            };
+            Create(files);
 
             mAttr_vpos = GL.GetAttribLocation(mProgramId, "aPos");
             mAttr_vtex = GL.GetAttribLocation(mProgramId, "aTex");
 
-            uMVP = GL.GetUniformLocation(mProgramId, "uMVP");
-            uTextureScene = GL.GetUniformLocation(mProgramId, "uTextureScene");
-            uTextureBloom = GL.GetUniformLocation(mProgramId, "uTextureBloom");
-            uMerge = GL.GetUniformLocation(mProgramId, "uMerge");
-            uHorizontal = GL.GetUniformLocation(mProgramId, "uHorizontal");
-            uResolution = GL.GetUniformLocation(mProgramId, "uResolution");
             program = this;
         }
 
         internal void DrawBloom(Object obj, ref Matrix4 mvp, bool bloomDirectionHorizontal, bool merge, int width, int height, int sceneTexture, int bloomTexture)
         {
-            GL.UniformMatrix4(uMVP, false, ref mvp);
+            GL.UniformMatrix4(Uniforms["uMVP"], false, ref mvp);
 
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, bloomTexture);
-            GL.Uniform1(uTextureBloom, 0);
+            GL.Uniform1(Uniforms["uTextureBloom"], 0);
 
             if (merge)
             {
                 GL.ActiveTexture(TextureUnit.Texture1);
                 GL.BindTexture(TextureTarget.Texture2D, sceneTexture);
-                GL.Uniform1(uTextureScene, 1);
+                GL.Uniform1(Uniforms["uTextureScene"], 1);
 
-                GL.Uniform1(uMerge, 1);
+                GL.Uniform1(Uniforms["uMerge"], 1);
             }
-            else GL.Uniform1(uMerge, 0);
+            else GL.Uniform1(Uniforms["uMerge"], 0);
 
-            GL.Uniform1(uHorizontal, bloomDirectionHorizontal ? 1 : 0);
-            GL.Uniform2(uResolution, width, height);
+            if (GraficalConfig.AllowBloom)
+            {
+                GL.ActiveTexture(TextureUnit.Texture1);
+                GL.BindTexture(TextureTarget.Texture2D, sceneTexture);
+                GL.Uniform1(Uniforms["uTextureScene"], 1);
+
+                GL.Uniform1(Uniforms["uEnable"], 1);
+            }
+            else GL.Uniform1(Uniforms["uEnable"], 0);
+
+            GL.Uniform1(Uniforms["uHorizontal"], bloomDirectionHorizontal ? 1 : 0);
+            GL.Uniform2(Uniforms["uResolution"], width, height);
 
             GL.BindVertexArray(obj.VAO);
             GL.DrawArrays(obj.primitiveType, 0, obj.VerticesCount);

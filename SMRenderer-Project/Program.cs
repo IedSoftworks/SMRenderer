@@ -19,13 +19,11 @@ namespace SMRenderer
         static Particle item; static DrawItem item2;
         static void Main(string[] args)
         {
-            Configure.defaultTexture = new TextureItem(new Bitmap("draconier_logo.png"));
-            Configure.UseGameController = true;
+            GraficalConfig.defaultTexture = new TextureItem(new Bitmap("draconier_logo.png"));
             //Configure.UseScale = false;
+            GraficalConfig.ClearColor = Color.White;
 
             GLWindow window = new GLWindow(500, 500);
-            window.controller.Connect += (a) => Console.WriteLine(a + " is connected!");
-            window.controller.Disconnect += (a) => Console.WriteLine(a + " is disconnected!");
             window.KeyDown += (a,b) =>
             {
             };

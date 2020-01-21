@@ -11,6 +11,11 @@ namespace SMRenderer
     public class Camera
     {
         private Matrix4 ortho;
+        private float _zoom = 1f;
+        public GLWindow window = null;
+        public DrawItem anchor = null;
+        public float zoomfactor { get { return _zoom; } set { _zoom = value; CalcOrtho(); } }
+
         private Vector2 _centeredObject { get
             {
                 if (anchor != null)
@@ -18,15 +23,11 @@ namespace SMRenderer
                 else
                     return new Vector2(0, 0);
             } }
-        private float _zoom = 1f;
-        public GLWindow window = null;
-        public DrawItem anchor = null;
 
         public Vector2 RealCenter { get {
                 Vector2 center = _centeredObject;
                 return new Vector2(center.X * _zoom, center.Y * _zoom);
             } }
-        public float zoomfactor { get { return _zoom; }  set { _zoom = value; CalcOrtho(); } }
 
         public void CalcOrtho()
         {

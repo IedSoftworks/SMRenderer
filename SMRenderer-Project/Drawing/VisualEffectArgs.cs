@@ -29,6 +29,8 @@ namespace SMRenderer.Drawing
     /// </summary>
     public class VisualEffectArgs
     {
+        public static VisualEffectArgs Default = new VisualEffectArgs();
+
         public Color4 BloomColor = Color4.White;
         public EffectBloomUsage BloomUsage = EffectBloomUsage.None;
 

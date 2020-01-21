@@ -8,6 +8,7 @@ using System.Threading;
 using SMRenderer.Renderers;
 using System.Collections.Generic;
 using SMRenderer.Input;
+using SMRenderer.Drawing;
 
 namespace SMRenderer
 {
@@ -31,6 +32,8 @@ namespace SMRenderer
 
         private Object _bloomObj;
         private Matrix4 _modelMatrixBloom = new Matrix4();
+
+        public float deltatimeScale = 1;
 
         public Mouse mouse;
         public Camera camera;
@@ -56,22 +59,25 @@ namespace SMRenderer
 
             mouse = new Mouse { window = this };
             camera = new Camera { window = this };
-            if (Configure.UseGameController) controller = new GameController(this);
+            if (GeneralConfig.UseGameController) controller = new GameController(this);
 
             MouseMove += mouse.SaveMousePosition;
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            if (!Focused && Configure.OnlyRenderIfFocused) return;
-
-            Timer.TickChange(e.Time);
-            Animations.Animation.Update(e.Time);
+            if (!Focused && GeneralConfig.OnlyRenderIfFocused) return;
+            double time = (float)e.Time * deltatimeScale; 
+            Timer.TickChange(time);
+            Animations.Animation.Update(time);
             if (controller != null) controller.Check();
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            double time = e.Time * deltatimeScale;
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdMain);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            //SkyboxRenderer.program.Draw(OM.OB["Quad"], Skyplane, SkyplaneMatrix);
 
             _viewProjectionMatrix = camera.Calculate();
 
@@ -86,23 +92,25 @@ namespace SMRenderer
 
             SwapBuffers();
         }
+
         protected override void OnLoad(EventArgs e)
         {
             rendererList = new List<GenericRenderer>
             {
-                new Renderer(this),
+                new GeneralRenderer(this),
                 new BloomRenderer(),
                 new ParticleRenderer(this),
+                new SkyboxRenderer(this)
             };
 
             Preload();
             _bloomObj = OM.OB["Quad"];
 
-
-            if (Configure.UseScale)
+            if (GeneralConfig.UseScale)
             {
                 float aspect = (float)Width / Height;
-                pxSize = new Vector2(Configure.Scale, Configure.Scale / aspect);
+                pxSize = new Vector2(GeneralConfig.Scale, GeneralConfig.Scale / aspect);
+                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
             }
             else
             {
@@ -113,16 +121,32 @@ namespace SMRenderer
 
             viewProjectionHUD = _viewHUD * _projectionHUD;
 
-            TargetUpdateFrequency = Configure.UpdatePerSecond;
+            TargetUpdateFrequency = GeneralConfig.UpdatePerSecond;
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.Disable(EnableCap.DepthTest);
 
-            GL.ClearColor(Configure.ClearColor);
+            CreateSkyplane();
+
+            GL.ClearColor(GraficalConfig.ClearColor);
 
             base.OnLoad(e);
         }
+        public DrawItem Skyplane;
+        private Matrix4 SkyplaneMatrix;
+        private void CreateSkyplane()
+        {
+            Skyplane = new DrawItem
+            {
+                Color = Color4.Red,
+
+            };
+            SkyplaneMatrix = Matrix4.CreateScale(Width, Height, 1) *
+                Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) *
+                Matrix4.CreateOrthographic(Width, Height, 0.1f, 100f);
+        }
+
         public static void Preload()
         {
             if (!_preloaded)
@@ -137,10 +161,11 @@ namespace SMRenderer
         {
             GL.Viewport(ClientRectangle);
 
-            if (Configure.UseScale)
+            if (GeneralConfig.UseScale)
             {
                 float aspect = (float)Width / Height;
-                pxSize = new Vector2(Configure.Scale, Configure.Scale / aspect);
+                pxSize = new Vector2(GeneralConfig.Scale, GeneralConfig.Scale / aspect);
+                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, Width, Height, 0, .1f, 100f);
             }
             else
             {
@@ -162,30 +187,45 @@ namespace SMRenderer
 
             int loopCount = 4;
             int sourceTex;
-            for (int i = 0; i<loopCount; i++)
+            if (GraficalConfig.AllowBloom)
             {
-                if (i%2 == 0)
+                for (int i = 0; i < loopCount; i++)
                 {
-                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom1);
-                    if (i == 0) sourceTex = _framebufferTextureBloomDownsampled;
-                    else sourceTex = _framebufferTextureBloom2;
-                }
-                else
-                {
-                    sourceTex = _framebufferTextureBloom1;
-                    if (i == loopCount - 1) GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-                    else GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom2);
-                }
+                    if (i % 2 == 0)
+                    {
+                        GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom1);
+                        if (i == 0) sourceTex = _framebufferTextureBloomDownsampled;
+                        else sourceTex = _framebufferTextureBloom2;
+                    }
+                    else
+                    {
+                        sourceTex = _framebufferTextureBloom1;
+                        if (i == loopCount - 1) GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                        else GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom2);
+                    }
 
+                    BloomRenderer.program.DrawBloom(
+                        _bloomObj,
+                        ref _modelMatrixBloom,
+                        i % 2 == 0,
+                        i == loopCount - 1,
+                        Width,
+                        Height,
+                        _framebufferTextureMainDownsampled,
+                        sourceTex);
+                }
+            } else
+            {
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
                 BloomRenderer.program.DrawBloom(
-                    _bloomObj,
-                    ref _modelMatrixBloom,
-                    i % 2 == 0,
-                    i == loopCount - 1,
-                    Width,
-                    Height,
-                    _framebufferTextureMainDownsampled,
-                    sourceTex);
+                        _bloomObj,
+                        ref _modelMatrixBloom,
+                        false,
+                        false,
+                        Width,
+                        Height,
+                        _framebufferTextureMainDownsampled,
+                        _framebufferTextureBloom1);
             }
             GL.UseProgram(0);
         }
