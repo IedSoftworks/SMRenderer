@@ -17,9 +17,9 @@ namespace SMRenderer.Renderers
 
         public int mAttr_vpos, mAttr_vtex = -1;
 
-        public BloomRenderer()
+        public BloomRenderer(GLWindow window)
         {
-
+            this.window = window;
             RequestedAttrib = new List<string>()
             {
                 "aPosition",
@@ -32,7 +32,6 @@ namespace SMRenderer.Renderers
             RequestedUniforms = new List<string>()
             {
                 "uMVP",
-                "uEnable",
                 "uTextureScene",
                 "uTextureBloom",
                 "uMerge",
@@ -47,7 +46,7 @@ namespace SMRenderer.Renderers
             program = this;
         }
 
-        internal void DrawBloom(Object obj, ref Matrix4 mvp, bool bloomDirectionHorizontal, bool merge, int width, int height, int sceneTexture, int bloomTexture)
+        internal void DrawBloom(ref Matrix4 mvp, bool bloomDirectionHorizontal, bool merge, int width, int height, int sceneTexture, int bloomTexture)
         {
             GL.UniformMatrix4(Uniforms["uMVP"], false, ref mvp);
 
@@ -65,18 +64,10 @@ namespace SMRenderer.Renderers
             }
             else GL.Uniform1(Uniforms["uMerge"], 0);
 
-            if (GraficalConfig.AllowBloom)
-            {
-                GL.ActiveTexture(TextureUnit.Texture1);
-                GL.BindTexture(TextureTarget.Texture2D, sceneTexture);
-                GL.Uniform1(Uniforms["uTextureScene"], 1);
-
-                GL.Uniform1(Uniforms["uEnable"], 1);
-            }
-            else GL.Uniform1(Uniforms["uEnable"], 0);
-
             GL.Uniform1(Uniforms["uHorizontal"], bloomDirectionHorizontal ? 1 : 0);
             GL.Uniform2(Uniforms["uResolution"], width, height);
+
+            Object obj = OM.OB["Quad"];
 
             GL.BindVertexArray(obj.VAO);
             GL.DrawArrays(obj.primitiveType, 0, obj.VerticesCount);

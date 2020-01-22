@@ -64,8 +64,12 @@ namespace SMRenderer
         {
             Assembly ass = typeof(ObjectManager).Assembly;
             string name = ass.GetName().Name;
+
+            Bitmap quad = new Bitmap(1, 1);
+            quad.SetPixel(0, 0, System.Drawing.Color.White);
+
             insertForms.Add("Circle", new Bitmap(ass.GetManifestResourceStream(name + ".Form.Circle.png")));
-            insertForms.Add("Quad", new Bitmap(ass.GetManifestResourceStream(name + ".Form.Quad.png")));
+            insertForms.Add("Quad", quad);
 
             foreach (KeyValuePair<string, Bitmap> map in insertForms)
             {

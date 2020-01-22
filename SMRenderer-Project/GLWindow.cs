@@ -18,19 +18,14 @@ namespace SMRenderer
     public class GLWindow : GameWindow
     {
         #region | Normal Rendering |
-        static bool _preloaded = false;
-        private Matrix4 _viewHUD = Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0);
-        private Matrix4 _projectionHUD;
         public Matrix4 viewProjectionHUD;
 
-        private Matrix4 _projectionMatrix = new Matrix4();
         private Matrix4 _viewProjectionMatrix = new Matrix4();
 
         private static GLWindow M_WINDOW;
 
         private List<GenericRenderer> rendererList;
 
-        private Object _bloomObj;
         private Matrix4 _modelMatrixBloom = new Matrix4();
 
         public float deltatimeScale = 1;
@@ -40,7 +35,6 @@ namespace SMRenderer
         public GameController controller;
 
         public Matrix4 ViewProjection { get { return _viewProjectionMatrix; } }
-        public Matrix4 Projection { get { return _projectionMatrix; } }
 
         /// <summary>
         /// Represens the current window to the public
@@ -66,7 +60,9 @@ namespace SMRenderer
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if (!Focused && GeneralConfig.OnlyRenderIfFocused) return;
-            double time = (float)e.Time * deltatimeScale; 
+
+            double time = (float)e.Time * deltatimeScale;
+
             Timer.TickChange(time);
             Animations.Animation.Update(time);
             if (controller != null) controller.Check();
@@ -74,43 +70,80 @@ namespace SMRenderer
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             double time = e.Time * deltatimeScale;
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdMain);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, GraficalConfig.AllowBloom ? _framebufferIdMain : 0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            //SkyboxRenderer.program.Draw(OM.OB["Quad"], Skyplane, SkyplaneMatrix);
+            
+            SM.DrawLayer[(int)SMLayer.Normal].matrix = camera.Calculate();
 
-            _viewProjectionMatrix = camera.Calculate();
-
-            SM.List.ToList().ForEach(a => a.Prepare(e.Time));
-            foreach(SMItem item in SM.List.OrderBy(a => a._RenderOrder))
+            SM.DrawLayer = SM.DrawLayer.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
+            foreach (KeyValuePair<int, DrawLayer> pair in SM.DrawLayer)
             {
-                item.Draw();
+                pair.Value.ToList().ForEach(a => a.Prepare(time));
+                pair.Value.ForEach(a => a.Draw(pair.Value.matrix));
             }
-
+            
             DownsampleFramebuffer();
-            ApplyBloom();
+            if (GraficalConfig.AllowBloom) ApplyBloom();
 
             SwapBuffers();
         }
-
+        DrawItem BasePlate_Skyplane;
         protected override void OnLoad(EventArgs e)
         {
             rendererList = new List<GenericRenderer>
             {
                 new GeneralRenderer(this),
-                new BloomRenderer(),
-                new ParticleRenderer(this),
-                new SkyboxRenderer(this)
+                new BloomRenderer(this),
+                new ParticleRenderer(this)
             };
 
             Preload();
-            _bloomObj = OM.OB["Quad"];
 
+            SM.Add(BasePlate_Skyplane = new DrawItem()
+            {
+                Color = GraficalConfig.ClearColor,
+                positionAnchor = "lu",
+                connected = this,
+                purpose = "The base plate of the skyplane. Prevents the bloom-Effect to play crazy."
+            }, SMLayer.Skyplane);
+
+            ApplySize();
+
+            TargetUpdateFrequency = GeneralConfig.UpdatePerSecond;
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.Disable(EnableCap.DepthTest);
+
+            
+            GL.ClearColor(Color.Black);
+
+            base.OnLoad(e);
+        }
+
+        public static void Preload()
+        {
+            ObjectManager.LoadObj();
+            ObjectManager.LoadForms();
+            Texture.CreateEmpty();
+            SM.LoadLayer();
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            GL.Viewport(ClientRectangle);
+
+            ApplySize();
+
+            InitializeFramebuffers(0);
+        }
+
+        private void ApplySize()
+        {
             if (GeneralConfig.UseScale)
             {
                 float aspect = (float)Width / Height;
                 pxSize = new Vector2(GeneralConfig.Scale, GeneralConfig.Scale / aspect);
-                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
             }
             else
             {
@@ -119,113 +152,45 @@ namespace SMRenderer
             camera.CalcOrtho();
             camera.zoomfactor = 1;
 
-            viewProjectionHUD = _viewHUD * _projectionHUD;
-
-            TargetUpdateFrequency = GeneralConfig.UpdatePerSecond;
-
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            GL.Disable(EnableCap.DepthTest);
-
-            CreateSkyplane();
-
-            GL.ClearColor(GraficalConfig.ClearColor);
-
-            base.OnLoad(e);
-        }
-        public DrawItem Skyplane;
-        private Matrix4 SkyplaneMatrix;
-        private void CreateSkyplane()
-        {
-            Skyplane = new DrawItem
-            {
-                Color = Color4.Red,
-
-            };
-            SkyplaneMatrix = Matrix4.CreateScale(Width, Height, 1) *
-                Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) *
-                Matrix4.CreateOrthographic(Width, Height, 0.1f, 100f);
-        }
-
-        public static void Preload()
-        {
-            if (!_preloaded)
-            {
-                ObjectManager.LoadObj();
-                ObjectManager.LoadForms();
-                Texture.CreateEmpty();
-                _preloaded = true;
-            }
-        }
-        protected override void OnResize(EventArgs e)
-        {
-            GL.Viewport(ClientRectangle);
-
-            if (GeneralConfig.UseScale)
-            {
-                float aspect = (float)Width / Height;
-                pxSize = new Vector2(GeneralConfig.Scale, GeneralConfig.Scale / aspect);
-                _projectionHUD = Matrix4.CreateOrthographicOffCenter(0, Width, Height, 0, .1f, 100f);
-            }
-            else
-            {
-                pxSize = new Vector2(Width, Height);
-            }
-            camera.CalcOrtho();
-
-            viewProjectionHUD = _viewHUD * _projectionHUD;
+            viewProjectionHUD = Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) * Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
             _modelMatrixBloom = Matrix4.CreateScale(Width, Height, 1) *
                 Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) *
-                Matrix4.CreateOrthographic(Width, Height, 0.1f, 100f);
+                Matrix4.CreateOrthographic(Width, Height, 1f, 100f);
 
-            InitializeFramebuffers(0);
+            BasePlate_Skyplane.Size = pxSize;
+            SM.DrawLayer[(int)SMLayer.Skyplane].matrix = SM.DrawLayer[(int)SMLayer.HUD].matrix = viewProjectionHUD;
         }
         #endregion
         private void ApplyBloom()
         {
-            GL.UseProgram(rendererList[1].mProgramId);
+            GL.UseProgram(BloomRenderer.program.mProgramId);
 
             int loopCount = 4;
             int sourceTex;
-            if (GraficalConfig.AllowBloom)
+            
+            for (int i = 0; i < loopCount; i++)
             {
-                for (int i = 0; i < loopCount; i++)
+                if (i % 2 == 0)
                 {
-                    if (i % 2 == 0)
-                    {
-                        GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom1);
-                        if (i == 0) sourceTex = _framebufferTextureBloomDownsampled;
-                        else sourceTex = _framebufferTextureBloom2;
-                    }
-                    else
-                    {
-                        sourceTex = _framebufferTextureBloom1;
-                        if (i == loopCount - 1) GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-                        else GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom2);
-                    }
-
-                    BloomRenderer.program.DrawBloom(
-                        _bloomObj,
-                        ref _modelMatrixBloom,
-                        i % 2 == 0,
-                        i == loopCount - 1,
-                        Width,
-                        Height,
-                        _framebufferTextureMainDownsampled,
-                        sourceTex);
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom1);
+                    if (i == 0) sourceTex = _framebufferTextureBloomDownsampled;
+                    else sourceTex = _framebufferTextureBloom2;
                 }
-            } else
-            {
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                else
+                {
+                    sourceTex = _framebufferTextureBloom1;
+                    if (i == loopCount - 1) GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                    else GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom2);
+                }
+
                 BloomRenderer.program.DrawBloom(
-                        _bloomObj,
-                        ref _modelMatrixBloom,
-                        false,
-                        false,
-                        Width,
-                        Height,
-                        _framebufferTextureMainDownsampled,
-                        _framebufferTextureBloom1);
+                    ref _modelMatrixBloom,
+                    i % 2 == 0,
+                    i == loopCount - 1,
+                    Width,
+                    Height,
+                    _framebufferTextureMainDownsampled,
+                    sourceTex);
             }
             GL.UseProgram(0);
         }

@@ -14,8 +14,6 @@ namespace SMRenderer.Renderers
         static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.ParticleFragment, DefaultShaders.ParticleVertex);
         static public ParticleRenderer program;
 
-
-        private GLWindow window;
         public ParticleRenderer(GLWindow window)
         {
             this.window = window;
@@ -39,6 +37,8 @@ namespace SMRenderer.Renderers
                 "uLifeTime",
                 "uRandom"
             };
+
+            Create(files);
 
             program = this;
         }

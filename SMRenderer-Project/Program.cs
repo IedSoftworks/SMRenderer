@@ -21,7 +21,8 @@ namespace SMRenderer
         {
             GraficalConfig.defaultTexture = new TextureItem(new Bitmap("draconier_logo.png"));
             //Configure.UseScale = false;
-            GraficalConfig.ClearColor = Color.White;
+            GraficalConfig.ClearColor = Color.Gray;
+            GraficalConfig.AllowBloom = true;
 
             GLWindow window = new GLWindow(500, 500);
             window.KeyDown += (a,b) =>
@@ -33,15 +34,9 @@ namespace SMRenderer
                 {
                     Position = new Vector2(250, 250),
                     Color = Color.Red,
-                    Size = new Vector2(5,10) * new Vector2(50),
-                    effectArgs = new VisualEffectArgs()
-                    {
-                        BorderUsage = EffectBorderUsage.QuadEdgeBorder,
-                        BorderWidth = 5,
-                        
-                    }
+                    Size = new Vector2(50,100)
                 };
-                SM.Add(item2);
+                SM.Add(item2, SMLayer.Skyplane);
 
             };
             window.Run();

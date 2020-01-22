@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using SMRenderer;
 
 namespace SMRenderer.Drawing
@@ -72,18 +73,10 @@ namespace SMRenderer.Drawing
                 });
             }
         }
-        public override void Activate()
+        public override void Draw(Matrix4 viewMatrix)
         {
-            if(!SM.List.Contains(this)) SM.List.Add(this);
-        }
-        public override void Deactivate()
-        {
-            if (SM.List.Contains(this)) SM.List.Remove(this);
-        }
-        public override void Draw()
-        {
-            if (args.combined) draw.Draw();
-            else container.Draw();
+            if (args.combined) draw.Draw(viewMatrix);
+            else container.Draw(viewMatrix);
         }
         public override void Prepare(double i)
         {

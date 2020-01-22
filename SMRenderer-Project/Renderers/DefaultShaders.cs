@@ -12,8 +12,8 @@ namespace SMRenderer.Renderers
     {
         public static Assembly ass = typeof(DefaultShaders).Assembly;
 
-        public static string NormalVertex = Read("Shaders.shader_general_vertex.glsl", ass);
-        public static string NormalFragment = Read("Shaders.shader_general_fragment.glsl", ass);
+        public static string GeneralVertex = Read("Shaders.shader_general_vertex.glsl", ass);
+        public static string GeneralFragment = Read("Shaders.shader_general_fragment.glsl", ass);
 
         public static string BloomVertex = Read("Shaders.shader_bloom_vertex.glsl", ass);
         public static string BloomFragment = Read("Shaders.shader_bloom_fragment.glsl", ass);

@@ -74,8 +74,7 @@
     <Compile Include="Renderers\BloomRenderer.cs" />
     <Compile Include="Renderers\DefaultShaders.cs" />
     <Compile Include="Renderers\ParticleRenderer.cs" />
-    <Compile Include="Renderers\SkyboxRenderer.cs" />
-    <Compile Include="Renderers\Renderer.cs" />
+    <Compile Include="Renderers\GeneralRenderer.cs" />
     <Compile Include="Renderers\GenericRenderer.cs" />
     <Compile Include="SMContainer.cs" />
     <Compile Include="Program.cs" />
@@ -103,7 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form\Circle.png" />
-    <EmbeddedResource Include="Form\Quad.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -57,9 +57,9 @@ namespace SMRenderer.Drawing
         public float ZIndex = 0;
 
         /// <summary>
-        /// Specifies where the object renders
+        /// Specifies if the object is a HUD object
         /// </summary>
-        public RenderPosition RenderPosition = RenderPosition.Normal;
+        public bool HUD = false;
 
         /// <summary>
         /// Dictionary for all animations that are possible on this object; Key = identify-string; Value = Animation;
@@ -86,20 +86,16 @@ namespace SMRenderer.Drawing
         /// </summary>
         public VisualEffectArgs effectArgs = VisualEffectArgs.Default;
 
-        public Form Form = OM.Forms["Circle"];
+        public Form Form = OM.Forms["Quad"];
 
         /// <summary>
         /// Tell the program to actual draw the object
         /// </summary>
-        override public void Draw()
+        override public void Draw(Matrix4 viewMatrix)
         {
             modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_actualRotation)) * Matrix4.CreateTranslation(_centerPoint.X, _centerPoint.Y, 0);
 
-            Matrix4 view;
-            if (RenderPosition == RenderPosition.DynamicBackground || RenderPosition == RenderPosition.HUD) view = GLWindow.Window.viewProjectionHUD;
-            else view = GLWindow.Window.ViewProjection;
-
-            GeneralRenderer.program.Draw(obj, this, view, modelMatrix);
+            layer.renderer.Draw(obj, this, viewMatrix, modelMatrix);
         }
 
         override public void Prepare(double i)
@@ -109,50 +105,12 @@ namespace SMRenderer.Drawing
 
             // Calcuate the position
             _actualPosition = Helper.Rotation.CalculatePositionForRotationAroundPoint(Region.GetPosition(), Position, Region.GetRotation());
+            _centerPoint = CalculatePositionAnchor(Position, Size, positionAnchor);
 
             _RenderOrder = ZIndex + Region.GetZIndex();
 
-            if (Region != null) if (Region.renderPosition != RenderPosition.Override) RenderPosition = Region.renderPosition;
-
-            if (RenderPosition == RenderPosition.DynamicBackground || RenderPosition == RenderPosition.StaticBackground) _RenderOrder -= 255;
-            if (RenderPosition == RenderPosition.HUD) _RenderOrder += 255;
-
-            calcCenter();
-        }
-
-        private void calcCenter()
-        {
-
-            float stepX = Size.X / 2;
-            float stepY = Size.Y / 2;
-            _centerPoint = new Vector2(_actualPosition.X, _actualPosition.Y);
-
-            switch (positionAnchor.First())
-            {
-                case 'l':
-                    _centerPoint.X += stepX;
-                    break;
-                case 'r':
-                    _centerPoint.X -= stepX;
-                    break;
-            }
-            switch (positionAnchor.Last())
-            {
-                case 'u':
-                    _centerPoint.Y += stepY;
-                    break;
-                case 'l':
-                    _centerPoint.Y -= stepY;
-                    break;
-            }
-        }
-        override public void Activate()
-        {
-            SM.List.Add(this);
-        }
-        override public void Deactivate()
-        {
-            SM.List.Remove(this);
+            if (Region != null) if (Region.HUD != null) HUD = (bool)Region.HUD;
+            if (HUD) _RenderOrder += 255;
         }
 
         public static Vector2 CalculatePositionAnchor(Vector2 position, Vector2 size, string anchor)
@@ -162,19 +120,19 @@ namespace SMRenderer.Drawing
             switch (anchor.First())
             {
                 case 'l':
-                    position.X -= stepX;
+                    position.X += stepX;
                     break;
                 case 'r':
-                    position.X += stepX;
+                    position.X -= stepX;
                     break;
             }
             switch (anchor.Last())
             {
                 case 'u':
-                    position.Y -= stepY;
+                    position.Y += stepY;
                     break;
                 case 'l':
-                    position.Y += stepY;
+                    position.Y -= stepY;
                     break;
             }
             return position;

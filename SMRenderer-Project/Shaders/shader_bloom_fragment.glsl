@@ -5,7 +5,6 @@ uniform sampler2D uTextureScene;
 uniform sampler2D uTextureBloom;
 uniform int uMerge;
 uniform int uHorizontal;
-uniform vec2 uResolution;
 uniform bool uEnable;
 
 out vec4 color;
@@ -18,32 +17,28 @@ float multiplier = 1;
 
 void main() {
 	vec3 result = texture(uTextureBloom, vTex).rgb * weight[0];
-	if (uEnable) {
-		if (uHorizontal == 1) {
-			for(int i = 1; i < 9; i++) {
-				result += texture(uTextureBloom, vTex + vec2(tex_offset.x * (float(i) * (bloomSizeFactor * float(i))), 0.0)).rgb * (weight[i] * multiplier);
-				result += texture(uTextureBloom, vTex - vec2(tex_offset.x * (float(i) * (bloomSizeFactor * float(i))), 0.0)).rgb * (weight[i] * multiplier);
-			}
-			color.x = result.x;
-			color.y = result.y;
-			color.z = result.z;
-			color.w = 1;
+	if (uHorizontal == 1) {
+		for(int i = 1; i < 9; i++) {
+			result += texture(uTextureBloom, vTex + vec2(tex_offset.x * (float(i) * (bloomSizeFactor * float(i))), 0.0)).rgb * (weight[i] * multiplier);
+			result += texture(uTextureBloom, vTex - vec2(tex_offset.x * (float(i) * (bloomSizeFactor * float(i))), 0.0)).rgb * (weight[i] * multiplier);
 		}
-		else {
-			for(int i = 1; i < 9; i++) {
-				result += texture(uTextureBloom, vTex + vec2(0.0, tex_offset.y * (float(i) * (bloomSizeFactor * float(i))))).rgb * (weight[i] * multiplier);
-				result += texture(uTextureBloom, vTex - vec2(0.0, tex_offset.y * (float(i) * (bloomSizeFactor * float(i))))).rgb * (weight[i] * multiplier);
-			}
-			if(uMerge > 0) {
-				vec3 oriColor = texture(uTextureScene, vTex).rgb;
-				result += oriColor;
-			}
-			color.x = result.x;
-			color.y = result.y;
-			color.z = result.z;
-			color.w = 1;
+		color.x = result.x;
+		color.y = result.y;
+		color.z = result.z;
+		color.w = 1;
+	}
+	else {
+		for(int i = 1; i < 9; i++) {
+			result += texture(uTextureBloom, vTex + vec2(0.0, tex_offset.y * (float(i) * (bloomSizeFactor * float(i))))).rgb * (weight[i] * multiplier);
+			result += texture(uTextureBloom, vTex - vec2(0.0, tex_offset.y * (float(i) * (bloomSizeFactor * float(i))))).rgb * (weight[i] * multiplier);
 		}
-	} else {
-		color = texture(uTextureScene, vTex);
+		if(uMerge > 0) {
+			vec3 oriColor = texture(uTextureScene, vTex).rgb;
+			result += oriColor;
+		}
+		color.x = result.x;
+		color.y = result.y;
+		color.z = result.z;
+		color.w = 1;
 	}
 }

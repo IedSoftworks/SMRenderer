@@ -27,10 +27,10 @@ namespace SMRenderer.Drawing
 
         public EffectBloomUsage bloom = EffectBloomUsage.None;
 
-        public override void Draw()
+        public override void Draw(Matrix4 viewMatrix)
         {
             Matrix4 modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Rotation)) * Matrix4.CreateTranslation(Position.X, Position.Y, 0);
-            ParticleRenderer.program.Draw(Object, this, modelMatrix * GLWindow.Window.ViewProjection);
+            ParticleRenderer.program.Draw(Object, this, modelMatrix * viewMatrix);
         }
         public override void Prepare(double RenderSec)
         {

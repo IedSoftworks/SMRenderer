@@ -5,7 +5,6 @@ in vec4 vPosition;
 
 uniform sampler2D uTexture;
 uniform sampler2D uForm;
-uniform vec2 uTexSize;
 uniform vec4 uColor;
 
 out vec4 color;

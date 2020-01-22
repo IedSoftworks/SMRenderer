@@ -1,6 +1,6 @@
 
 */obj/
-.vs/*
+*/.vs/*
 *.pdb
 *.csproj.user
 *.dll

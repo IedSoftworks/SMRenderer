@@ -24,6 +24,7 @@ namespace SMRenderer.Renderers
     public class GenericRenderer
     {
         public int mProgramId = -1;
+        public GLWindow window;
 
         /// <summary>
         /// Put here the requested attrib
@@ -68,16 +69,21 @@ namespace SMRenderer.Renderers
 
             for (i = 0; i < RequestedUniforms.Count; i++) Uniforms.Add(RequestedUniforms[i], GL.GetUniformLocation(mProgramId, RequestedUniforms[i]));
 
-            Console.Clear();
+            //Console.Clear();
         }
 
         public int Load(string s, ShaderType type)
         {
             int address = GL.CreateShader(type);
             GL.ShaderSource(address, s);
+            GL.CompileShader(address);
             GL.AttachShader(mProgramId, address);
 
             return address;
         }
+    }
+    public class GenericObjectRenderer : GenericRenderer
+    {
+        virtual internal void Draw(Object obj, SMItem item, Matrix4 view, Matrix4 model) { }
     }
 }

@@ -7,7 +7,6 @@ out vec2 vTexture;
 out vec4 vPosition;
 
 uniform mat4 uMVP;
-uniform mat4 uTexSize;
 
 //functions
 
