@@ -1,14 +1,17 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
+
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using SMRenderer.Renderers;
 using System.Collections.Generic;
-using SMRenderer.Input;
+
+using SMRenderer.Renderers;
 using SMRenderer.Drawing;
+using SMRenderer.TypeExtensions;
+using OpenTK.Input;
 
 namespace SMRenderer
 {
@@ -18,7 +21,6 @@ namespace SMRenderer
     public class GLWindow : GameWindow
     {
         #region | Normal Rendering |
-        public Matrix4 viewProjectionHUD;
 
         private Matrix4 _viewProjectionMatrix = new Matrix4();
 
@@ -30,9 +32,9 @@ namespace SMRenderer
 
         public float deltatimeScale = 1;
 
-        public Mouse mouse;
+        public Input.Mouse mouse;
         public Camera camera;
-        public GameController controller;
+        public Input.GameController controller;
 
         public Matrix4 ViewProjection { get { return _viewProjectionMatrix; } }
 
@@ -46,14 +48,15 @@ namespace SMRenderer
         /// </summary>
         public Vector2 pxSize { get; private set; } = new Vector2(0);
 
+        public bool ErrorAtLoading = false;
+
         public GLWindow(int width, int height) : base(width, height)
         {
             Title = "GLWíndow Default Title";
             M_WINDOW = this;
 
-            mouse = new Mouse { window = this };
-            camera = new Camera { window = this };
-            if (GeneralConfig.UseGameController) controller = new GameController(this);
+            mouse = new Input.Mouse { window = this };
+            if (GeneralConfig.UseGameController) controller = new Input.GameController(this);
 
             MouseMove += mouse.SaveMousePosition;
         }
@@ -61,11 +64,20 @@ namespace SMRenderer
         {
             if (!Focused && GeneralConfig.OnlyRenderIfFocused) return;
 
+            KeyboardState state = Keyboard.GetState();
+
+            if (state.AreFollowingKeysDown(Key.ShiftLeft, Key.AltLeft, Key.ControlLeft, Key.P))
+                Console.WriteLine("Pause");
+
             double time = (float)e.Time * deltatimeScale;
 
             Timer.TickChange(time);
             Animations.Animation.Update(time);
             if (controller != null) controller.Check();
+
+            Scene.current.matrixSetFunc(Scene.current);
+
+            base.OnUpdateFrame(e);
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
@@ -73,14 +85,13 @@ namespace SMRenderer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, GraficalConfig.AllowBloom ? _framebufferIdMain : 0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            
-            SM.DrawLayer[(int)SMLayer.Normal].matrix = camera.Calculate();
+            Baseplate.Draw(Camera.staticView, GeneralRenderer.program);
 
-            SM.DrawLayer = SM.DrawLayer.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
-            foreach (KeyValuePair<int, DrawLayer> pair in SM.DrawLayer)
+            Scene.current.DrawLayer = Scene.current.DrawLayer.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
+            foreach (KeyValuePair<int, SMLayer> pair in Scene.current.DrawLayer)
             {
                 pair.Value.ToList().ForEach(a => a.Prepare(time));
-                pair.Value.ForEach(a => a.Draw(pair.Value.matrix));
+                pair.Value.ForEach(a => a.Draw(Camera.staticView, pair.Value.renderer)); 
             }
             
             DownsampleFramebuffer();
@@ -88,7 +99,7 @@ namespace SMRenderer
 
             SwapBuffers();
         }
-        DrawItem BasePlate_Skyplane;
+        public DrawItem Baseplate;
         protected override void OnLoad(EventArgs e)
         {
             rendererList = new List<GenericRenderer>
@@ -100,13 +111,16 @@ namespace SMRenderer
 
             Preload();
 
-            SM.Add(BasePlate_Skyplane = new DrawItem()
+            Baseplate = new DrawItem()
             {
                 Color = GraficalConfig.ClearColor,
                 positionAnchor = "lu",
                 connected = this,
                 purpose = "The base plate of the skyplane. Prevents the bloom-Effect to play crazy."
-            }, SMLayer.Skyplane);
+            };
+
+            Scene.current = Scene._default = new Scene();
+            Scene.current.GenerateDrawLayer();
 
             ApplySize();
 
@@ -115,11 +129,17 @@ namespace SMRenderer
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.Disable(EnableCap.DepthTest);
-
             
             GL.ClearColor(Color.Black);
 
             base.OnLoad(e);
+
+            if (ErrorAtLoading)
+            {
+                Console.WriteLine("Error detected. Check console output.");
+                Console.WriteLine("Continue?");
+            }
+            Console.Clear();
         }
 
         public static void Preload()
@@ -127,7 +147,6 @@ namespace SMRenderer
             ObjectManager.LoadObj();
             ObjectManager.LoadForms();
             Texture.CreateEmpty();
-            SM.LoadLayer();
         }
         protected override void OnResize(EventArgs e)
         {
@@ -137,7 +156,6 @@ namespace SMRenderer
 
             InitializeFramebuffers(0);
         }
-
         private void ApplySize()
         {
             if (GeneralConfig.UseScale)
@@ -149,16 +167,15 @@ namespace SMRenderer
             {
                 pxSize = new Vector2(Width, Height);
             }
-            camera.CalcOrtho();
-            camera.zoomfactor = 1;
+            camera.CreateProjection(pxSize);
 
-            viewProjectionHUD = Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) * Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
+            //staticViewProjection = Matrix4.LookAt(pxSize.X/2, pxSize.Y / 2, 1, pxSize.X / 2, pxSize.Y / 2, 0, 0, 1, 0) * Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
+
             _modelMatrixBloom = Matrix4.CreateScale(Width, Height, 1) *
-                Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) *
-                Matrix4.CreateOrthographic(Width, Height, 1f, 100f);
+                Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) * 
+                Matrix4.CreateOrthographic(pxSize.X, pxSize.Y, .1f, 100f);
 
-            BasePlate_Skyplane.Size = pxSize;
-            SM.DrawLayer[(int)SMLayer.Skyplane].matrix = SM.DrawLayer[(int)SMLayer.HUD].matrix = viewProjectionHUD;
+            Baseplate.Size = pxSize;
         }
         #endregion
         private void ApplyBloom()

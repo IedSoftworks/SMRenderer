@@ -42,7 +42,7 @@ namespace SMRenderer.Renderers
 
             program = this;
         }
-        internal void Draw(Object obj, Particle item, Matrix4 MVP)
+        internal void Draw(ObjectInfos obj, Particle item, Matrix4 MVP)
         {
             GL.UseProgram(mProgramId);
             GL.UniformMatrix4(Uniforms["uMVP"], false, ref MVP);

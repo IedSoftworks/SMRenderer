@@ -13,7 +13,7 @@ namespace SMRenderer.Drawing
     {
         static Random random = new Random();
         public double currentLifeTime = 0;
-        public Object Object = OM.OB["Quad"];
+        public ObjectInfos Object = OM.OB["Quad"];
         public Vector2 Position = Vector2.Zero;
         public float Rotation = 0;
         public Vector2 Size = Vector2.Zero;
@@ -27,7 +27,7 @@ namespace SMRenderer.Drawing
 
         public EffectBloomUsage bloom = EffectBloomUsage.None;
 
-        public override void Draw(Matrix4 viewMatrix)
+        public override void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
         {
             Matrix4 modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Rotation)) * Matrix4.CreateTranslation(Position.X, Position.Y, 0);
             ParticleRenderer.program.Draw(Object, this, modelMatrix * viewMatrix);

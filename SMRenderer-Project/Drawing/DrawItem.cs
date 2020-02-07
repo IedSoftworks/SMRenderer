@@ -20,11 +20,12 @@ namespace SMRenderer.Drawing
         public Vector2 _actualPosition = new Vector2(0, 0);
         public float _actualRotation = 0;
         public Matrix4 modelMatrix;
+        public Matrix4 normalMatrix;
 
         /// <summary>
         /// The object that need to be render.
         /// </summary>
-        public Object obj = OM.OB["Quad"];
+        public ObjectInfos obj = OM.OB["Quad"];
 
         /// <summary>
         /// Specifies the position of the object
@@ -84,18 +85,21 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// Contains all arguments for visual effects
         /// </summary>
-        public VisualEffectArgs effectArgs = VisualEffectArgs.Default;
+        public VisualEffectArgs effectArgs = new VisualEffectArgs();
 
         public Form Form = OM.Forms["Quad"];
 
         /// <summary>
         /// Tell the program to actual draw the object
         /// </summary>
-        override public void Draw(Matrix4 viewMatrix)
+        override public void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
         {
-            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_actualRotation)) * Matrix4.CreateTranslation(_centerPoint.X, _centerPoint.Y, 0);
+            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y,1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_actualRotation)) * Matrix4.CreateTranslation(_centerPoint.X, _centerPoint.Y, 0);
 
-            layer.renderer.Draw(obj, this, viewMatrix, modelMatrix);
+            Matrix4.Transpose(ref modelMatrix, out normalMatrix);
+            normalMatrix.Invert();
+
+            renderer.Draw(obj, this, viewMatrix, modelMatrix);
         }
 
         override public void Prepare(double i)

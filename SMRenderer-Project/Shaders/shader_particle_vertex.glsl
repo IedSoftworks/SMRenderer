@@ -20,8 +20,8 @@ float rand(vec2 value) {
 void main() {
 	vTexture = aTexture;
 	
-	float addX = (gl_InstanceID+1) * uRand *(uMotion*uTime);
-	float addY = (gl_InstanceID+1) * uRand *(uMotion*uTime);
+	float addX = (gl_InstanceID+1) * uRand *(uMotion.x*uTime);
+	float addY = (gl_InstanceID+1) * uRand *(uMotion.x*uTime);
 
 	vec2 pos = vec2(aPosition.x + addX, aPosition.y+addY);
 	vPosition = vec4(pos, aPosition.z, 1.0);

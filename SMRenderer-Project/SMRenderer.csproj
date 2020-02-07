@@ -61,15 +61,18 @@
     <Compile Include="Drawing\DrawContainer.cs" />
     <Compile Include="Drawing\DrawItem.cs" />
     <Compile Include="Drawing\Image.cs" />
+    <Compile Include="Drawing\LightSource.cs" />
     <Compile Include="Drawing\Particles.cs" />
+    <Compile Include="Scene.cs" />
     <Compile Include="Drawing\Text.cs" />
     <Compile Include="Drawing\VisualEffectArgs.cs" />
     <Compile Include="GLWindow.cs" />
     <Compile Include="Helper\Rotation.cs" />
     <Compile Include="Input\GameController.cs" />
+    <Compile Include="Input\Keyboard.cs" />
     <Compile Include="Input\Mouse.cs" />
+    <Compile Include="Objects\Model.cs" />
     <Compile Include="ObjectManager.cs" />
-    <Compile Include="Objects\QuadRepeat.cs" />
     <Compile Include="Objects\Quad.cs" />
     <Compile Include="Renderers\BloomRenderer.cs" />
     <Compile Include="Renderers\DefaultShaders.cs" />
@@ -102,6 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form\Circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TypeExtensions\Matrix4Class.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

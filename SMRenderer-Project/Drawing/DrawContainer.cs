@@ -1,5 +1,6 @@
 ﻿
 using OpenTK;
+using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace SMRenderer.Drawing
     public class DrawContainer : SMItem
     {
         public List<DrawItem> items = new List<DrawItem>();
-        public override void Draw(Matrix4 viewMatrix)
+        public override void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
         {
-            items.ForEach(a => { a.Draw(viewMatrix); });
+            items.ForEach(a => { a.Draw(viewMatrix, renderer); });
         }
         public void Add(DrawItem i) { items.Add(i); }
         public void Remove(DrawItem i) { items.Remove(i); }

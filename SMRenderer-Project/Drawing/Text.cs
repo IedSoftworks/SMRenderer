@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using SMRenderer;
+using SMRenderer.Renderers;
 
 namespace SMRenderer.Drawing
 {
@@ -73,10 +74,10 @@ namespace SMRenderer.Drawing
                 });
             }
         }
-        public override void Draw(Matrix4 viewMatrix)
+        public override void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
         {
-            if (args.combined) draw.Draw(viewMatrix);
-            else container.Draw(viewMatrix);
+            if (args.combined) draw.Draw(viewMatrix, renderer);
+            else container.Draw(viewMatrix, renderer);
         }
         public override void Prepare(double i)
         {

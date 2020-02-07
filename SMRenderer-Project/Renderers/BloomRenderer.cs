@@ -67,7 +67,7 @@ namespace SMRenderer.Renderers
             GL.Uniform1(Uniforms["uHorizontal"], bloomDirectionHorizontal ? 1 : 0);
             GL.Uniform2(Uniforms["uResolution"], width, height);
 
-            Object obj = OM.OB["Quad"];
+            ObjectInfos obj = OM.OB["Quad"];
 
             GL.BindVertexArray(obj.VAO);
             GL.DrawArrays(obj.primitiveType, 0, obj.VerticesCount);
