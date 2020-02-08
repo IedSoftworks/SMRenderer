@@ -64,6 +64,7 @@ namespace SMRenderer
             }
         }
     }
+    [Serializable]
     public class SMLayer : List<SMItem>
     {
         public Matrix4 matrix = Camera.staticView;
@@ -102,6 +103,7 @@ namespace SMRenderer
         public static Region zero = new Region { Position = new Vector2(0), Rotation = 0, ZIndex = 0 };
     }
 
+    [Serializable]
     public class SMItem
     {
         /// <summary>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SMRenderer
 {
+    [Serializable]
     public class Scene
     {
         public static Scene _default;
@@ -17,7 +18,6 @@ namespace SMRenderer
 
         static void SetCurrent(Scene nextScene)
         {
-            nextScene.camera.CreateProjection(GLWindow.Window.pxSize);
             GLWindow.Window.camera = nextScene.camera;
             _current = nextScene;
         }
@@ -31,11 +31,11 @@ namespace SMRenderer
                 { (int)SMLayerID.Normal, new SMLayer() { staticMatrix = false } },
                 { (int)SMLayerID.HUD, new SMLayer() },
             };
-            /*matrixSetFunc = a =>
+            matrixSetFunc = a =>
             {
                 a.DrawLayer[(int)SMLayerID.Normal].matrix = camera.viewProjection;
                 foreach (SMLayer layer in a.DrawLayer.Values.Where(b => b.staticMatrix && b.matrix != Camera.staticView)) layer.matrix = Camera.staticView;
-            };*/
+            };
         }
 
         /// <summary>
@@ -43,9 +43,25 @@ namespace SMRenderer
         /// </summary>
         public Color4 ambientLight = Color4.DarkCyan;
 
+        /// <summary>
+        /// Contains all the drawable objects
+        /// </summary>
         public Dictionary<int, SMLayer> DrawLayer = null;
+
+        /// <summary>
+        /// used to set the matrices for the SMLayers
+        /// </summary>
         public Action<Scene> matrixSetFunc = a => { foreach (SMLayer layer in a.DrawLayer.Values) layer.matrix = Camera.staticView; };
+
+        /// <summary>
+        /// Contains the camera of this scene
+        /// </summary>
         public Camera camera = new Camera();
+
+        /// <summary>
+        /// Contains all the lights inside this scene.
+        /// <para>maximal 4 lights at the time</para>
+        /// </summary>
         public LightCollection lights = new LightCollection();
     }
 }

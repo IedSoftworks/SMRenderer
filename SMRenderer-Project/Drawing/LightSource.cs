@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SMRenderer.Drawing
 {
+    [Serializable]
     public class LightSource
     {
         public Vector2 Position = Vector2.Zero;
@@ -15,10 +16,11 @@ namespace SMRenderer.Drawing
         public float Intensity = 1;
         public float Height = 1f;
     }
+    [Serializable]
     public class LightCollection : List<LightSource>
     {
-        internal float[] shaderArgs_positions;
-        internal float[] shaderArgs_colors;
+        [NonSerialized] internal float[] shaderArgs_positions;
+        [NonSerialized] internal float[] shaderArgs_colors;
         new public void Add(LightSource source)
         {
             if (Count >= 4) base.Remove(this.Last());

@@ -168,8 +168,8 @@ namespace SMRenderer
             {
                 pxSize = new Vector2(Width, Height);
             }
-            camera.CreateProjection(pxSize);
 
+            Camera.UpdateProjection(pxSize);
             //staticViewProjection = Matrix4.LookAt(pxSize.X/2, pxSize.Y / 2, 1, pxSize.X / 2, pxSize.Y / 2, 0, 0, 1, 0) * Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
 
             _modelMatrixBloom = Matrix4.CreateScale(Width, Height, 1) *

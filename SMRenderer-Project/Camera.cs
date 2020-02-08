@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 
 namespace SMRenderer
 {
+    [Serializable]
     public class Camera
     {
         public static Matrix4 staticView;
 
-        private Matrix4 projection;
+        private static Matrix4 projection;
 
         public bool useAnchor = false;
         public Vector2 position = Vector2.Zero;
         public DrawItem anchor;
         public float zoomLevel = 1;
  
-        public void CreateProjection(Vector2 size)
+        public static void UpdateProjection(Vector2 size)
         {
             projection = Matrix4.CreateOrthographicOffCenter(0, size.X, size.Y, 0, .1f, 100f);
             staticView = Matrix4.LookAt(0,0,1,0,0,0,0,1,0) * Matrix4.CreateOrthographicOffCenter(0, size.X, size.Y, 0, .1f, 100f);
