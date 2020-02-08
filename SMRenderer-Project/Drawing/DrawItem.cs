@@ -13,6 +13,7 @@ namespace SMRenderer.Drawing
     /// <summary>
     /// DrawItem saves instructions of the draw
     /// </summary>
+    [Serializable]
     public class DrawItem : SMItem
     {
         // Private
@@ -25,7 +26,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// The object that need to be render.
         /// </summary>
-        public ObjectInfos obj = OM.OB["Quad"];
+        public string obj = "Quad";
 
         /// <summary>
         /// Specifies the position of the object
@@ -65,7 +66,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// Dictionary for all animations that are possible on this object; Key = identify-string; Value = Animation;
         /// </summary>
-        public Dictionary<string, Animation> Animations = new Dictionary<string, Animation>();
+        public AnimationCollection Animations = new AnimationCollection();
 
         /// <summary>
         /// Specifies the region; Makes Position, Rotation and Z-Index values relative and ignore the RenderPosition
@@ -75,7 +76,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// Specifies the used texture
         /// </summary>
-        public Texture Texture = Texture.empty;
+        public TextureItem Texture = null;
 
         /// <summary>
         /// Colorize the texture in that color; Default: White;
@@ -97,7 +98,7 @@ namespace SMRenderer.Drawing
             Matrix4.Transpose(ref modelMatrix, out normalMatrix);
             normalMatrix.Invert();
 
-            renderer.Draw(obj, this, viewMatrix, modelMatrix);
+            renderer.Draw(OM.OB[obj], this, viewMatrix, modelMatrix);
         }
 
         override public void Prepare(double i)

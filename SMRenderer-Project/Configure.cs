@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,6 +35,11 @@ namespace SMRenderer
         /// Determante if the GameController is allowed
         /// </summary>
         public static bool UseGameController = false;
+        public static List<Type> Renderer = new List<Type>() { 
+            typeof(GeneralRenderer),
+            typeof(BloomRenderer),
+            typeof(ParticleRenderer)
+        };
     }
     public class GraficalConfig
     {

@@ -29,15 +29,11 @@ namespace SMRenderer.Drawing
         public int Scale = 1;
         public Image(TextureItem item)
         {
-            Texture = item.texture;
-        }
-        public Image(Texture item)
-        {
             Texture = item;
         }
         public override void Prepare(double i)
         {
-            float aspect = (float)Texture.Width / Texture.Height;
+            float aspect = (float)Texture.size.X / Texture.size.Y;
             if (Width != 0 && Height == 0)
             {
                 _actualSize = new Vector2(Width, Width / aspect);
@@ -46,10 +42,10 @@ namespace SMRenderer.Drawing
                 _actualSize = new Vector2(Height * aspect, Height);
             } else if (Width != 0 && Height != 0)
             {
-                _actualSize = new Vector2(Texture.Width, Texture.Height);
+                _actualSize = new Vector2(Width, Height);
             } else
             {
-                _actualSize = new Vector2(Width, Height);
+                _actualSize = new Vector2(Texture.size.X, Texture.size.Y);
             }
             Size = _actualSize;
 

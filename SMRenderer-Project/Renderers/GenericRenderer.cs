@@ -114,4 +114,14 @@ namespace SMRenderer.Renderers
     {
         virtual internal void Draw(ObjectInfos obj, SMItem item, Matrix4 view, Matrix4 model) { }
     }
+    public class RendererCollection : List<GenericRenderer>
+    {
+        public int this[string typename]
+        {
+            get
+            {
+                return this.FindIndex(a => a.GetType().Name == typename);
+            }
+        }
+    }
 }

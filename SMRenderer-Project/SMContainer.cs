@@ -69,13 +69,14 @@ namespace SMRenderer
     {
         public Matrix4 matrix = Camera.staticView;
         public bool staticMatrix = true;
-        public GenericObjectRenderer renderer = GeneralRenderer.program;
+        public int renderer = GLWindow.Window.rendererList["GeneralRenderer"];
         public Action<SMLayer> clear = a => { a.ForEach(b => a.Remove(b)); };
     }
 
     /// <summary>
     /// Creates a region to use relative values in DrawItem; All values in this class have to be absolute
     /// </summary>
+    [Serializable]
     public class Region
     {
         public Vector2 Position = new Vector2(0, 0);

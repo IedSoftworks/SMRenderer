@@ -27,6 +27,7 @@ namespace SMRenderer.Drawing
     /// <summary>
     /// Contains all VisualsEffect arguments, that will be needed
     /// </summary>
+    [Serializable]
     public class VisualEffectArgs
     {
         public static VisualEffectArgs Default = new VisualEffectArgs();

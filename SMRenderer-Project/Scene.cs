@@ -2,7 +2,10 @@
 using SMRenderer.Drawing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,5 +66,30 @@ namespace SMRenderer
         /// <para>maximal 4 lights at the time</para>
         /// </summary>
         public LightCollection lights = new LightCollection();
+
+        public void Serialize(Stream stream)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            try
+            {
+                formatter.Serialize(stream, this);
+            } catch(Exception e)
+            {
+                throw new Exception("SERIALIZATION FAILED! Reason: " + e.Message);
+            }
+        }
+        public static Scene Deserialize(Stream stream)
+        {
+            Scene scene = null;
+            try {
+                BinaryFormatter formatter = new BinaryFormatter();
+                scene = (Scene)formatter.Deserialize(stream);
+            } catch (SerializationException e)
+            {
+                throw new Exception("DESERIALIZATION FAILED! Reason: " + e.Message);
+            }
+            return scene;
+        }
     }
 }

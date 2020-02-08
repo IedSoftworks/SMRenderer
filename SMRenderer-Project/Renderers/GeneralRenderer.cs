@@ -55,6 +55,8 @@ namespace SMRenderer.Renderers
 
                 "uLightPositions",
                 "uLightColors",
+                "uLightCount",
+
                 "uAmbientLight"
             };
 
@@ -83,7 +85,7 @@ namespace SMRenderer.Renderers
             GL.Uniform4(Uniforms["uColor"], drawitem.Color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, drawitem.Texture.TexId);
+            GL.BindTexture(TextureTarget.Texture2D, drawitem.Texture == null ? Texture.empty.TexId : drawitem.Texture.texture.TexId);
             GL.Uniform1(Uniforms["uTexture"], 0);
 
             GL.Uniform2(Uniforms["uObjectSize"], drawitem.Size);
@@ -98,6 +100,7 @@ namespace SMRenderer.Renderers
 
             GL.Uniform4(Uniforms["uLightPositions"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_positions);
             GL.Uniform4(Uniforms["uLightColors"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_colors);
+            GL.Uniform1(Uniforms["uLightCount"], Scene.current.lights.Count);
 
             GL.Uniform4(Uniforms["uAmbientLight"], Scene.current.ambientLight);
 

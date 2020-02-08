@@ -26,7 +26,7 @@ namespace SMRenderer
 
         private static GLWindow M_WINDOW;
 
-        private List<GenericRenderer> rendererList;
+        public RendererCollection rendererList = new RendererCollection();
 
         private Matrix4 _modelMatrixBloom = new Matrix4();
 
@@ -87,13 +87,13 @@ namespace SMRenderer
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Baseplate.Prepare(e.Time);
-            Baseplate.Draw(Camera.staticView, GeneralRenderer.program);
+            Baseplate.Draw(Camera.staticView, (GenericObjectRenderer)rendererList[rendererList["GeneralRenderer"]]);
 
             Scene.current.DrawLayer = Scene.current.DrawLayer.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
             foreach (KeyValuePair<int, SMLayer> pair in Scene.current.DrawLayer)
             {
                 pair.Value.ToList().ForEach(a => a.Prepare(time));
-                pair.Value.ForEach(a => a.Draw(pair.Value.matrix, pair.Value.renderer)); 
+                pair.Value.ForEach(a => a.Draw(pair.Value.matrix, (GenericObjectRenderer)rendererList[pair.Value.renderer])); 
             }
             
             DownsampleFramebuffer();
@@ -104,12 +104,10 @@ namespace SMRenderer
         public DrawItem Baseplate;
         protected override void OnLoad(EventArgs e)
         {
-            rendererList = new List<GenericRenderer>
+            GeneralConfig.Renderer.ForEach(a =>
             {
-                new GeneralRenderer(this),
-                new BloomRenderer(this),
-                new ParticleRenderer(this)
-            };
+                rendererList.Add((GenericRenderer)Activator.CreateInstance(a, this));
+            });
 
             Preload();
 

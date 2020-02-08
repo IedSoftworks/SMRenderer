@@ -1,16 +1,21 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Objects;
 using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SMRenderer
 {
     public class ObjectManager
     {
         public static Dictionary<string, Object> OB{ get; private set; } = new Dictionary<string, Object>();
+        public static Dictionary<string, Model> Models{ get; private set; } = new Dictionary<string, Model>();
         /// <summary>
         /// DO NOT RUN THIS COMMAND!
         /// IT WILL BE AUTOMATICLY RUN WHEN LOAD THE WINDOW!
@@ -27,6 +32,67 @@ namespace SMRenderer
                 
                 OB.Add(type.Name, obj);
             };
+        }
+        public static string LoadModelFile(string file)
+        {
+            return LoadModelData(File.ReadAllText(file));
+        }
+        public static string LoadModelData(string data)
+        {
+            Model model = new Model();
+            ObjectInfos last = ObjectInfos.empty;
+            string[] lines = data.Split('\n');
+
+            foreach (string line in lines)
+            {
+                if (line == "") continue;
+
+                string[] strParts = line.Split(' ');
+
+                if (strParts[0] == "o")
+                {
+                    if (last != ObjectInfos.empty) last.Compile();
+
+                    model.parts.Add(strParts[1], last = new ObjectInfos());
+                    model.RenderOrder.Add(strParts[1]);
+                }
+
+
+                switch (strParts[0])
+                {
+                    case "o":
+                        break;
+
+                    case "v":
+                        last.Vertices.AddRange(new float[] { float.Parse(strParts[1]), float.Parse(strParts[2]), float.Parse(strParts[3]) });
+                        break;
+
+                    case "vt":
+                        last.UVs.AddRange(new float[] { float.Parse(strParts[1]), float.Parse(strParts[2]) });
+                        break;
+
+                    case "vn":
+                        last.Normals.AddRange(new float[] { float.Parse(strParts[1]), float.Parse(strParts[2]), float.Parse(strParts[3]) });
+                        break;
+                }
+            }
+            last.Compile();
+
+            string id = CreateID(data);
+            Models.Add(id, model);
+            return id;
+        }
+
+        static MD5 md5 = MD5.Create();
+        public static string CreateID(string model)
+        {
+            byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(model));
+            StringBuilder sb = new StringBuilder();
+
+            foreach (byte b in data)
+                sb.Append(b.ToString("x2"));
+
+            return sb.ToString();
         }
     }
     public class OM : ObjectManager { }

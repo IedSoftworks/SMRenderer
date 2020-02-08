@@ -45,8 +45,8 @@ namespace SMRenderer.Drawing
 
             if (args.combined)
             {
-                if (draw == null) draw = new DrawItem { obj = OM.OB["Quad"], Rotation = 0, Region = region, connected = this, positionAnchor = args.positionAnchor  };
-                else draw.Texture.Dispose();
+                if (draw == null) draw = new DrawItem { obj = "Quad", Rotation = 0, Region = region, connected = this, positionAnchor = args.positionAnchor  };
+                else draw.Texture.texture.Dispose();
                 Bitmap txt = new Bitmap(Width, Height);
                 using (Graphics g = Graphics.FromImage(txt))
                 {
@@ -57,7 +57,7 @@ namespace SMRenderer.Drawing
                         pos += a.bitmap.Width + args.characterSpace;
                     });
                 }
-                draw.Texture = new Texture(txt);
+                draw.Texture = new TextureItem(txt);
                 draw.Color = args.color;
                 draw.Size = new OpenTK.Vector2(Width, Height);
             } else
@@ -69,7 +69,7 @@ namespace SMRenderer.Drawing
 
                 maps.ForEach(a =>
                 {
-                    DrawItem item = new DrawItem { Position = new OpenTK.Vector2(pos, Height - a.bitmap.Height), Size = new OpenTK.Vector2(a.bitmap.Width, a.bitmap.Height), Rotation = 0, Texture = a.texture,  Color = args.color, Region = region, connected = this, positionAnchor = args.positionAnchor };
+                    DrawItem item = new DrawItem { Position = new OpenTK.Vector2(pos, Height - a.bitmap.Height), Size = new OpenTK.Vector2(a.bitmap.Width, a.bitmap.Height), Rotation = 0, Texture = a,  Color = args.color, Region = region, connected = this, positionAnchor = args.positionAnchor };
                     container.items.Add(item);
                 });
             }

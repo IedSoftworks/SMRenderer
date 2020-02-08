@@ -19,6 +19,7 @@ uniform int uBorderLength;
 
 uniform vec4 uLightPositions[4];
 uniform vec4 uLightColors[4];
+uniform int uLightCount;
 uniform vec4 uAmbientLight;
 
 out vec4 color;
@@ -82,7 +83,7 @@ void Bloom() {
 }
 
 void Lighting() {
-	for(int i = 0; i < 4; i++) {
+	for(int i = 0; i < uLightCount; i++) {
 		vec4 pos = uLightPositions[i];
 		vec4 col = uLightColors[i];
 		
