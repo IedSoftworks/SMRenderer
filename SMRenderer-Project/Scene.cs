@@ -41,7 +41,7 @@ namespace SMRenderer
         /// <summary>
         /// Sets the ambientLight
         /// </summary>
-        public Color4 ambientLight = Color4.DarkBlue;
+        public Color4 ambientLight = Color4.White;
 
         public Dictionary<int, SMLayer> DrawLayer = null;
         public Action<Scene> matrixSetFunc = a => { foreach (SMLayer layer in a.DrawLayer.Values) layer.matrix = Camera.staticView; };

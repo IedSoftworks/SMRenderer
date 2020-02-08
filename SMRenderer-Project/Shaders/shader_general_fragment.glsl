@@ -88,7 +88,7 @@ void Lighting() {
 	pointToLight = normalize(pointToLight);
 
 	float lightIntensity = max(dot(pointToLight, vNormal), 0.0) * (uLightIntensity * 100) / distanceSqut;
-	vec3 finalIll = uAmbientLight.rgb * uAmbientLight.w + lightIntensity * uLightColor.w * uLightColor.rgb;
+	vec3 finalIll = uAmbientLight.rgb * uAmbientLight.w + (lightIntensity * 100) * uLightColor.w * uLightColor.rgb;
 	color = color * vec4(finalIll, 1);
 }
 
@@ -100,6 +100,7 @@ void main() {
 
 	color = texColor * uColor;
 	
+	Lighting();
 	Border();
 	Bloom();
 }

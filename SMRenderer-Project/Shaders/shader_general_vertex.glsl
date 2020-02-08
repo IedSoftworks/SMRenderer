@@ -17,5 +17,5 @@ void main() {
 	vTexture = aTexture;
 	vPosition = (uM * vec4(aPosition, 1.0)).xyz;
 	vNormal = normalize((uN * vec4(aNormal, 0.0)).xyz);
-	gl_Position = uMVP * vec4(vPosition, 1.0);
+	gl_Position = uMVP * vec4(aPosition, 1.0);
 }

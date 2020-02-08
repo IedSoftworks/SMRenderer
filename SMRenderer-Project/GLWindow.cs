@@ -85,13 +85,14 @@ namespace SMRenderer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, GraficalConfig.AllowBloom ? _framebufferIdMain : 0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+            Baseplate.Prepare(e.Time);
             Baseplate.Draw(Camera.staticView, GeneralRenderer.program);
 
             Scene.current.DrawLayer = Scene.current.DrawLayer.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
             foreach (KeyValuePair<int, SMLayer> pair in Scene.current.DrawLayer)
             {
                 pair.Value.ToList().ForEach(a => a.Prepare(time));
-                pair.Value.ForEach(a => a.Draw(Camera.staticView, pair.Value.renderer)); 
+                pair.Value.ForEach(a => a.Draw(pair.Value.matrix, pair.Value.renderer)); 
             }
             
             DownsampleFramebuffer();
@@ -114,8 +115,8 @@ namespace SMRenderer
             Baseplate = new DrawItem()
             {
                 Color = GraficalConfig.ClearColor,
-                positionAnchor = "lu",
                 connected = this,
+                positionAnchor = "lu",
                 purpose = "The base plate of the skyplane. Prevents the bloom-Effect to play crazy."
             };
 

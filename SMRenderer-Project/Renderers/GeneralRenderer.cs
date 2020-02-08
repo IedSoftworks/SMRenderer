@@ -101,7 +101,7 @@ namespace SMRenderer.Renderers
             GL.Uniform1(Uniforms["uBorderWidth"], drawitem.effectArgs.BorderWidth);
             GL.Uniform1(Uniforms["uBorderLength"], drawitem.effectArgs.BorderLength);
 
-            GL.Uniform3(Uniforms["uLightPosition"], new Vector3(Scene.current.light.Position.X, Scene.current.light.Position.Y, 1));
+            GL.Uniform3(Uniforms["uLightPosition"], new Vector3(Scene.current.light.Position.X, Scene.current.light.Position.Y, Scene.current.light.Height));
             GL.Uniform4(Uniforms["uLightColor"], Scene.current.light.Color);
             GL.Uniform1(Uniforms["uLightIntensity"], Scene.current.light.Intensity);
 

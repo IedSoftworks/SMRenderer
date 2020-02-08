@@ -10,8 +10,9 @@ namespace SMRenderer.Drawing
 {
     public class LightSource
     {
-        public Vector2 Position = Vector2.One;
-        public Color4 Color = Color4.White;
-        public float Intensity = 1;
+        public Vector2 Position = new Vector2(500);
+        public Color4 Color = Color4.Yellow;
+        public float Intensity = 100;
+        public float Height = 3f;
     }
 }
