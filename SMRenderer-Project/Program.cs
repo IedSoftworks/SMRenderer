@@ -47,7 +47,7 @@ namespace SMRenderer
             window.Load += (ra, b) =>
             {
                 Test1();
-                //Test2();
+                Test2();
             };
             window.Run();
         }
