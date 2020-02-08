@@ -76,6 +76,7 @@ namespace SMRenderer
             if (controller != null) controller.Check();
 
             Scene.current.matrixSetFunc(Scene.current);
+            Scene.current.lights.CreateShaderArgs();
 
             base.OnUpdateFrame(e);
         }
@@ -146,7 +147,6 @@ namespace SMRenderer
         public static void Preload()
         {
             ObjectManager.LoadObj();
-            ObjectManager.LoadForms();
             Texture.CreateEmpty();
         }
         protected override void OnResize(EventArgs e)

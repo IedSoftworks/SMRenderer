@@ -53,9 +53,8 @@ namespace SMRenderer.Renderers
                 "uBorderWidth",
                 "uBorderLength",
 
-                "uLightPosition",
-                "uLightColor",
-                "uLightIntensity",
+                "uLightPositions",
+                "uLightColors",
                 "uAmbientLight"
             };
 
@@ -87,10 +86,6 @@ namespace SMRenderer.Renderers
             GL.BindTexture(TextureTarget.Texture2D, drawitem.Texture.TexId);
             GL.Uniform1(Uniforms["uTexture"], 0);
 
-            GL.ActiveTexture(TextureUnit.Texture1);
-            GL.BindTexture(TextureTarget.Texture2D, drawitem.Form.texture.TexId);
-            GL.Uniform1(Uniforms["uForm"], 1);
-
             GL.Uniform2(Uniforms["uObjectSize"], drawitem.Size);
 
             GL.Uniform1(Uniforms["uBloomUsage"], (int)drawitem.effectArgs.BloomUsage);
@@ -101,9 +96,8 @@ namespace SMRenderer.Renderers
             GL.Uniform1(Uniforms["uBorderWidth"], drawitem.effectArgs.BorderWidth);
             GL.Uniform1(Uniforms["uBorderLength"], drawitem.effectArgs.BorderLength);
 
-            GL.Uniform3(Uniforms["uLightPosition"], new Vector3(Scene.current.light.Position.X, Scene.current.light.Position.Y, Scene.current.light.Height));
-            GL.Uniform4(Uniforms["uLightColor"], Scene.current.light.Color);
-            GL.Uniform1(Uniforms["uLightIntensity"], Scene.current.light.Intensity);
+            GL.Uniform4(Uniforms["uLightPositions"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_positions);
+            GL.Uniform4(Uniforms["uLightColors"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_colors);
 
             GL.Uniform4(Uniforms["uAmbientLight"], Scene.current.ambientLight);
 

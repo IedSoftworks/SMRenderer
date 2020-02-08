@@ -87,8 +87,6 @@ namespace SMRenderer.Drawing
         /// </summary>
         public VisualEffectArgs effectArgs = new VisualEffectArgs();
 
-        public Form Form = OM.Forms["Quad"];
-
         /// <summary>
         /// Tell the program to actual draw the object
         /// </summary>

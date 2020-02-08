@@ -73,7 +73,7 @@
     <Compile Include="Input\Mouse.cs" />
     <Compile Include="Objects\Model.cs" />
     <Compile Include="ObjectManager.cs" />
-    <Compile Include="Objects\Quad.cs" />
+    <Compile Include="ObjStorage\Quad.cs" />
     <Compile Include="Renderers\BloomRenderer.cs" />
     <Compile Include="Renderers\DefaultShaders.cs" />
     <Compile Include="Renderers\ParticleRenderer.cs" />

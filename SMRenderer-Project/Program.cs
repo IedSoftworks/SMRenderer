@@ -21,7 +21,7 @@ namespace SMRenderer
         {
             GraficalConfig.defaultTexture = new TextureItem(new Bitmap("draconier_logo.png"));
             //Configure.UseScale = false;
-            GraficalConfig.ClearColor = Color.Gray;
+            GraficalConfig.ClearColor = Color.White;
             GraficalConfig.AllowBloom = true;
 
             string title = "Testing window";
@@ -40,8 +40,7 @@ namespace SMRenderer
                 {
                     Size = new Vector2(50),
                     Position = new Vector2(250),
-                    Color = Color.Red,
-                    Form = OM.Forms["Circle"]
+                    Color = Color.Red
                 };
                 SM.Add(item1);
                 item2 = new DrawItem
@@ -52,6 +51,8 @@ namespace SMRenderer
 
                 };
                 SM.Add(item2);
+                Scene.current.lights.Add(new LightSource());
+                Scene.current.lights.Add(new LightSource { Color = Color.White, Height = 2, Intensity = 5, Position = new Vector2(250) });
             };
             window.Run();
         }

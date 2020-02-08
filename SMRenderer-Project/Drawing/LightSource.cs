@@ -10,9 +10,31 @@ namespace SMRenderer.Drawing
 {
     public class LightSource
     {
-        public Vector2 Position = new Vector2(500);
-        public Color4 Color = Color4.Yellow;
-        public float Intensity = 100;
-        public float Height = 3f;
+        public Vector2 Position = Vector2.Zero;
+        public Color4 Color = Color4.White;
+        public float Intensity = 1;
+        public float Height = 1f;
+    }
+    public class LightCollection : List<LightSource>
+    {
+        internal float[] shaderArgs_positions;
+        internal float[] shaderArgs_colors;
+        new public void Add(LightSource source)
+        {
+            if (Count >= 4) base.Remove(this.Last());
+            base.Add(source);
+        }
+        public void CreateShaderArgs()
+        {
+            List<float> shaderArgs_pos = new List<float>();
+            List<float> shaderArgs_color = new List<float>();
+            foreach(LightSource light in this)
+            {
+                shaderArgs_pos.AddRange(new float[] { light.Position.X, light.Position.Y, light.Height, light.Intensity });
+                shaderArgs_color.AddRange(new float[] { light.Color.R, light.Color.G, light.Color.B, light.Color.A });
+            }
+            shaderArgs_colors = shaderArgs_color.ToArray();
+            shaderArgs_positions = shaderArgs_pos.ToArray();
+        }
     }
 }

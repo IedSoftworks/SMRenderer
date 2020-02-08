@@ -28,24 +28,6 @@ namespace SMRenderer
                 OB.Add(type.Name, obj);
             };
         }
-        public static Dictionary<string, Bitmap> insertForms = new Dictionary<string, Bitmap>();
-        public static Dictionary<string, Form> Forms { get; private set; } = new Dictionary<string, Form>();
-        public static void LoadForms()
-        {
-            Assembly ass = typeof(ObjectManager).Assembly;
-            string name = ass.GetName().Name;
-
-            Bitmap quad = new Bitmap(1, 1);
-            quad.SetPixel(0, 0, System.Drawing.Color.White);
-
-            insertForms.Add("Circle", new Bitmap(ass.GetManifestResourceStream(name + ".Form.Circle.png")));
-            insertForms.Add("Quad", quad);
-
-            foreach (KeyValuePair<string, Bitmap> map in insertForms)
-            {
-                Forms.Add(map.Key, new Form(map.Value) { AutoDispose = true });
-            }
-        }
     }
     public class OM : ObjectManager { }
     public class ObjectInfos
@@ -102,5 +84,4 @@ namespace SMRenderer
         }
     }
     public class Object : ObjectInfos { }
-    public class Form : TextureItem { public Form(Bitmap bitmap) : base(bitmap) { } }
 }
