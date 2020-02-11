@@ -15,8 +15,8 @@ namespace SMRenderer.Input
         public Point mousePosition;
         public Vector2 InWorld()
         {
-            Vector2 campos = window.camera.RealCenter;
-            float zoom = window.camera.zoomfactor;
+            Vector2 campos = window.camera.currentLocation;
+            float zoom = window.camera.zoomLevel;
             return new Vector2(campos.X + mousePosition.X * zoom, campos.Y + mousePosition.Y * zoom);
         }
         public void SaveMousePosition(object sender, MouseMoveEventArgs e)

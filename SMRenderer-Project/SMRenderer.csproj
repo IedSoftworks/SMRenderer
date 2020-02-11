@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{530D6B0B-57DC-4F5A-AD5E-F80458CDF928}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>SMRenderer</RootNamespace>
     <AssemblyName>SMRenderer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -33,10 +33,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,28 +59,28 @@
     <Compile Include="Animations\Value1Animation.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Configure.cs" />
+    <Compile Include="DataManagment.cs" />
     <Compile Include="Drawing\AxiHelper.cs" />
     <Compile Include="Drawing\DrawContainer.cs" />
     <Compile Include="Drawing\DrawItem.cs" />
-    <Compile Include="Drawing\Image.cs" />
-    <Compile Include="Drawing\Particles.cs" />
-    <Compile Include="Drawing\Text.cs" />
+    <Compile Include="Drawing\LightSource.cs" />
+    <Compile Include="Scene.cs" />
     <Compile Include="Drawing\VisualEffectArgs.cs" />
     <Compile Include="GLWindow.cs" />
     <Compile Include="Helper\Rotation.cs" />
     <Compile Include="Input\GameController.cs" />
+    <Compile Include="Input\Keyboard.cs" />
     <Compile Include="Input\Mouse.cs" />
+    <Compile Include="Objects\Model.cs" />
     <Compile Include="ObjectManager.cs" />
-    <Compile Include="Objects\QuadRepeat.cs" />
-    <Compile Include="Objects\Quad.cs" />
+    <Compile Include="ObjStorage\Quad.cs" />
     <Compile Include="Renderers\BloomRenderer.cs" />
     <Compile Include="Renderers\DefaultShaders.cs" />
-    <Compile Include="Renderers\ParticleRenderer.cs" />
     <Compile Include="Renderers\GeneralRenderer.cs" />
     <Compile Include="Renderers\GenericRenderer.cs" />
     <Compile Include="SMContainer.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SMGlobals.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="TypeExtensions\KeyboardState.cs" />
@@ -86,22 +88,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="OpenTK.dll.config" />
-    <None Include="packages.config" />
     <EmbeddedResource Include="Shaders\shader_bloom_fragment.glsl" />
     <EmbeddedResource Include="Shaders\shader_bloom_vertex.glsl" />
     <EmbeddedResource Include="Shaders\shader_general_fragment.glsl" />
     <EmbeddedResource Include="Shaders\shader_general_vertex.glsl" />
-    <EmbeddedResource Include="Shaders\shader_particle_vertex.glsl" />
-    <EmbeddedResource Include="Shaders\shader_particle_fragment.glsl" />
     <EmbeddedResource Include="Shaders\shader_skybox_fragment.glsl" />
     <EmbeddedResource Include="Shaders\shader_skybox_vertex.glsl" />
+    <None Include="OpenTK.dll.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form\Circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TypeExtensions\Matrix4Class.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,24 +1,27 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using System;
+using System.Collections.Generic;
 
 namespace SMRenderer.Objects
 {
-    public class QuadRepeat : Object
+    [Serializable]
+    public class Quad : Object
     {
-        public QuadRepeat()
+        public Quad(string id) : base(id)
         {
-            Vertices = new float[] {
+            Vertices = new List<float>() {
                 -.5f,-.5f,0f,
                 -.5f,+.5f,0f,
                 +.5f,+.5f,0f,
                 +.5f,-.5f,0f
             };
-            UVs = new float[] {
+            UVs = new List<float>() {
                 0,0,
-                0,10f,
-                10f,10f,
-                10f,0
+                0,1,
+                1,1,
+                1,0
             };
-            Normals = new float[]{
+            Normals = new List<float>(){
                 0,0,1,
                 0,0,1,
                 0,0,1,

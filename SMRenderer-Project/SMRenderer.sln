@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMRenderer", "SMRenderer.csproj", "{530D6B0B-57DC-4F5A-AD5E-F80458CDF928}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "..\TestProject\TestProject.csproj", "{46A64B79-9988-4AD4-9457-EA5A8B095DF1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{530D6B0B-57DC-4F5A-AD5E-F80458CDF928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530D6B0B-57DC-4F5A-AD5E-F80458CDF928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530D6B0B-57DC-4F5A-AD5E-F80458CDF928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530D6B0B-57DC-4F5A-AD5E-F80458CDF928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2DB16B41-2537-43FE-9025-F871AB4E751F}
+	EndGlobalSection
+EndGlobal

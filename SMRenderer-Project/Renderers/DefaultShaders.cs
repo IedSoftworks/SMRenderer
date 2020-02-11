@@ -18,9 +18,6 @@ namespace SMRenderer.Renderers
         public static string BloomVertex = Read("Shaders.shader_bloom_vertex.glsl", ass);
         public static string BloomFragment = Read("Shaders.shader_bloom_fragment.glsl", ass);
 
-        public static string ParticleVertex = Read("Shaders.shader_particle_vertex.glsl", ass);
-        public static string ParticleFragment = Read("Shaders.shader_particle_fragment.glsl", ass);
-
         public static string SkyboxVertex = Read("Shaders.shader_skybox_vertex.glsl", ass);
         public static string SkyboxFragment = Read("Shaders.shader_skybox_fragment.glsl", ass);
             

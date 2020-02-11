@@ -26,6 +26,18 @@ namespace SMRenderer.Renderers
         public int mProgramId = -1;
         public GLWindow window;
 
+        static Dictionary<string, int> AttribIDs { get; } = new Dictionary<string, int>()
+        {
+            { "aPosition", 0},
+            { "aNormal", 1 },
+            { "aTexture", 2 }
+        };
+        static Dictionary<string, int> FragDataIDs { get; } = new Dictionary<string, int>()
+        {
+            { "color", 0 },
+            { "bloom", 1 }
+        };
+
         /// <summary>
         /// Put here the requested attrib
         /// </summary>
@@ -53,13 +65,30 @@ namespace SMRenderer.Renderers
             _fragShader = Load(files.fragment, ShaderType.FragmentShader);
             _vertShader = Load(files.vertex, ShaderType.VertexShader);
 
-            Console.WriteLine(currentClass + " - Vertex: " + GL.GetShaderInfoLog(_vertShader));
-            Console.WriteLine(currentClass + " - Fragment: " + GL.GetShaderInfoLog(_fragShader));
+            string vertError = GL.GetShaderInfoLog(_vertShader);
+            string fragError = GL.GetShaderInfoLog(_fragShader);
+
+            if ((vertError != "" && vertError != "No errors.\n") || (fragError != "" && fragError != "No errors.\n"))
+            {
+                window.ErrorAtLoading = true;
+                Console.WriteLine(currentClass+": ");
+                Console.WriteLine($"Vertex: \n{vertError}");
+                Console.WriteLine($"Fragment: \n{fragError}");
+                Console.WriteLine("---------");
+            }
 
             if (_vertShader != -1 && _fragShader != -1)
             {
-                for (i = 0; i < RequestedAttrib.Count; i++) GL.BindAttribLocation(mProgramId, i, RequestedAttrib[i]);
-                for (i = 0; i < RequestedFragData.Count; i++) GL.BindFragDataLocation(mProgramId, i, RequestedFragData[i]);
+                RequestedAttrib.ForEach(a =>
+                {
+                    if (!AttribIDs.ContainsKey(a)) throw new Exception("[ERROR] Attribute ID '"+a+"' doesn't exist. Please create one.");
+                    GL.BindAttribLocation(mProgramId, AttribIDs[a], a);
+                });
+                RequestedFragData.ForEach(a =>
+                {
+                    if (!FragDataIDs.ContainsKey(a)) throw new Exception("[ERROR] FragData ID '"+a+"' doesn't exist. Please create one.");
+                    GL.BindFragDataLocation(mProgramId, FragDataIDs[a], a);
+                });
                 GL.LinkProgram(mProgramId);
             }
             else
@@ -69,7 +98,6 @@ namespace SMRenderer.Renderers
 
             for (i = 0; i < RequestedUniforms.Count; i++) Uniforms.Add(RequestedUniforms[i], GL.GetUniformLocation(mProgramId, RequestedUniforms[i]));
 
-            //Console.Clear();
         }
 
         public int Load(string s, ShaderType type)
@@ -84,6 +112,16 @@ namespace SMRenderer.Renderers
     }
     public class GenericObjectRenderer : GenericRenderer
     {
-        virtual internal void Draw(Object obj, SMItem item, Matrix4 view, Matrix4 model) { }
+        virtual internal void Draw(ObjectInfos obj, SMItem item, Matrix4 view, Matrix4 model) { }
+    }
+    public class RendererCollection : List<GenericRenderer>
+    {
+        public int this[string typename]
+        {
+            get
+            {
+                return this.FindIndex(a => a.GetType().Name == typename);
+            }
+        }
     }
 }

@@ -1,17 +1,13 @@
 
 */obj/
 */.vs/*
+*/packages/*
 *.pdb
 *.csproj.user
 *.dll
+*.dll.config
 *.xml
-
-*/bin/*/data/
-*/bin/*/*.exe
-*/bin/*/*.exe.config
-
-TDRS-TestingArea
-TDRS-TestingArea/*
-
-SMRenderer/SMRenderer/*
-*.cache
+*.exe
+*.exe.config
+*/bin/
+/SCN-Viewer

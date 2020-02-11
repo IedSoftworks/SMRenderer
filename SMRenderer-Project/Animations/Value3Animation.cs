@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SMRenderer.Animations
 {
+    [Serializable]
     public class Value3Animation : Animation
     {
         public Action<Value3Animation, Vector3> saveFunction;

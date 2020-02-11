@@ -17,8 +17,6 @@ namespace SMRenderer.Renderers
         static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.GeneralFragment, DefaultShaders.GeneralVertex);
         static public GeneralRenderer program;
 
-        private GLWindow window;
-
         public GeneralRenderer(GLWindow window)
         {
             this.window = window;
@@ -37,6 +35,9 @@ namespace SMRenderer.Renderers
             RequestedUniforms = new List<string>()
             {
                 "uMVP",
+                "uM",
+                "uN",
+
                 "uColor",
 
                 "uTexture",
@@ -51,6 +52,12 @@ namespace SMRenderer.Renderers
                 "uBorderColor",
                 "uBorderWidth",
                 "uBorderLength",
+
+                "uLightPositions",
+                "uLightColors",
+                "uLightCount",
+
+                "uAmbientLight"
             };
 
             Create(files);
@@ -66,21 +73,21 @@ namespace SMRenderer.Renderers
         /// <param name="drawitem">The DrawItem</param>
         /// <param name="view">The view matrix</param>
         /// <param name="model">The model matrix</param>
-        override internal void Draw(Object quad, SMItem item, Matrix4 view, Matrix4 model)
+        override internal void Draw(ObjectInfos quad, SMItem item, Matrix4 view, Matrix4 model)
         {
             GL.UseProgram(mProgramId);
             DrawItem drawitem = (DrawItem)item;
+            Texture texture = drawitem.Texture == -1 ? Texture.empty : ((TextureItem)DM.C["Textures"][drawitem.Texture]).texture;
             Matrix4 modelview = model * view;
             GL.UniformMatrix4(Uniforms["uMVP"], false, ref modelview);
+            GL.UniformMatrix4(Uniforms["uM"], false, ref drawitem.modelMatrix);
+            GL.UniformMatrix4(Uniforms["uN"], false, ref drawitem.normalMatrix);
+
             GL.Uniform4(Uniforms["uColor"], drawitem.Color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, drawitem.Texture.TexId);
+            GL.BindTexture(TextureTarget.Texture2D,  texture.TexId);
             GL.Uniform1(Uniforms["uTexture"], 0);
-
-            GL.ActiveTexture(TextureUnit.Texture1);
-            GL.BindTexture(TextureTarget.Texture2D, drawitem.Form.texture.TexId);
-            GL.Uniform1(Uniforms["uForm"], 1);
 
             GL.Uniform2(Uniforms["uObjectSize"], drawitem.Size);
 
@@ -92,8 +99,14 @@ namespace SMRenderer.Renderers
             GL.Uniform1(Uniforms["uBorderWidth"], drawitem.effectArgs.BorderWidth);
             GL.Uniform1(Uniforms["uBorderLength"], drawitem.effectArgs.BorderLength);
 
-            GL.BindVertexArray(quad.VAO);
-            GL.DrawArrays(quad.primitiveType, 0, quad.VerticesCount);
+            GL.Uniform4(Uniforms["uLightPositions"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_positions);
+            GL.Uniform4(Uniforms["uLightColors"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_colors);
+            GL.Uniform1(Uniforms["uLightCount"], Scene.current.lights.Count);
+
+            GL.Uniform4(Uniforms["uAmbientLight"], Scene.current.ambientLight);
+
+            GL.BindVertexArray(quad.GetVAO());
+            GL.DrawArrays(quad.primitiveType, 0, quad.GetVerticesCount());
 
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);

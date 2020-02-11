@@ -8,16 +8,11 @@ using System.Threading.Tasks;
 
 namespace SMRenderer.Animations
 {
+    [Serializable]
     public class SFPresets
     {
-        public static Action<Value1Animation, double> Rotation(DrawItem item)
-        {
-            return (a, b) => item.Rotation = (float)b;
-        }
-        public static Action<Value2Animation, Vector2> Position(DrawItem item)
-        {
-            return (a, b) => item.Position = b;
-        }
+        public static Action<Value2Animation, Vector2> DrawItem_Position = (a, b) => ((DrawItem)a.Object).Position = b;
+        public static Action<Value1Animation, double> DrawItem_Rotation = (a, b) => ((DrawItem)a.Object).Rotation = (float)b;
 
     }
 }

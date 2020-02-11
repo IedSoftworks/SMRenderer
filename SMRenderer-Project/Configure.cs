@@ -1,8 +1,10 @@
 ﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +36,14 @@ namespace SMRenderer
         /// Determante if the GameController is allowed
         /// </summary>
         public static bool UseGameController = false;
+        public static List<Type> Renderer = new List<Type>() { 
+            typeof(GeneralRenderer),
+            typeof(BloomRenderer)
+        };
+        /// <summary>
+        /// Fill that if you want use your presaved datamanager
+        /// </summary>
+        public static Stream UseDataManager = null;
     }
     public class GraficalConfig
     {
