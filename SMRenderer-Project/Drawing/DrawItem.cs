@@ -26,7 +26,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// The object that need to be render.
         /// </summary>
-        public string obj = "Quad";
+        public int obj = DM.C["Meshes"].ID("Quad");
 
         /// <summary>
         /// Specifies the position of the object
@@ -76,7 +76,7 @@ namespace SMRenderer.Drawing
         /// <summary>
         /// Specifies the used texture
         /// </summary>
-        public TextureItem Texture = null;
+        public int Texture = -1;
 
         /// <summary>
         /// Colorize the texture in that color; Default: White;
@@ -98,7 +98,7 @@ namespace SMRenderer.Drawing
             Matrix4.Transpose(ref modelMatrix, out normalMatrix);
             normalMatrix.Invert();
 
-            renderer.Draw(OM.OB[obj], this, viewMatrix, modelMatrix);
+            renderer.Draw((ObjectInfos)DM.C["Meshes"][ID: obj], this, viewMatrix, modelMatrix);
         }
 
         override public void Prepare(double i)

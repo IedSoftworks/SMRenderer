@@ -77,6 +77,7 @@ namespace SMRenderer.Renderers
         {
             GL.UseProgram(mProgramId);
             DrawItem drawitem = (DrawItem)item;
+            Texture texture = drawitem.Texture == -1 ? Texture.empty : ((TextureItem)DM.C["Textures"][drawitem.Texture]).texture;
             Matrix4 modelview = model * view;
             GL.UniformMatrix4(Uniforms["uMVP"], false, ref modelview);
             GL.UniformMatrix4(Uniforms["uM"], false, ref drawitem.modelMatrix);
@@ -85,7 +86,7 @@ namespace SMRenderer.Renderers
             GL.Uniform4(Uniforms["uColor"], drawitem.Color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, drawitem.Texture == null ? Texture.empty.TexId : drawitem.Texture.texture.TexId);
+            GL.BindTexture(TextureTarget.Texture2D,  texture.TexId);
             GL.Uniform1(Uniforms["uTexture"], 0);
 
             GL.Uniform2(Uniforms["uObjectSize"], drawitem.Size);
@@ -104,8 +105,8 @@ namespace SMRenderer.Renderers
 
             GL.Uniform4(Uniforms["uAmbientLight"], Scene.current.ambientLight);
 
-            GL.BindVertexArray(quad.VAO);
-            GL.DrawArrays(quad.primitiveType, 0, quad.VerticesCount);
+            GL.BindVertexArray(quad.GetVAO());
+            GL.DrawArrays(quad.primitiveType, 0, quad.GetVerticesCount());
 
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);

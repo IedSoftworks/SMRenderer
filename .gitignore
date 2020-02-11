@@ -9,3 +9,5 @@
 *.xml
 *.exe
 *.exe.config
+*/bin/
+/SCN-Viewer

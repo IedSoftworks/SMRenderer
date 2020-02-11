@@ -79,7 +79,7 @@ namespace SMRenderer
     /// A storage item, to prevent repeatly loading the same texture
     /// </summary>
     [Serializable]
-    public class TextureItem
+    public class TextureItem : Data
     {
         [NonSerialized] private Texture _tex;
         public Bitmap bitmap;
@@ -96,8 +96,7 @@ namespace SMRenderer
         /// Creates a textureitem
         /// </summary>
         /// <param name="bitmap"></param>
-        public TextureItem() { }
-        public TextureItem(Bitmap bitmap)
+        public TextureItem(string name, Bitmap bitmap) : base(name, "Textures")
         {
             this.bitmap = bitmap;
         }

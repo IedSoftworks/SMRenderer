@@ -1,11 +1,13 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using System;
 using System.Collections.Generic;
 
 namespace SMRenderer.Objects
 {
+    [Serializable]
     public class Quad : Object
     {
-        public Quad()
+        public Quad(string id) : base(id)
         {
             Vertices = new List<float>() {
                 -.5f,-.5f,0f,

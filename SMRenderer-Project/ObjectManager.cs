@@ -14,32 +14,17 @@ namespace SMRenderer
 {
     public class ObjectManager
     {
-        public static Dictionary<string, Object> OB{ get; private set; } = new Dictionary<string, Object>();
-        public static Dictionary<string, Model> Models{ get; private set; } = new Dictionary<string, Model>();
-        /// <summary>
-        /// DO NOT RUN THIS COMMAND!
-        /// IT WILL BE AUTOMATICLY RUN WHEN LOAD THE WINDOW!
-        /// </summary>
-        public static void LoadObj()
+        public static void LoadModelFile(string id, string file)
         {
-            OB = new Dictionary<string, Object>();
-
-            foreach (Type type in Assembly.GetAssembly(typeof(Object)).GetTypes().Where(a => a.IsClass && !a.IsAbstract && a.IsSubclassOf(typeof(Object))))
-            {
-                Object obj = (Object)Activator.CreateInstance(type);
-
-                obj.Compile();
-                
-                OB.Add(type.Name, obj);
-            };
+            LoadModelData(id, File.ReadAllText(file));
         }
-        public static string LoadModelFile(string file)
+        public static void LoadModelData(string data)
         {
-            return LoadModelData(File.ReadAllText(file));
+            LoadModelData(CreateID(data), data);
         }
-        public static string LoadModelData(string data)
+        public static void LoadModelData(string id, string data)
         {
-            Model model = new Model();
+            Model model = new Model(id);
             ObjectInfos last = ObjectInfos.empty;
             string[] lines = data.Split('\n');
 
@@ -53,7 +38,7 @@ namespace SMRenderer
                 {
                     if (last != ObjectInfos.empty) last.Compile();
 
-                    model.parts.Add(strParts[1], last = new ObjectInfos());
+                    model.objects.Add(last = new ObjectInfos(strParts[1], false));
                     model.RenderOrder.Add(strParts[1]);
                 }
 
@@ -77,10 +62,6 @@ namespace SMRenderer
                 }
             }
             last.Compile();
-
-            string id = CreateID(data);
-            Models.Add(id, model);
-            return id;
         }
 
         static MD5 md5 = MD5.Create();
@@ -96,17 +77,23 @@ namespace SMRenderer
         }
     }
     public class OM : ObjectManager { }
-    public class ObjectInfos
+    
+    [Serializable]
+    public class ObjectInfos : Data
     {
-        public static ObjectInfos empty = new ObjectInfos();
+        public static ObjectInfos empty = new ObjectInfos("emptyObj", false);
+        public ObjectInfos(string refname, bool add = true) : base(refname, "Meshes", add) { }
 
         virtual public List<float> Vertices { get; set; } = new List<float>();
         virtual public List<float> UVs { get; set; } = new List<float>();
         virtual public List<float> Normals { get; set; } = new List<float>();
-
         virtual public PrimitiveType primitiveType { get; set; } = PrimitiveType.Points;
-        public int VAO { get; private set; } = -1;
-        public int VerticesCount { get; private set; } = -1;
+
+        [NonSerialized] private int VAO = -1;
+        [NonSerialized] private int VerticesCount = -1;
+
+        public int GetVAO() { return VAO; }
+        public int GetVerticesCount() { return VerticesCount; }
 
         public void Compile()
         {
@@ -142,12 +129,12 @@ namespace SMRenderer
 
             GL.BindVertexArray(0);
             VerticesCount = Vertices.Count / 3;
-
-            // Clean up
-            Vertices = null;
-            Normals = null;
-            UVs = null;
+        }
+        public override void Load()
+        {
+            Compile();
         }
     }
-    public class Object : ObjectInfos { }
+    [Serializable]
+    public class Object : ObjectInfos { public Object(string refName) : base(refName) { } }
 }

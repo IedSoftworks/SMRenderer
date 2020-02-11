@@ -67,10 +67,10 @@ namespace SMRenderer.Renderers
             GL.Uniform1(Uniforms["uHorizontal"], bloomDirectionHorizontal ? 1 : 0);
             GL.Uniform2(Uniforms["uResolution"], width, height);
 
-            ObjectInfos obj = OM.OB["Quad"];
+            ObjectInfos obj = (ObjectInfos)DM.C["Meshes"].Data("Quad");
 
-            GL.BindVertexArray(obj.VAO);
-            GL.DrawArrays(obj.primitiveType, 0, obj.VerticesCount);
+            GL.BindVertexArray(obj.GetVAO());
+            GL.DrawArrays(obj.primitiveType, 0, obj.GetVerticesCount());
 
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);

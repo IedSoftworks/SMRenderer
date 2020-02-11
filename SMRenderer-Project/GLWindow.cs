@@ -66,10 +66,10 @@ namespace SMRenderer
 
             KeyboardState state = Keyboard.GetState();
 
-            if (state.AreFollowingKeysDown(Key.ShiftLeft, Key.AltLeft, Key.ControlLeft, Key.P))
-                Console.WriteLine("Pause");
-
             double time = (float)e.Time * deltatimeScale;
+
+            SMGl.currentDeltaTime = time;
+            SMGl.currentDeltaTimeUnscaled = e.Time;
 
             Timer.TickChange(time);
             Animations.Animation.Update(time);
@@ -109,6 +109,9 @@ namespace SMRenderer
                 rendererList.Add((GenericRenderer)Activator.CreateInstance(a, this));
             });
 
+            if (GeneralConfig.UseDataManager == null) DataManager.C = DataManager.Create();
+            else DataManager.C = DataManager.Load(GeneralConfig.UseDataManager);
+
             Preload();
 
             Baseplate = new DrawItem()
@@ -144,7 +147,6 @@ namespace SMRenderer
 
         public static void Preload()
         {
-            ObjectManager.LoadObj();
             Texture.CreateEmpty();
         }
         protected override void OnResize(EventArgs e)

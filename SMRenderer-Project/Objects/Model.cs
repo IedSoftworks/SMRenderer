@@ -8,9 +8,11 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace SMRenderer.Objects
 {
-    public class Model
+    [Serializable]
+    public class Model : Data
     {
-        public Dictionary<string, ObjectInfos> parts = new Dictionary<string, ObjectInfos>();
         public List<string> RenderOrder = new List<string>();
+        public List<ObjectInfos> objects = new List<ObjectInfos>();
+        public Model(string id) : base(id, "Meshes") { }
     }
 }
