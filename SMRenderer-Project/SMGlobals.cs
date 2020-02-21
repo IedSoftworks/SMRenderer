@@ -11,6 +11,8 @@ namespace SMRenderer
 
         public static double currentDeltaTime = 0;
         public static double currentDeltaTimeUnscaled = 0;
+
+        public static Random random = new Random();
     }
     public class SMGl : SMGlobals { }
 }

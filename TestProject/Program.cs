@@ -53,9 +53,8 @@ namespace TestProject
             Particles particles = new Particles
             {
                 Direction = 0,
-                Range = 10,
+                Range = new SMRenderer.Math.Range(10),
                 Size = new Vector2(10),
-                Speed = 1,
                 Amount = 2,
                 Color = Color.Blue,
                 Origin = new Vector2(250)

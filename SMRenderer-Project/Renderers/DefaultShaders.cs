@@ -44,7 +44,9 @@ namespace SMRenderer.Renderers
 
             { typeof(ParticleRenderer), new ShaderProgramFiles() { 
                 vertex = new ShaderProgramFragment(ShaderSource["particle_vertex"], OpenTK.Graphics.OpenGL4.ShaderType.VertexShader),
-                fragment = new ShaderProgramFragment(ShaderSource["particle_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader),
+                fragment = new ShaderProgramFragment(ShaderSource["particle_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader) { 
+                    ShaderSource["bloom_config"]
+                },
             } }
         };
             

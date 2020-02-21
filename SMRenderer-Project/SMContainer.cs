@@ -81,7 +81,6 @@ namespace SMRenderer
     {
         public Vector2 Position = new Vector2(0, 0);
         public float Rotation = 0;
-        public int ZIndex = 0;
         public bool? HUD = null;
         /// <summary>
         /// The region will always follow the anchor; This value will make all other values irrelevant;
@@ -96,12 +95,8 @@ namespace SMRenderer
         {
             return anchor != null ? anchor.Rotation : Rotation;
         }
-        public int GetZIndex()
-        {
-            return (int)(anchor != null ? anchor.ZIndex : ZIndex);
-        }
 
-        public static Region zero = new Region { Position = new Vector2(0), Rotation = 0, ZIndex = 0 };
+        public static Region zero = new Region { Position = new Vector2(0), Rotation = 0 };
     }
 
     [Serializable]

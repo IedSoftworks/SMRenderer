@@ -102,11 +102,6 @@ namespace SMRenderer.Drawing
             // Calcuate the position
             _actualPosition = Helper.Rotation.CalculatePositionForRotationAroundPoint(Region.GetPosition(), Position, Region.GetRotation());
             _centerPoint = CalculatePositionAnchor(Position, Size, positionAnchor);
-
-            _RenderOrder = ZIndex + Region.GetZIndex();
-
-            if (Region != null) if (Region.HUD != null) HUD = (bool)Region.HUD;
-            if (HUD) _RenderOrder += 255;
         }
         /// <summary>
         /// Calculate the object centerpoint

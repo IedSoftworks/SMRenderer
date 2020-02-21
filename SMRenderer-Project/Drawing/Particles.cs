@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using SMRenderer.Renderers;
+using SMRenderer.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,9 @@ namespace SMRenderer.Drawing
 
         public TimeSpan Duration = TimeSpan.FromSeconds(1);
         public float Direction = 0;
-        public int Range = 1;
+        public Range Range = new Range(1);
         public int Amount = 1;
-        public float Speed = 1;
+        public Range Speed = Range.CreateConst(1);
 
         public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
         {
@@ -38,7 +39,7 @@ namespace SMRenderer.Drawing
         }
         public override void Prepare(double RenderSec)
         {
-            if (CurrentTime >= Duration.TotalSeconds) SM.Remove(this);
+            //if (CurrentTime >= Duration.TotalSeconds) SM.Remove(this);
             CurrentTime += RenderSec;
         }
         public override void Activate(int layer)
@@ -58,8 +59,8 @@ namespace SMRenderer.Drawing
             for(int i = 0; i < Amount; i++)
             {
                 Vector2 Mot = new Vector2();
-                Mot.X = r.Next(-Range, Range);
-                Mot.Y = Speed * 50;
+                Mot.X = Range.Value;
+                Mot.Y = Speed.Value * 50;
 
                 Mot = Helper.Rotation.CalculatePositionForRotationAroundPoint(Vector2.Zero, Mot, (Direction+180) % 380);
 
