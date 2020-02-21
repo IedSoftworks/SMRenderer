@@ -14,7 +14,6 @@ namespace SMRenderer.Renderers
 {
     public sealed class GeneralRenderer : GenericObjectRenderer
     {
-        static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.GeneralFragment, DefaultShaders.GeneralVertex);
         static public GeneralRenderer program;
 
         public GeneralRenderer(GLWindow window)
@@ -60,7 +59,7 @@ namespace SMRenderer.Renderers
                 "uAmbientLight"
             };
 
-            Create(files);
+            Create();
 
             program = this;
         }
@@ -77,7 +76,7 @@ namespace SMRenderer.Renderers
         {
             GL.UseProgram(mProgramId);
             DrawItem drawitem = (DrawItem)item;
-            Texture texture = drawitem.Texture == -1 ? Texture.empty : ((TextureItem)DM.C["Textures"][drawitem.Texture]).texture;
+            Texture texture = drawitem.Texture == -1 ? Texture.empty : ((TextureItem)DM.C["Textures"].Data(drawitem.Texture)).texture;
             Matrix4 modelview = model * view;
             GL.UniformMatrix4(Uniforms["uMVP"], false, ref modelview);
             GL.UniformMatrix4(Uniforms["uM"], false, ref drawitem.modelMatrix);

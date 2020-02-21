@@ -12,7 +12,6 @@ namespace SMRenderer.Renderers
 {
     public class BloomRenderer : GenericRenderer
     {
-        static public ShaderProgramFiles files = new ShaderProgramFiles(DefaultShaders.BloomFragment, DefaultShaders.BloomVertex);
         static public BloomRenderer program;
 
         public int mAttr_vpos, mAttr_vtex = -1;
@@ -38,7 +37,7 @@ namespace SMRenderer.Renderers
                 "uHorizontal",
                 "uResolution"
             };
-            Create(files);
+            Create();
 
             mAttr_vpos = GL.GetAttribLocation(mProgramId, "aPos");
             mAttr_vtex = GL.GetAttribLocation(mProgramId, "aTex");

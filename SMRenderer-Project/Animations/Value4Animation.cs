@@ -25,9 +25,9 @@ namespace SMRenderer.Animations
         }
         public override void Start()
         {
+            base.Start();
             current = from;
             saveFunction(this, current);
-            base.Start();
         }
         public override void Tick(double renderTime)
         {

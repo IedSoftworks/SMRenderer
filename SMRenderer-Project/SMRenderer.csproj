@@ -64,6 +64,8 @@
     <Compile Include="Drawing\DrawContainer.cs" />
     <Compile Include="Drawing\DrawItem.cs" />
     <Compile Include="Drawing\LightSource.cs" />
+    <Compile Include="Drawing\Particles.cs" />
+    <Compile Include="Renderers\ParticleRenderer.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Drawing\VisualEffectArgs.cs" />
     <Compile Include="GLWindow.cs" />
@@ -88,20 +90,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="Shaders\shader_bloom_fragment.glsl" />
-    <EmbeddedResource Include="Shaders\shader_bloom_vertex.glsl" />
-    <EmbeddedResource Include="Shaders\shader_general_fragment.glsl" />
-    <EmbeddedResource Include="Shaders\shader_general_vertex.glsl" />
-    <EmbeddedResource Include="Shaders\shader_skybox_fragment.glsl" />
-    <EmbeddedResource Include="Shaders\shader_skybox_vertex.glsl" />
+    <EmbeddedResource Include="Shaders\bloom\f.frag" />
+    <EmbeddedResource Include="Shaders\bloom\v.vert" />
+    <EmbeddedResource Include="Shaders\general\f.frag" />
+    <EmbeddedResource Include="Shaders\general\v.vert" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Shaders\general\border.frag" />
+    <EmbeddedResource Include="Shaders\bloom\config.frag" />
+    <EmbeddedResource Include="Shaders\particle\f.frag" />
+    <EmbeddedResource Include="Shaders\particle\v.vert" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Form\Circle.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TypeExtensions\Matrix4Class.cs" />

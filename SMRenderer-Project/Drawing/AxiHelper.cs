@@ -9,10 +9,26 @@ using OpenTK.Graphics;
 
 namespace SMRenderer.Drawing
 {
+    /// <summary>
+    /// Creates a AxisHelper
+    /// </summary>
     public class AxisHelper : DrawContainer
     {
+        /// <summary>
+        /// Creates it at a specific position
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public AxisHelper(int x, int y) { Create(new Vector2(x, y)); }
+        /// <summary>
+        /// Creates it at a specific position
+        /// </summary>
+        /// <param name="Position"></param>
         public AxisHelper(Vector2 Position) { Create(Position); }
+        /// <summary>
+        /// Creates it with a region
+        /// </summary>
+        /// <param name="region"></param>
         public AxisHelper(Region region) { Create(region); }
         private void Create(Vector2 Position)
         {

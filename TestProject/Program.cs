@@ -29,7 +29,7 @@ namespace TestProject
             scene1 = new FileStream("scene1.scn", FileMode.OpenOrCreate);
             data = new FileStream("data.scn", FileMode.OpenOrCreate);
 
-            GeneralConfig.UseDataManager = data;
+            //GeneralConfig.UseDataManager = data;
 
             GLWindow window = new GLWindow(500, 500);
             window.UpdateFrame += (a, b) =>
@@ -43,41 +43,24 @@ namespace TestProject
             };
             window.Load += (ra, b) =>
             {
-                //Test1();
-                Test2();
+                Test1();
+                //Test2();
             };
             window.Run();
         }
         static void Test1()
         {
-            OM.LoadModelFile("UziLong","UziLong.obj");
-            Scene.current.ambientLight = Color.Blue;
-            item1 = new DrawItem
+            Particles particles = new Particles
             {
-                Size = new Vector2(50),
-                Position = new Vector2(250),
-                Color = Color.Red,
-                Texture = new TextureItem("testing", new Bitmap("draconier_logo.png")).ID
-        };
-            SM.Add(item1);
-            item2 = new DrawItem
-            {
-                Size = new Vector2(100),
-                Position = new Vector2(400),
+                Direction = 0,
+                Range = 10,
+                Size = new Vector2(10),
+                Speed = 1,
+                Amount = 2,
                 Color = Color.Blue,
-
+                Origin = new Vector2(250)
             };
-            SM.Add(item2);
-            item1.Animations = new AnimationCollection()
-                {
-                    { "move", new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(250), new Vector2(25), SFPresets.DrawItem_Position) { Object = item1} }
-                };
-
-            Scene.current.lights.Add(new LightSource { Position = new Vector2(200) });
-            Scene.current.Serialize(scene1);
-            DM.C.Serialize(data);
-            scene1.Close();
-            data.Close();
+            SM.Add(particles);
         }
         static void Test2()
         {

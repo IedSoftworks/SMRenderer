@@ -38,7 +38,8 @@ namespace SMRenderer
         public static bool UseGameController = false;
         public static List<Type> Renderer = new List<Type>() { 
             typeof(GeneralRenderer),
-            typeof(BloomRenderer)
+            typeof(BloomRenderer),
+            typeof(ParticleRenderer),
         };
         /// <summary>
         /// Fill that if you want use your presaved datamanager

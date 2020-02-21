@@ -14,5 +14,7 @@ namespace SMRenderer.Objects
         public List<string> RenderOrder = new List<string>();
         public List<ObjectInfos> objects = new List<ObjectInfos>();
         public Model(string id) : base(id, "Meshes") { }
+
+        protected override bool loaded => true;
     }
 }

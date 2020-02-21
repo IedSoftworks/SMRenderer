@@ -54,16 +54,6 @@ namespace SMRenderer.Drawing
         public Vector2 Size = new Vector2(50, 50);
 
         /// <summary>
-        /// Specifies the Z-index
-        /// </summary>
-        public float ZIndex = 0;
-
-        /// <summary>
-        /// Specifies if the object is a HUD object
-        /// </summary>
-        public bool HUD = false;
-
-        /// <summary>
         /// Dictionary for all animations that are possible on this object; Key = identify-string; Value = Animation;
         /// </summary>
         public AnimationCollection Animations = new AnimationCollection();
@@ -98,9 +88,12 @@ namespace SMRenderer.Drawing
             Matrix4.Transpose(ref modelMatrix, out normalMatrix);
             normalMatrix.Invert();
 
-            renderer.Draw((ObjectInfos)DM.C["Meshes"][ID: obj], this, viewMatrix, modelMatrix);
+            renderer.Draw((ObjectInfos)DM.C["Meshes"].Data(obj), this, viewMatrix, modelMatrix);
         }
-
+        /// <summary>
+        /// Prepare the object to drawing
+        /// </summary>
+        /// <param name="i"></param>
         override public void Prepare(double i)
         {
             _actualRotation = Rotation + Region.GetRotation();
@@ -115,7 +108,13 @@ namespace SMRenderer.Drawing
             if (Region != null) if (Region.HUD != null) HUD = (bool)Region.HUD;
             if (HUD) _RenderOrder += 255;
         }
-
+        /// <summary>
+        /// Calculate the object centerpoint
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <param name="anchor"></param>
+        /// <returns></returns>
         public static Vector2 CalculatePositionAnchor(Vector2 position, Vector2 size, string anchor)
         {
             float stepX = size.X / 2;
@@ -141,5 +140,4 @@ namespace SMRenderer.Drawing
             return position;
         }
     }
-    public class DI : DrawItem { }
 }

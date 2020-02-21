@@ -44,7 +44,7 @@ namespace SMRenderer
         /// <summary>
         /// Sets the ambientLight
         /// </summary>
-        public Color4 ambientLight = Color4.DarkCyan;
+        public Color4 ambientLight = Color4.White;
 
         /// <summary>
         /// Contains all the drawable objects

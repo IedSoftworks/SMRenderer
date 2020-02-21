@@ -12,13 +12,21 @@ namespace SMRenderer.Renderers
 {
     public class ShaderProgramFiles
     {
-        public string fragment = "";
-        public string vertex = "";
-
-        public ShaderProgramFiles(string fragment1, string vertex1)
+        public ShaderProgramFragment fragment;
+        public ShaderProgramFragment vertex;
+    }
+    public class ShaderProgramFragment : List<string>
+    {
+        public ShaderType type = ShaderType.VertexShader;
+        public string Main;
+        public ShaderProgramFragment(string file, ShaderType shaderType)
         {
-            fragment = fragment1;
-            vertex = vertex1;
+            type = shaderType;
+            Main = file;
+        }
+        public void AddRange(params string[] vs)
+        {
+            foreach (string v in vs) Add(v);
         }
     }
     public class GenericRenderer
@@ -55,29 +63,43 @@ namespace SMRenderer.Renderers
         /// </summary>
         public Dictionary<string, int> Uniforms { get; private set; } = new Dictionary<string, int>();
 
-        public void Create(ShaderProgramFiles files)
+        public void Create()
         {
-            int i, _fragShader, _vertShader = -1;
+            int i = -1;
+            List<int> _fragShader, _vertShader;
             string currentClass = GetType().Name;
 
             mProgramId = GL.CreateProgram();
 
-            _fragShader = Load(files.fragment, ShaderType.FragmentShader);
-            _vertShader = Load(files.vertex, ShaderType.VertexShader);
+            _vertShader = Load(Shaders.Storage[GetType()].vertex);
+            _fragShader = Load(Shaders.Storage[GetType()].fragment);
 
-            string vertError = GL.GetShaderInfoLog(_vertShader);
-            string fragError = GL.GetShaderInfoLog(_fragShader);
 
-            if ((vertError != "" && vertError != "No errors.\n") || (fragError != "" && fragError != "No errors.\n"))
+            Console.WriteLine(currentClass + ": ");
+            _vertShader.ForEach(a =>
             {
-                window.ErrorAtLoading = true;
-                Console.WriteLine(currentClass+": ");
-                Console.WriteLine($"Vertex: \n{vertError}");
-                Console.WriteLine($"Fragment: \n{fragError}");
-                Console.WriteLine("---------");
-            }
+                string vertError = GL.GetShaderInfoLog(a);
 
-            if (_vertShader != -1 && _fragShader != -1)
+                if (vertError != "" && vertError != "No errors. \n")
+                {
+                    window.ErrorAtLoading = true;
+                    Console.WriteLine(currentClass + ": ");
+                    Console.WriteLine($"Vertex {a}: \n{vertError}");
+                }
+            });
+            _fragShader.ForEach(a =>
+            {
+                string error = GL.GetShaderInfoLog(a);
+
+                if (error != "" && error != "No errors. \n")
+                {
+                    window.ErrorAtLoading = true;
+                    Console.WriteLine($"Fragment {a}: \n{error}");
+                }
+            });
+            if (!window.ErrorAtLoading) Console.Clear();
+
+            if (!_vertShader.Any(a => a == -1) && !_fragShader.Any(a => a == -1))
             {
                 RequestedAttrib.ForEach(a =>
                 {
@@ -100,14 +122,20 @@ namespace SMRenderer.Renderers
 
         }
 
-        public int Load(string s, ShaderType type)
+        public List<int> Load(ShaderProgramFragment s)
         {
-            int address = GL.CreateShader(type);
-            GL.ShaderSource(address, s);
-            GL.CompileShader(address);
-            GL.AttachShader(mProgramId, address);
-
-            return address;
+            List<int> addrs = new List<int>();
+            s.Insert(0, s.Main);
+            foreach (string source in s)
+            {
+                int address = -1;
+                address = GL.CreateShader(s.type);
+                GL.ShaderSource(address, source);
+                GL.CompileShader(address);
+                GL.AttachShader(mProgramId, address);
+                addrs.Add(address);
+            }
+            return addrs;
         }
     }
     public class GenericObjectRenderer : GenericRenderer

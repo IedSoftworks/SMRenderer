@@ -83,15 +83,17 @@ namespace SMRenderer
     {
         [NonSerialized] private Texture _tex;
         public Bitmap bitmap;
-        /// <summary>
-        /// Dispose automaticly the bitmap after the texture was created
-        /// </summary>
-        public bool AutoDispose = false;
-        public Texture texture { get { if (_tex == null) _tex = new Texture(bitmap, AutoDispose); return _tex; } }
+        public Texture texture { get => _tex; }
         public Vector2 size { get {
-                if (_tex == null) _tex = new Texture(bitmap);
                 return new Vector2(_tex.Width, _tex.Height);
             } }
+        protected override bool loaded => _tex != null;
+
+        public override void Load()
+        {
+            _tex = new Texture(bitmap);
+        }
+
         /// <summary>
         /// Creates a textureitem
         /// </summary>

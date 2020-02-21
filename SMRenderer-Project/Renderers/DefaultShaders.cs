@@ -8,18 +8,45 @@ using System.IO;
 
 namespace SMRenderer.Renderers
 {
-    class DefaultShaders
+    class Shaders
     {
-        public static Assembly ass = typeof(DefaultShaders).Assembly;
+        public static Assembly ass = typeof(Shaders).Assembly;
+        public static Dictionary<string, string> ShaderSource = new Dictionary<string, string>()
+        {
+            { "general_vertex", Read("Shaders.general.v.vert", ass) },
+            { "general_frag", Read("Shaders.general.f.frag", ass) },
+            { "general_border", Read("Shaders.general.border.frag", ass) },
 
-        public static string GeneralVertex = Read("Shaders.shader_general_vertex.glsl", ass);
-        public static string GeneralFragment = Read("Shaders.shader_general_fragment.glsl", ass);
+            { "bloom_vertex", Read("Shaders.bloom.v.vert", ass) },
+            { "bloom_frag", Read("Shaders.bloom.f.frag", ass) },
+            { "bloom_config", Read("Shaders.bloom.config.frag", ass) },
 
-        public static string BloomVertex = Read("Shaders.shader_bloom_vertex.glsl", ass);
-        public static string BloomFragment = Read("Shaders.shader_bloom_fragment.glsl", ass);
+            { "particle_vertex", Read("Shaders.particle.v.vert", ass) },
+            { "particle_frag", Read("Shaders.particle.f.frag", ass) },
+        };
 
-        public static string SkyboxVertex = Read("Shaders.shader_skybox_vertex.glsl", ass);
-        public static string SkyboxFragment = Read("Shaders.shader_skybox_fragment.glsl", ass);
+
+        public static Dictionary<Type, ShaderProgramFiles> Storage = new Dictionary<Type, ShaderProgramFiles>
+        {
+            { typeof(GeneralRenderer), new ShaderProgramFiles() { 
+                vertex = new ShaderProgramFragment(ShaderSource["general_vertex"], OpenTK.Graphics.OpenGL4.ShaderType.VertexShader),
+                fragment = new ShaderProgramFragment(ShaderSource["general_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader)
+                {
+                    ShaderSource["general_border"],
+                    ShaderSource["bloom_config"],
+                }
+            } },
+            
+            { typeof(BloomRenderer), new ShaderProgramFiles() { 
+                vertex = new ShaderProgramFragment(ShaderSource["bloom_vertex"], OpenTK.Graphics.OpenGL4.ShaderType.VertexShader),
+                fragment = new ShaderProgramFragment(ShaderSource["bloom_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader)
+            } },
+
+            { typeof(ParticleRenderer), new ShaderProgramFiles() { 
+                vertex = new ShaderProgramFragment(ShaderSource["particle_vertex"], OpenTK.Graphics.OpenGL4.ShaderType.VertexShader),
+                fragment = new ShaderProgramFragment(ShaderSource["particle_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader),
+            } }
+        };
             
         /// <summary>
         /// Reads the file contents

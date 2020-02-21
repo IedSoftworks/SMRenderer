@@ -77,7 +77,7 @@ namespace SMRenderer
         }
     }
     public class OM : ObjectManager { }
-    
+
     [Serializable]
     public class ObjectInfos : Data
     {
@@ -88,6 +88,8 @@ namespace SMRenderer
         virtual public List<float> UVs { get; set; } = new List<float>();
         virtual public List<float> Normals { get; set; } = new List<float>();
         virtual public PrimitiveType primitiveType { get; set; } = PrimitiveType.Points;
+
+        protected override bool loaded => VAO != -1;
 
         [NonSerialized] private int VAO = -1;
         [NonSerialized] private int VerticesCount = -1;
