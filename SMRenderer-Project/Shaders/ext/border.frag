@@ -1,4 +1,5 @@
 ﻿#version 330
+
 in vec2 vTexture;
 
 uniform vec2 uObjectSize;

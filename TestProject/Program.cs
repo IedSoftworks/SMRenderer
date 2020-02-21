@@ -17,12 +17,11 @@ namespace TestProject
 {
     class Program
     {
-        static DrawItem item1, item2;
         static FileStream scene1, data;
         static void Main(string[] args)
         {
             //Configure.UseScale = false;
-            GraficalConfig.ClearColor = Color.White;
+            GraficalConfig.ClearColor = Color.LightGray;
             GraficalConfig.AllowBloom = true;
 
             string title = "Testing window";
@@ -50,6 +49,13 @@ namespace TestProject
         }
         static void Test1()
         {
+            Scene.current.ambientLight = Color.Black;
+            Scene.current.lights.Add(new LightSource
+            {
+                Color = Color.Chocolate,
+                Position = new Vector2(300, 150),
+            });
+
             Particles particles = new Particles
             {
                 Direction = 0,
@@ -57,7 +63,11 @@ namespace TestProject
                 Size = new Vector2(10),
                 Amount = 2,
                 Color = Color.Blue,
-                Origin = new Vector2(250)
+                Origin = new Vector2(250),
+                VisualEffectArgs = new VisualEffectArgs
+                {
+                    BloomUsage = EffectBloomUsage.Render,
+                }
             };
             SM.Add(particles);
         }

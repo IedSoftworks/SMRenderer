@@ -2,12 +2,17 @@
 
 in vec3 aPosition;
 in vec2 aTexture;
+in vec3 aNormal;
 in int gl_InstanceID;
 
 out vec3 vPosition;
+out vec3 vNormal;
 out vec2 vTexture;
 
 uniform mat4 uMVP;
+uniform mat4 uM;
+uniform mat4 uN;
+
 uniform vec2[255] uParticleMovements;
 uniform float uParticleTime;
 uniform vec2 uSize;
@@ -15,8 +20,10 @@ uniform vec2 uSize;
 void main() {
 	
 	vec2 Motion = vec2((gl_InstanceID+1) * 10 * uParticleTime, uParticleMovements[gl_InstanceID].y * uParticleTime) / uSize;
+	vec4 Position = vec4(aPosition.x + Motion.x, aPosition.y + Motion.y, aPosition.z, 1);
 
 	vTexture = aTexture;
-	vPosition = vec3(aPosition.x + Motion.x, aPosition.y + Motion.y, aPosition.z);
-	gl_Position = uMVP * vec4(vPosition, 1);
+	vPosition = (uM * Position).xyz;
+	vNormal = normalize((uN * vec4(aNormal, 1)).xyz);
+	gl_Position = uMVP * Position;
 }

@@ -49,15 +49,15 @@ namespace SMRenderer.Renderers
         /// <summary>
         /// Put here the requested attrib
         /// </summary>
-        public List<string> RequestedAttrib { private get; set; } = new List<string>();
+        public List<string> RequestedAttrib = new List<string>();
         /// <summary>
         /// Put here the requested fragdata
         /// </summary>
-        public List<string> RequestedFragData { private get; set; } = new List<string>();
+        public List<string> RequestedFragData  = new List<string>();
         /// <summary>
         /// Put here the requested uniforms
         /// </summary>
-        public List<string> RequestedUniforms { private get; set; } = new List<string>();
+        public List<string> RequestedUniforms = new List<string>();
         /// <summary>
         /// Contains all requested uniforms and make them accessable
         /// </summary>
@@ -125,11 +125,18 @@ namespace SMRenderer.Renderers
         public List<int> Load(ShaderProgramFragment s)
         {
             List<int> addrs = new List<int>();
-            s.Insert(0, s.Main);
-            foreach (string source in s)
+
+            int addr = GL.CreateShader(s.type);
+            GL.ShaderSource(addr, s.Main);
+            GL.CompileShader(addr);
+            GL.AttachShader(mProgramId, addr);
+            addrs.Add(addr);
+
+            foreach (string key in s)
             {
-                int address = -1;
-                address = GL.CreateShader(s.type);
+                string source = Shaders.ShaderSource[key];
+
+                int address = GL.CreateShader(s.type);
                 GL.ShaderSource(address, source);
                 GL.CompileShader(address);
                 GL.AttachShader(mProgramId, address);

@@ -67,6 +67,7 @@
     <Compile Include="Drawing\Particles.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Renderers\ParticleRenderer.cs" />
+    <Compile Include="Renderers\PresetRendererCode.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Drawing\VisualEffectArgs.cs" />
     <Compile Include="GLWindow.cs" />
@@ -91,16 +92,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="Shaders\bloom\f.frag" />
-    <EmbeddedResource Include="Shaders\bloom\v.vert" />
-    <EmbeddedResource Include="Shaders\general\f.frag" />
-    <EmbeddedResource Include="Shaders\general\v.vert" />
+    <EmbeddedResource Include="Shaders\bloom\main.frag" />
+    <EmbeddedResource Include="Shaders\bloom\main.vert" />
+    <EmbeddedResource Include="Shaders\general\main.frag" />
+    <EmbeddedResource Include="Shaders\general\main.vert" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Shaders\general\border.frag" />
-    <EmbeddedResource Include="Shaders\bloom\config.frag" />
-    <EmbeddedResource Include="Shaders\particle\f.frag" />
-    <EmbeddedResource Include="Shaders\particle\v.vert" />
+    <EmbeddedResource Include="Shaders\ext\border.frag" />
+    <EmbeddedResource Include="Shaders\ext\bloom.frag" />
+    <EmbeddedResource Include="Shaders\particle\main.frag" />
+    <EmbeddedResource Include="Shaders\particle\main.vert" />
+    <EmbeddedResource Include="Shaders\ext\lighting.frag" />
+    <EmbeddedResource Include="Shaders\ext\texturing.frag" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />

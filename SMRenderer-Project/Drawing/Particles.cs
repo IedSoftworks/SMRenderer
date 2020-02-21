@@ -15,7 +15,7 @@ namespace SMRenderer.Drawing
     {
         const int MaxAmount = 255;
         public float[] Movements { get; private set; }
-        public Matrix4 ModelMatrix { get; private set; }
+        public Matrix4 ModelMatrix;
         public double CurrentTime { get; private set; } = 0;
 
         public int Object = DataManager.C["Meshes"].ID("Quad");
@@ -35,7 +35,10 @@ namespace SMRenderer.Drawing
         {
             ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
 
-            ParticleRenderer.program.Draw(this, ModelMatrix * matrix);
+            Matrix4 no = Matrix4.Transpose(ModelMatrix);
+            no.Invert();
+
+            ParticleRenderer.program.Draw(this, ModelMatrix * matrix, no);
         }
         public override void Prepare(double RenderSec)
         {
@@ -46,13 +49,12 @@ namespace SMRenderer.Drawing
         {
             base.Activate(layer);
             Generate();
+            CurrentTime = 0;
         }
         public void Generate()
         {
             if (Amount > MaxAmount)
                 throw new Exception("PARTICLES: Amount exede the maximum of " + MaxAmount);
-
-            CurrentTime = 0;
 
             List<float> motions = new List<float>();
             Random r = new Random();
@@ -60,7 +62,7 @@ namespace SMRenderer.Drawing
             {
                 Vector2 Mot = new Vector2();
                 Mot.X = Range.Value;
-                Mot.Y = Speed.Value * 50;
+                Mot.Y = Speed.Value * 75;
 
                 Mot = Helper.Rotation.CalculatePositionForRotationAroundPoint(Vector2.Zero, Mot, (Direction+180) % 380);
 

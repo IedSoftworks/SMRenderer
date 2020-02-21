@@ -13,16 +13,18 @@ namespace SMRenderer.Renderers
         public static Assembly ass = typeof(Shaders).Assembly;
         public static Dictionary<string, string> ShaderSource = new Dictionary<string, string>()
         {
-            { "general_vertex", Read("Shaders.general.v.vert", ass) },
-            { "general_frag", Read("Shaders.general.f.frag", ass) },
-            { "general_border", Read("Shaders.general.border.frag", ass) },
+            { "general_vertex", Read("Shaders.general.main.vert", ass) },
+            { "general_frag", Read("Shaders.general.main.frag", ass) },
 
-            { "bloom_vertex", Read("Shaders.bloom.v.vert", ass) },
-            { "bloom_frag", Read("Shaders.bloom.f.frag", ass) },
-            { "bloom_config", Read("Shaders.bloom.config.frag", ass) },
+            { "bloom_vertex", Read("Shaders.bloom.main.vert", ass) },
+            { "bloom_frag", Read("Shaders.bloom.main.frag", ass) },
 
-            { "particle_vertex", Read("Shaders.particle.v.vert", ass) },
-            { "particle_frag", Read("Shaders.particle.f.frag", ass) },
+            { "particle_vertex", Read("Shaders.particle.main.vert", ass) },
+            { "particle_frag", Read("Shaders.particle.main.frag", ass) },
+
+            { "ext.bloom", Read("Shaders.ext.bloom.frag", ass) },
+            { "ext.texture", Read("Shaders.ext.texturing.frag", ass) },
+            { "ext.lighting", Read("Shaders.ext.lighting.frag", ass) },
         };
 
 
@@ -32,8 +34,9 @@ namespace SMRenderer.Renderers
                 vertex = new ShaderProgramFragment(ShaderSource["general_vertex"], OpenTK.Graphics.OpenGL4.ShaderType.VertexShader),
                 fragment = new ShaderProgramFragment(ShaderSource["general_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader)
                 {
-                    ShaderSource["general_border"],
-                    ShaderSource["bloom_config"],
+                    "ext.bloom",
+                    "ext.texture",
+                    "ext.lighting"
                 }
             } },
             
@@ -45,7 +48,9 @@ namespace SMRenderer.Renderers
             { typeof(ParticleRenderer), new ShaderProgramFiles() { 
                 vertex = new ShaderProgramFragment(ShaderSource["particle_vertex"], OpenTK.Graphics.OpenGL4.ShaderType.VertexShader),
                 fragment = new ShaderProgramFragment(ShaderSource["particle_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader) { 
-                    ShaderSource["bloom_config"]
+                    "ext.bloom",
+                    "ext.texture",
+                    "ext.lighting"
                 },
             } }
         };
