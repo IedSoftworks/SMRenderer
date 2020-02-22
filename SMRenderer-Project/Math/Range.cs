@@ -10,34 +10,41 @@ namespace SMRenderer.Math
     {
         private int Min;
         private int Max;
-        private bool AlwaysMin;
+        private bool Const;
 
         public int Value => ReadValue();
+        public float floatValue => ReadFloatValue();
 
         private int ReadValue()
         {
-            if (AlwaysMin) return Min;
+            if (Const) return Min;
 
             return SMGlobals.random.Next(Min, Max);
+        }
+        private float ReadFloatValue()
+        {
+            if (Const) return (float)Min;
+
+            return (float)(SMGlobals.random.NextDouble() * Max) + Min;
         }
 
         public Range(int value)
         {
             Min = -value;
             Max = value;
-            AlwaysMin = false;
+            Const = false;
         }
         public Range(int min, int max)
         {
             Min = min;
             Max = max;
-            AlwaysMin = false;
+            Const = false;
         }
         static public Range CreateConst(int value)
         {
             return new Range
             {
-                AlwaysMin = true,
+                Const = true,
                 Min = value,
                 Max = 0
             };

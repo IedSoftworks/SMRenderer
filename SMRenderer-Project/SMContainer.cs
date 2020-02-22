@@ -63,6 +63,7 @@ namespace SMRenderer
                 Scene.current.DrawLayer[index].clear(Scene.current.DrawLayer[index]);
             }
         }
+        static public bool Exists(SMItem obj, int layer = (int)SMLayerID.Normal) => Scene.current.DrawLayer[layer].Contains(obj);
     }
     [Serializable]
     public class SMLayer : List<SMItem>

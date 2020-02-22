@@ -12,5 +12,7 @@ void Lighting();
 void main() {
 	Texturing();
 	Lighting();
+
+
 	Bloom();
 }

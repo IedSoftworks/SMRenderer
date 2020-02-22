@@ -24,6 +24,7 @@ namespace SMRenderer.Drawing
         public Color4 Color = Color4.White;
         public int Texture = -1;
         public VisualEffectArgs VisualEffectArgs = new VisualEffectArgs();
+        public int AdditionalRotation = 0;
 
         public TimeSpan Duration = TimeSpan.FromSeconds(1);
         public float Direction = 0;
@@ -33,7 +34,7 @@ namespace SMRenderer.Drawing
 
         public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
         {
-            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
+            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Direction + AdditionalRotation)) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
 
             Matrix4 no = Matrix4.Transpose(ModelMatrix);
             no.Invert();
@@ -42,17 +43,18 @@ namespace SMRenderer.Drawing
         }
         public override void Prepare(double RenderSec)
         {
-            //if (CurrentTime >= Duration.TotalSeconds) SM.Remove(this);
+            if (CurrentTime >= Duration.TotalSeconds) SM.Remove(this);
             CurrentTime += RenderSec;
         }
         public override void Activate(int layer)
         {
             base.Activate(layer);
             Generate();
-            CurrentTime = 0;
         }
         public void Generate()
         {
+
+            CurrentTime = 0;
             if (Amount > MaxAmount)
                 throw new Exception("PARTICLES: Amount exede the maximum of " + MaxAmount);
 
@@ -62,7 +64,7 @@ namespace SMRenderer.Drawing
             {
                 Vector2 Mot = new Vector2();
                 Mot.X = Range.Value;
-                Mot.Y = Speed.Value * 75;
+                Mot.Y = Speed.floatValue * 75;
 
                 Mot = Helper.Rotation.CalculatePositionForRotationAroundPoint(Vector2.Zero, Mot, (Direction+180) % 380);
 

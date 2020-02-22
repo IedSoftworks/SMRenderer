@@ -12,6 +12,7 @@ using SMRenderer.Renderers;
 using SMRenderer.Drawing;
 using SMRenderer.TypeExtensions;
 using OpenTK.Input;
+using System.Diagnostics;
 
 namespace SMRenderer
 {
@@ -213,6 +214,18 @@ namespace SMRenderer
             GL.UseProgram(0);
         }
 
+        public static bool CheckGLErrors()
+        {
+            bool hasError = false;
+            ErrorCode c;
+            while ((c = GL.GetError()) != ErrorCode.NoError)
+            {
+                hasError = true;
+                Debug.WriteLine(c.ToString());
+            }
+            return hasError;
+        }
+
         #region | Framebuffers |
         private int _framebufferIdMain = -1;
         private int _framebufferIdMainDownsampled = -1;
@@ -405,6 +418,15 @@ namespace SMRenderer
             }
         }
 
+        private void DownsampleFramebufferDEBUG()
+        {
+            GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _framebufferIdMain);
+            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+
+            GL.ReadBuffer(ReadBufferMode.ColorAttachment1);
+            GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
+            GL.BlitFramebuffer(0, 0, Width, Height, 0, 0, Width, Height, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Linear);
+        }
         private void DownsampleFramebuffer()
         {
             GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _framebufferIdMain);

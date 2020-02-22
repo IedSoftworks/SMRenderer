@@ -1,9 +1,8 @@
-﻿#version 330
+﻿#version 150
 
 in vec3 aPosition;
 in vec2 aTexture;
 in vec3 aNormal;
-in int gl_InstanceID;
 
 out vec3 vPosition;
 out vec3 vNormal;
@@ -19,7 +18,7 @@ uniform vec2 uSize;
 
 void main() {
 	
-	vec2 Motion = vec2((gl_InstanceID+1) * 10 * uParticleTime, uParticleMovements[gl_InstanceID].y * uParticleTime) / uSize;
+	vec2 Motion = vec2(uParticleMovements[gl_InstanceID].x * uParticleTime, uParticleMovements[gl_InstanceID].y * uParticleTime) / uSize;
 	vec4 Position = vec4(aPosition.x + Motion.x, aPosition.y + Motion.y, aPosition.z, 1);
 
 	vTexture = aTexture;
