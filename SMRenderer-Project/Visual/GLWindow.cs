@@ -23,38 +23,36 @@ namespace SMRenderer
     {
         #region | Normal Rendering |
 
-        private Matrix4 _viewProjectionMatrix = new Matrix4();
-
-        private static GLWindow M_WINDOW;
-
         public RendererCollection rendererList = new RendererCollection();
-
         private Matrix4 _modelMatrixBloom = new Matrix4();
-
         public float deltatimeScale = 1;
 
         public Input.Mouse mouse;
         public Camera camera;
         public Input.GameController controller;
 
-        public Matrix4 ViewProjection { get { return _viewProjectionMatrix; } }
-
         /// <summary>
         /// Represens the current window to the public
         /// </summary>
-        public static GLWindow Window { get { return M_WINDOW; } }
+        public static GLWindow Window { get; private set; }
 
         /// <summary>
         /// Represens the current Size of the drawing board
         /// </summary>
         public Vector2 pxSize { get; private set; } = new Vector2(0);
 
+        /// <summary>
+        /// Stores a System.Drawing.Rectangle for intersect checks
+        /// <para>Contains only values for the drawing board.</para>
+        /// <para>For the actual window rectangle check ClientRectangle</para>
+        /// </summary>
+        public Rectangle windowRect { get; private set; }
         public bool ErrorAtLoading = false;
 
         public GLWindow(int width, int height) : base(width, height)
         {
             Title = "GLWíndow Default Title";
-            M_WINDOW = this;
+            Window = this;
 
             mouse = new Input.Mouse { window = this };
             if (GeneralConfig.UseGameController) controller = new Input.GameController(this);
@@ -90,13 +88,19 @@ namespace SMRenderer
             Baseplate.Prepare(e.Time);
             Baseplate.Draw(Camera.staticView, (GenericObjectRenderer)rendererList[rendererList["GeneralRenderer"]]);
 
+            foreach (SMLayer layer in Scene.current.DrawLayer.Values) layer.Order();
             Scene.current.DrawLayer = Scene.current.DrawLayer.OrderBy(a => a.Key).ToDictionary(a => a.Key, b => b.Value);
+
             foreach (KeyValuePair<int, SMLayer> pair in Scene.current.DrawLayer)
             {
                 pair.Value.ToList().ForEach(a => a.Prepare(time));
                 pair.Value.ForEach(a => a.Draw(pair.Value.matrix, (GenericObjectRenderer)rendererList[pair.Value.renderer])); 
             }
-            
+
+            Scene.Overlayer.Order();
+            Scene.Overlayer.ToList().ForEach(a => a.Prepare(time));
+            Scene.Overlayer.ForEach(a => a.Draw(Scene.Overlayer.matrix, (GenericObjectRenderer)rendererList[Scene.Overlayer.renderer]));
+
             DownsampleFramebuffer();
             if (GraficalConfig.AllowBloom) ApplyBloom();
 
@@ -170,6 +174,7 @@ namespace SMRenderer
                 pxSize = new Vector2(Width, Height);
             }
 
+
             Camera.UpdateProjection(pxSize);
             //staticViewProjection = Matrix4.LookAt(pxSize.X/2, pxSize.Y / 2, 1, pxSize.X / 2, pxSize.Y / 2, 0, 0, 1, 0) * Matrix4.CreateOrthographicOffCenter(0, pxSize.X, pxSize.Y, 0, .1f, 100f);
 
@@ -178,6 +183,7 @@ namespace SMRenderer
                 Matrix4.CreateOrthographic(pxSize.X, pxSize.Y, .1f, 100f);
 
             Baseplate.Size = pxSize;
+            windowRect = new Rectangle(0, 0, (int)pxSize.X, (int)pxSize.Y);
         }
         #endregion
         private void ApplyBloom()

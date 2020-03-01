@@ -74,23 +74,5 @@ namespace SMRenderer.Drawing
         /// </summary>
         public EffectBloomUsage BloomUsage = EffectBloomUsage.None;
 
-        /// <summary>
-        /// Tells how the border will be used
-        /// </summary>
-        public EffectBorderUsage BorderUsage = EffectBorderUsage.None;
-        /// <summary>
-        /// Determant in what color the border should have
-        /// </summary>
-        public Color4 BorderColor = Color4.White;
-        /// <summary>
-        /// Tells how thick the border should be
-        /// </summary>
-        public int BorderWidth = 1;
-        /// <summary>
-        /// Tells how long the border should be.
-        /// <para>Comes only to effect if BorderUsage is QuadEdgeBorder</para>
-        /// </summary>
-        public int BorderLength = -1;
-
     }
 }

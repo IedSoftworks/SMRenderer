@@ -28,6 +28,8 @@ namespace TestProject
 
             string title = "Testing window";
 
+            data = new FileStream("data.scn", FileMode.OpenOrCreate);
+
             //GeneralConfig.UseDataManager = data;
 
             GLWindow window = new GLWindow(500, 500);
@@ -54,34 +56,39 @@ namespace TestProject
         }
         static void Test1()
         {
+            Scene.current.ambientLight = Color.White;
+            new TextureItem("Borderlands", new Bitmap("tex.jpg"));
+
             DrawItem item = new DrawItem
             {
                 Color = Color.Red,
-                Size = new Vector2(50),
-                Position = new Vector2(250,500),
+                Size = new Vector2(20),
+                Position = new Vector2(250),
+                Texture = new TextureItem("Daconier's Wings", new Bitmap("draconier_logo.png")).ID,
                 effectArgs = new VisualEffectArgs
                 {
-                    BloomUsage = EffectBloomUsage.ObjectColor,
+                    BloomUsage = EffectBloomUsage.Render
                 }
             };
             SM.Add(item);
             particles = new Particles
             {
-                Direction = 5,
-                Range = new SMRenderer.Math.Range(20),
+                Direction = 90,
+                Range = new SMRenderer.Math.Range(1),
                 Speed = new SMRenderer.Math.Range(1,2),
-                Size = new Vector2(5,10),
-                Amount = 55,
+                Size = new Vector2(10,50),
+                Amount = 5,
                 Color = Color.Blue,
-                Origin = new Vector2(250,500),
-                
+                Origin = new Vector2(250),
                 VisualEffectArgs = new VisualEffectArgs
                 {
-                    BloomUsage = EffectBloomUsage.ObjectColor,
+                    BloomUsage = EffectBloomUsage.ObjectColor
                 },
                 Duration = TimeSpan.FromSeconds(5),
             };
             SM.Add(particles);
+            DataManager.C.Serialize(data);
+            data.Close();
         }
         static void Test2()
         {

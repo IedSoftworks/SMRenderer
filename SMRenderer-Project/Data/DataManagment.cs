@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SMRenderer.SMEditor.Attributes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -169,7 +170,7 @@ namespace SMRenderer
         /// <summary>
         /// Saved the next ID
         /// </summary>
-        static int index = -1;
+        public int index = 0;
         /// <summary>
         /// Adds new data to the container
         /// </summary>
@@ -226,7 +227,7 @@ namespace SMRenderer
     /// <summary>
     /// The data-master class
     /// </summary>
-    [Serializable]
+    [Serializable, NotInclude]
     public abstract class Data
     {
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using SMRenderer.Renderers;
-using SMRenderer.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,11 @@ namespace SMRenderer.Drawing
     [Serializable]
     public class Particles : SMItem
     {
-        const int MaxAmount = 255;
+        const int MaxAmount = 2048;
         public float[] Movements { get; private set; }
         public Matrix4 ModelMatrix;
         public double CurrentTime { get; private set; } = 0;
+        public bool directional { get; private set; }
 
         public int Object = DataManager.C["Meshes"].ID("Quad");
         public Vector2 Origin = Vector2.Zero;
@@ -28,13 +28,12 @@ namespace SMRenderer.Drawing
 
         public TimeSpan Duration = TimeSpan.FromSeconds(1);
         public float Direction = 0;
-        public Range Range = new Range(1);
+        public Math.Range Range = Math.Range.Zero;
         public int Amount = 1;
-        public Range Speed = Range.CreateConst(1);
-
+        public Math.Range Speed = Math.Range.CreateConst(1);
         public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
         {
-            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Direction + AdditionalRotation)) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
+            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
 
             Matrix4 no = Matrix4.Transpose(ModelMatrix);
             no.Invert();
@@ -53,24 +52,31 @@ namespace SMRenderer.Drawing
         }
         public void Generate()
         {
+            directional = Range != Math.Range.Zero;
 
             CurrentTime = 0;
             if (Amount > MaxAmount)
                 throw new Exception("PARTICLES: Amount exede the maximum of " + MaxAmount);
 
             List<float> motions = new List<float>();
+            List<int> rotations = new List<int>();
             Random r = new Random();
             for(int i = 0; i < Amount; i++)
             {
-                Vector2 Mot = new Vector2();
-                Mot.X = Range.Value;
-                Mot.Y = Speed.floatValue * 75;
+                Vector2 Mot = CalculateMotion();
 
-                Mot = Helper.Rotation.CalculatePositionForRotationAroundPoint(Vector2.Zero, Mot, (Direction+180) % 380);
-
-                motions.AddRange(new float[] { Mot.X, Mot.Y });
+                motions.AddRange(new float[] { Mot.X, Mot.Y, 0 });
             }
             Movements = motions.ToArray();
+        }
+
+        virtual public Vector2 CalculateMotion()
+        {
+            Vector2 Mot = new Vector2();
+            Mot.X = directional ? Range.Value : 1;
+            Mot.Y = Speed.floatValue * 25;
+
+            return Helper.Rotation.PositionFromRotation(Vector2.Zero, Mot, directional ? (Direction + 180) % 380 : SMGl.random.Next(0, 360));
         }
     }
 }

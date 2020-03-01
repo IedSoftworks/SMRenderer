@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using SMRenderer.Objects;
 using SMRenderer.Renderers;
+using SMRenderer.SMEditor.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -137,6 +138,6 @@ namespace SMRenderer
             Compile();
         }
     }
-    [Serializable]
+    [Serializable, NotInclude]
     public class Object : ObjectInfos { public Object(string refName) : base(refName) { } }
 }

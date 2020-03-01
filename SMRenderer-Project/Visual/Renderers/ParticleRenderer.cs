@@ -20,7 +20,7 @@ namespace SMRenderer.Renderers
             {
                 "uParticleMovements",
                 "uParticleTime",
-                "uSize"
+                "uSize",
             };
 
             PresetRendererCode.UniformEssencal(this);
@@ -44,7 +44,7 @@ namespace SMRenderer.Renderers
             PresetRendererCode.DrawLighting(this, item.ModelMatrix, NMatrix);
             PresetRendererCode.DrawBloom(this, item.Color, item.VisualEffectArgs);
 
-            GL.Uniform2(Uniforms["uParticleMovements"], item.Amount, item.Movements);
+            GL.Uniform3(Uniforms["uParticleMovements"], item.Amount, item.Movements);
             GL.Uniform1(Uniforms["uParticleTime"], (float)item.CurrentTime);
             GL.Uniform2(Uniforms["uSize"], item.Size);
 

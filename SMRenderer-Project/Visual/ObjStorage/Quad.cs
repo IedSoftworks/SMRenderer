@@ -1,10 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using SMRenderer.SMEditor.Attributes;
 using System;
 using System.Collections.Generic;
 
 namespace SMRenderer.Objects
 {
-    [Serializable]
+    [Serializable, NotInclude]
     public class Quad : Object
     {
         public Quad(string id) : base(id)

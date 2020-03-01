@@ -4,6 +4,7 @@ using SMRenderer.Animations;
 using SMRenderer.Renderers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,16 @@ namespace SMRenderer.Drawing
         public float _actualRotation = 0;
         public Matrix4 modelMatrix;
         public Matrix4 normalMatrix;
+
+        /// <summary>
+        /// Determant if the object is visible in the window
+        /// </summary>
+        public bool Visible { get; private set; } = true;
+
+        /// <summary>
+        /// Determant if the object will check if it is visible
+        /// </summary>
+        public bool CheckVisible = false;
 
         /// <summary>
         /// The object that need to be render.
@@ -83,7 +94,7 @@ namespace SMRenderer.Drawing
         /// </summary>
         override public void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
         {
-            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y,1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_actualRotation)) * Matrix4.CreateTranslation(_centerPoint.X, _centerPoint.Y, 0);
+            if (!Visible) return; // Stops the drawing process, if the object is not visible
 
             Matrix4.Transpose(ref modelMatrix, out normalMatrix);
             normalMatrix.Invert();
@@ -100,8 +111,13 @@ namespace SMRenderer.Drawing
             _actualRotation %= 360;
 
             // Calcuate the position
-            _actualPosition = Helper.Rotation.CalculatePositionForRotationAroundPoint(Region.GetPosition(), Position, Region.GetRotation());
+            _actualPosition = Helper.Rotation.PositionFromRotation(Region.GetPosition(), Position, Region.GetRotation());
             _centerPoint = CalculatePositionAnchor(Position, Size, positionAnchor);
+
+            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_actualRotation)) * Matrix4.CreateTranslation(_centerPoint.X, _centerPoint.Y, 0);
+
+            if (CheckVisible)
+                 Visible = Rectangle.Intersect(GLWindow.Window.windowRect, new Rectangle((int)(_centerPoint.X - Size.Y / 2), (int)(_centerPoint.Y - Size.Y / 2), (int)Size.X, (int)Size.Y)) != Rectangle.Empty;
         }
         /// <summary>
         /// Calculate the object centerpoint

@@ -16,6 +16,11 @@ namespace SMRenderer
     {
         public static Scene _default;
 
+        /// <summary>
+        /// Anything in this layer will be render above the DrawLayers
+        /// <para>Usefull for HUDs</para>
+        /// </summary>
+        public static SMLayer Overlayer = new SMLayer();
         static Scene _current;
         public static Scene current { get => _current; set { SetCurrent(value); } }
 

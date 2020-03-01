@@ -3,6 +3,7 @@ using SMRenderer.Animations;
 using SMRenderer.Drawing;
 using SMRenderer.Objects;
 using SMRenderer.Renderers;
+using SMRenderer.SMEditor.Attributes;
 using SMRenderer.TypeExtensions;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,14 @@ namespace SMRenderer
         public bool staticMatrix = true;
         public int renderer = GLWindow.Window.rendererList["GeneralRenderer"];
         public Action<SMLayer> clear = a => { a.ForEach(b => a.Remove(b)); };
+        public void Order()
+        {
+            Console.WriteLine();
+            SMItem[] orde = this.OrderBy(a => a._RenderOrder).ToArray();
+            RemoveAll(a => { return true; });
+            AddRange(orde);
+            Console.WriteLine();
+        }
     }
 
     /// <summary>
@@ -100,7 +109,7 @@ namespace SMRenderer
         public static Region zero = new Region { Position = new Vector2(0), Rotation = 0 };
     }
 
-    [Serializable]
+    [Serializable, NotInclude]
     public class SMItem
     {
         /// <summary>

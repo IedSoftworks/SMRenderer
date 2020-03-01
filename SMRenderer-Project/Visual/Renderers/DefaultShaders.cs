@@ -25,6 +25,7 @@ namespace SMRenderer.Renderers
             { "ext.bloom", Read("Shaders.ext.bloom.frag", ass) },
             { "ext.texture", Read("Shaders.ext.texturing.frag", ass) },
             { "ext.lighting", Read("Shaders.ext.lighting.frag", ass) },
+            { "ext.funcs", Read("Shaders.ext.funcs.glsl", ass) }
         };
 
 
@@ -50,7 +51,8 @@ namespace SMRenderer.Renderers
                 fragment = new ShaderProgramFragment(ShaderSource["particle_frag"], OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader) { 
                     "ext.bloom",
                     "ext.texture",
-                    "ext.lighting"
+                    "ext.lighting",
+                    "ext.funcs"
                 },
             } }
         };

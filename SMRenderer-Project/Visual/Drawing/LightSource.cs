@@ -30,6 +30,8 @@ namespace SMRenderer.Drawing
         /// Light height
         /// </summary>
         public float Height = 1f;
+
+        public Vector2 Direction = Vector2.Zero;
     }
     [Serializable]
     public class LightCollection : List<LightSource>
@@ -42,6 +44,10 @@ namespace SMRenderer.Drawing
         /// Shader argument for the colors
         /// </summary>
         [NonSerialized] internal float[] shaderArgs_colors;
+        /// <summary>
+        /// Shader argument for the colors
+        /// </summary>
+        [NonSerialized] internal float[] shaderArgs_directions;
         /// <summary>
         /// Adds a LightSource.
         /// <para>Removes the first, if the capazity is exeded</para>
@@ -59,13 +65,18 @@ namespace SMRenderer.Drawing
         {
             List<float> shaderArgs_pos = new List<float>();
             List<float> shaderArgs_color = new List<float>();
+            List<float> shaderArgs_direction = new List<float>();
             foreach(LightSource light in this)
             {
                 shaderArgs_pos.AddRange(new float[] { light.Position.X, light.Position.Y, light.Height, light.Intensity });
                 shaderArgs_color.AddRange(new float[] { light.Color.R, light.Color.G, light.Color.B, light.Color.A });
+
+                float dirLight = light.Direction.X + light.Direction.Y == 0 ? 1 : 0;
+                shaderArgs_direction.AddRange(new float[] { light.Direction.X, light.Direction.Y, dirLight });
             }
             shaderArgs_colors = shaderArgs_color.ToArray();
             shaderArgs_positions = shaderArgs_pos.ToArray();
+            shaderArgs_directions = shaderArgs_direction.ToArray();
         }
     }
 }

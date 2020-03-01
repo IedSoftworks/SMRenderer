@@ -37,14 +37,14 @@ namespace SMRenderer.Renderers
         public static void UniformLighting(GenericRenderer renderer)
         {
             AddRangeIfNotExist(renderer.RequestedAttrib, new string[] { "aNormal", "aPosition" });
-            AddRangeIfNotExist(renderer.RequestedFragData, new string[] { "color" });
+            AddRangeIfNotExist(renderer.RequestedFragData, new string[] { "color", "bloom" });
             AddRangeIfNotExist(renderer.RequestedUniforms, new string[] {
                 "uN",
                 "uM",
 
-
                 "uLightPositions",
                 "uLightColors",
+                "uLightDirections",
                 "uLightCount",
 
                 "uAmbientLight" 
@@ -57,6 +57,7 @@ namespace SMRenderer.Renderers
 
             GL.Uniform4(r.Uniforms["uLightPositions"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_positions);
             GL.Uniform4(r.Uniforms["uLightColors"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_colors);
+            GL.Uniform3(r.Uniforms["uLightDirections"], Scene.current.lights.Count, Scene.current.lights.shaderArgs_directions);
             GL.Uniform1(r.Uniforms["uLightCount"], Scene.current.lights.Count);
 
             GL.Uniform4(r.Uniforms["uAmbientLight"], Scene.current.ambientLight);
