@@ -1,4 +1,4 @@
-﻿using SMRenderer.SMEditor.Attributes;
+﻿using SMRenderer.ManagerIntergration.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;

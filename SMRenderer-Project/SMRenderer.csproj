@@ -71,7 +71,6 @@
     <Compile Include="Input\Keyboard.cs" />
     <Compile Include="Input\Mouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SMEditor\Attributes\NotInclude.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="TypeExtensions\KeyboardState.cs" />
     <Compile Include="TypeExtensions\PointExt.cs" />

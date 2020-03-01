@@ -1,9 +1,9 @@
 ﻿using OpenTK;
 using SMRenderer.Animations;
 using SMRenderer.Drawing;
+using SMRenderer.ManagerIntergration.Attributes;
 using SMRenderer.Objects;
 using SMRenderer.Renderers;
-using SMRenderer.SMEditor.Attributes;
 using SMRenderer.TypeExtensions;
 using System;
 using System.Collections.Generic;
