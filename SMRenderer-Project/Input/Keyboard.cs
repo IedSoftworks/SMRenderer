@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SMRenderer.Input
+﻿namespace SMRenderer.Input
 {
-    class Keyboard
+    internal class Keyboard
     {
     }
 }

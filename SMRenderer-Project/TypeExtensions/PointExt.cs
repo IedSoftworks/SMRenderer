@@ -1,10 +1,5 @@
-﻿using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
+using OpenTK;
 
 namespace SMRenderer.TypeExtensions
 {
@@ -14,6 +9,7 @@ namespace SMRenderer.TypeExtensions
         {
             return new Vector2(point.X, point.Y);
         }
+
         public static Vector2 ToVector2(this Size point)
         {
             return new Vector2(point.Width, point.Height);

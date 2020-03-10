@@ -24,9 +24,9 @@ void Lighting() {
 		pointToLight = normalize(pointToLight);
 
 		float lightIntensity = max(dot(pointToLight, vNormal), 0.0) * (pos.w * 100) / distanceSqut;
-		vec3 finalIll = uAmbientLight.rgb * uAmbientLight.w + (lightIntensity * 100) * col.w * col.rgb;
+		vec3 finalIll = uAmbientLight.rgb + (lightIntensity * 100) * (col.w * col.rgb);
 		
-		if (uLightDirections[i].z == 0) {
+		if (uLightDirections[i].z == 1) {
 			float direction = max(dot(dir, -1 * pointToLight), 0);
 			finalIll *= direction;
 		}

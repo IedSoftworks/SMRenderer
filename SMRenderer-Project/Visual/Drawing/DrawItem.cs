@@ -1,126 +1,127 @@
-﻿using OpenTK;
-using OpenTK.Graphics;
-using SMRenderer.Animations;
-using SMRenderer.Renderers;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK;
+using OpenTK.Graphics;
+using SMRenderer.Animations;
+using SMRenderer.Data;
+using SMRenderer.Visual.Renderers;
 
-namespace SMRenderer.Drawing
+namespace SMRenderer.Visual.Drawing
 {
     /// <summary>
-    /// DrawItem saves instructions of the draw
+    ///     DrawItem saves instructions of the draw
     /// </summary>
     [Serializable]
     public class DrawItem : SMItem
     {
-        // Private
-        public Vector2 _centerPoint = new Vector2(0, 0);
-        public Vector2 _actualPosition = new Vector2(0, 0);
-        public float _actualRotation = 0;
-        public Matrix4 modelMatrix;
-        public Matrix4 normalMatrix;
+        public Vector2 ActualPosition = new Vector2(0, 0);
+        public float ActualRotation;
 
         /// <summary>
-        /// Determant if the object is visible in the window
+        ///     Dictionary for all animations that are possible on this object; Key = identify-string; Value = Animation;
         /// </summary>
-        public bool Visible { get; private set; } = true;
+        public AnimationCollection Animations = new AnimationCollection();
+
+        // Private
+        public Vector2 CenterPoint = new Vector2(0, 0);
 
         /// <summary>
-        /// Determant if the object will check if it is visible
+        ///     Determinant if the object will check if it is visible
         /// </summary>
         public bool CheckVisible = false;
 
         /// <summary>
-        /// The object that need to be render.
-        /// </summary>
-        public int obj = DM.C["Meshes"].ID("Quad");
-
-        /// <summary>
-        /// Specifies the position of the object
-        /// </summary>
-        public Vector2 Position = Vector2.Zero;
-
-        /// <summary>
-        /// Specifies the anchor for the position
-        /// </summary>
-        public string positionAnchor = "cc";
-
-        /// <summary>
-        /// Contains the center position of the object; Important when you not use the center-anchor
-        /// </summary>
-        public Vector2 CenterPoint { get { return _centerPoint; } }
-
-        /// <summary>
-        /// Specifies the rotation of the object
-        /// </summary>
-        public float Rotation = 0;
-
-        /// <summary>
-        /// Specifies the scale of the object
-        /// </summary>
-        public Vector2 Size = new Vector2(50, 50);
-
-        /// <summary>
-        /// Dictionary for all animations that are possible on this object; Key = identify-string; Value = Animation;
-        /// </summary>
-        public AnimationCollection Animations = new AnimationCollection();
-
-        /// <summary>
-        /// Specifies the region; Makes Position, Rotation and Z-Index values relative and ignore the RenderPosition
-        /// </summary>
-        public Region Region = Region.zero;
-
-        /// <summary>
-        /// Specifies the used texture
-        /// </summary>
-        public int Texture = -1;
-
-        /// <summary>
-        /// Colorize the texture in that color; Default: White;
+        ///     Colorize the texture in that color; Default: White;
         /// </summary>
         public Color4 Color = Color4.White;
 
         /// <summary>
-        /// Contains all arguments for visual effects
+        ///     Contains all arguments for visual effects
         /// </summary>
         public VisualEffectArgs effectArgs = new VisualEffectArgs();
 
+        public Matrix4 modelMatrix;
+        public Matrix4 normalMatrix;
+
         /// <summary>
-        /// Tell the program to actual draw the object
+        ///     The object that need to be render.
         /// </summary>
-        override public void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
+        public int obj = DataManager.C["Meshes"].ID("Quad");
+
+        /// <summary>
+        ///     Specifies the position of the object
+        /// </summary>
+        public Vector2 Position = Vector2.Zero;
+        
+        /// <summary>
+        ///     Specifies the anchor for the position
+        /// </summary>
+        public string positionAnchor = "cc";
+
+        /// <summary>
+        ///     Specifies the region; Makes Position, Rotation and Z-Index values relative and ignore the RenderPosition
+        /// </summary>
+        public Region Region = Region.zero;
+
+        /// <summary>
+        ///     Specifies the rotation of the object
+        /// </summary>
+        public float Rotation = 0;
+
+        /// <summary>
+        ///     Specifies the scale of the object
+        /// </summary>
+        public Vector2 Size = new Vector2(50, 50);
+
+        /// <summary>
+        ///     Specifies the used texture
+        /// </summary>
+        public TextureHandler Texture = new TextureHandler(-1);
+
+        /// <summary>
+        ///     Determinant if the object is visible in the window
+        /// </summary>
+        public bool Visible { get; private set; } = true;
+
+        /// <summary>
+        ///     Tell the program to actual draw the object
+        /// </summary>
+        public override void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
         {
             if (!Visible) return; // Stops the drawing process, if the object is not visible
 
             Matrix4.Transpose(ref modelMatrix, out normalMatrix);
             normalMatrix.Invert();
 
-            renderer.Draw((ObjectInfos)DM.C["Meshes"].Data(obj), this, viewMatrix, modelMatrix);
+            renderer.Draw((ObjectInfos) DataManager.C["Meshes"].Data(obj), this, viewMatrix, modelMatrix);
         }
+
         /// <summary>
-        /// Prepare the object to drawing
+        ///     Prepare the object to drawing
         /// </summary>
         /// <param name="i"></param>
-        override public void Prepare(double i)
+        public override void Prepare(double i)
         {
-            _actualRotation = Rotation + Region.GetRotation();
-            _actualRotation %= 360;
+            ActualRotation = Rotation + Region.GetRotation();
+            ActualRotation %= 360;
 
-            // Calcuate the position
-            _actualPosition = Helper.Rotation.PositionFromRotation(Region.GetPosition(), Position, Region.GetRotation());
-            _centerPoint = CalculatePositionAnchor(Position, Size, positionAnchor);
+            // Calculate the position
+            ActualPosition = Helper.Rotation.PositionFromRotation(Region.GetPosition(), Position, Region.GetRotation());
+            CenterPoint = CalculatePositionAnchor(Position, Size, positionAnchor);
 
-            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_actualRotation)) * Matrix4.CreateTranslation(_centerPoint.X, _centerPoint.Y, 0);
+            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) *
+                          Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(ActualRotation)) *
+                          Matrix4.CreateTranslation(CenterPoint.X, CenterPoint.Y, 0);
 
             if (CheckVisible)
-                 Visible = Rectangle.Intersect(GLWindow.Window.windowRect, new Rectangle((int)(_centerPoint.X - Size.Y / 2), (int)(_centerPoint.Y - Size.Y / 2), (int)Size.X, (int)Size.Y)) != Rectangle.Empty;
+                Visible = Rectangle.Intersect(GLWindow.Window.WindowRect,
+                    new Rectangle((int) (CenterPoint.X - Size.Y / 2), (int) (CenterPoint.Y - Size.Y / 2),
+                        (int) Size.X, (int) Size.Y)) != Rectangle.Empty;
         }
+
         /// <summary>
-        /// Calculate the object centerpoint
+        ///     Calculate the object center point
         /// </summary>
         /// <param name="position"></param>
         /// <param name="size"></param>
@@ -139,6 +140,7 @@ namespace SMRenderer.Drawing
                     position.X -= stepX;
                     break;
             }
+
             switch (anchor.Last())
             {
                 case 'u':
@@ -148,6 +150,7 @@ namespace SMRenderer.Drawing
                     position.Y -= stepY;
                     break;
             }
+
             return position;
         }
     }

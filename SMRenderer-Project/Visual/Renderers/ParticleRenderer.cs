@@ -1,26 +1,24 @@
-﻿using SMRenderer.Drawing;
-using OpenTK.Graphics.OpenGL4;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using OpenTK;
+using OpenTK.Graphics.OpenGL4;
+using SMRenderer.Data;
+using SMRenderer.Visual.Drawing;
 
-namespace SMRenderer.Renderers
+namespace SMRenderer.Visual.Renderers
 {
-    class ParticleRenderer : GenericRenderer
+    internal class ParticleRenderer : GenericRenderer
     {
         public static ParticleRenderer program;
+
         public ParticleRenderer(GLWindow window)
         {
             this.window = window;
 
-            RequestedUniforms = new List<string>()
+            RequestedUniforms = new List<string>
             {
                 "uParticleMovements",
                 "uParticleTime",
-                "uSize",
+                "uSize"
             };
 
             PresetRendererCode.UniformEssencal(this);
@@ -32,24 +30,27 @@ namespace SMRenderer.Renderers
 
             program = this;
         }
-        internal void Draw(Particles item, Matrix4 MVP, Matrix4 NMatrix)
+
+        internal void Draw(Particles item, Matrix4 mvp, Matrix4 nMatrix)
         {
-            Texture texture = item.Texture == -1 ? Texture.empty : ((TextureItem)DM.C["Textures"].Data(item.Texture)).texture;
-            ObjectInfos obj = (ObjectInfos)DM.C["Meshes"].Data(item.Object);
+            Texture texture = item.Texture == -1
+                ? Texture.empty
+                : ((TextureItem) DataManager.C["Textures"].Data(item.Texture.ID)).texture;
+            ObjectInfos obj = (ObjectInfos) DataManager.C["Meshes"].Data(item.Object);
 
             GL.UseProgram(mProgramId);
 
-            PresetRendererCode.DrawEssencal(this, MVP, item.Size);
-            PresetRendererCode.DrawTexturing(this, item.Color, texture.TexId);
-            PresetRendererCode.DrawLighting(this, item.ModelMatrix, NMatrix);
+            PresetRendererCode.DrawEssencal(this, mvp, item.Size);
+            PresetRendererCode.DrawTexturing(this, item.Color, texture.TexId, item.Texture);
+            PresetRendererCode.DrawLighting(this, item.ModelMatrix, nMatrix);
             PresetRendererCode.DrawBloom(this, item.Color, item.VisualEffectArgs);
 
             GL.Uniform3(Uniforms["uParticleMovements"], item.Amount, item.Movements);
-            GL.Uniform1(Uniforms["uParticleTime"], (float)item.CurrentTime);
+            GL.Uniform1(Uniforms["uParticleTime"], (float) item.CurrentTime);
             GL.Uniform2(Uniforms["uSize"], item.Size);
 
             GL.BindVertexArray(obj.GetVAO());
-            GL.DrawArraysInstanced(obj.primitiveType, 0, obj.GetVerticesCount(), item.Amount);
+            GL.DrawArraysInstanced(obj.PrimitiveType, 0, obj.GetVerticesCount(), item.Amount);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindVertexArray(0);

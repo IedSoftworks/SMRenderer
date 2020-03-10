@@ -1,34 +1,39 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using SMRenderer.ManagerIntergration.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTK.Graphics.OpenGL4;
+using SMRenderer.ManagerIntergration.Attributes;
+using Object = SMRenderer.Data.Object;
 
-namespace SMRenderer.Objects
+namespace SMRenderer.Visual.ObjStorage
 {
-    [Serializable, NotInclude]
+    [Serializable]
+    [NotInclude]
     public class Quad : Object
     {
         public Quad(string id) : base(id)
         {
-            Vertices = new List<float>() {
-                -.5f,-.5f,0f,
-                -.5f,+.5f,0f,
-                +.5f,+.5f,0f,
-                +.5f,-.5f,0f
+            Vertices = new List<float>
+            {
+                -.5f, -.5f, 0f,
+                -.5f, +.5f, 0f,
+                +.5f, +.5f, 0f,
+                +.5f, -.5f, 0f
             };
-            UVs = new List<float>() {
-                0,0,
-                0,1,
-                1,1,
-                1,0
+            UVs = new List<float>
+            {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
             };
-            Normals = new List<float>(){
-                0,0,1,
-                0,0,1,
-                0,0,1,
-                0,0,1,
+            Normals = new List<float>
+            {
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1
             };
-            primitiveType = PrimitiveType.Quads;
+            PrimitiveType = PrimitiveType.Quads;
         }
     }
 }

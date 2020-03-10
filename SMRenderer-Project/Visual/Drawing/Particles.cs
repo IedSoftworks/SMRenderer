@@ -1,36 +1,37 @@
-﻿using OpenTK;
-using OpenTK.Graphics;
-using SMRenderer.Renderers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK;
+using OpenTK.Graphics;
+using SMRenderer.Data;
+using SMRenderer.Helper;
+using SMRenderer.Math;
+using SMRenderer.Visual.Renderers;
 
-namespace SMRenderer.Drawing
+namespace SMRenderer.Visual.Drawing
 {
     [Serializable]
     public class Particles : SMItem
     {
-        const int MaxAmount = 2048;
-        public float[] Movements { get; private set; }
+        private const int MaxAmount = 2048;
+        public int AdditionalRotation = 0;
+        public int Amount = 1;
+        public Color4 Color = Color4.White;
+        public float Direction = 0;
+
+        public TimeSpan Duration = TimeSpan.FromSeconds(1);
         public Matrix4 ModelMatrix;
-        public double CurrentTime { get; private set; } = 0;
-        public bool directional { get; private set; }
 
         public int Object = DataManager.C["Meshes"].ID("Quad");
         public Vector2 Origin = Vector2.Zero;
+        public Range Range = Range.Zero;
         public Vector2 Size = Vector2.One;
-        public Color4 Color = Color4.White;
-        public int Texture = -1;
+        public Range Speed = Range.CreateConst(1);
+        public TextureHandler Texture = new TextureHandler(-1);
         public VisualEffectArgs VisualEffectArgs = new VisualEffectArgs();
-        public int AdditionalRotation = 0;
+        public float[] Movements { get; private set; }
+        public double CurrentTime { get; private set; }
+        public bool Directional { get; private set; }
 
-        public TimeSpan Duration = TimeSpan.FromSeconds(1);
-        public float Direction = 0;
-        public Math.Range Range = Math.Range.Zero;
-        public int Amount = 1;
-        public Math.Range Speed = Math.Range.CreateConst(1);
         public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
         {
             ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
@@ -40,43 +41,47 @@ namespace SMRenderer.Drawing
 
             ParticleRenderer.program.Draw(this, ModelMatrix * matrix, no);
         }
-        public override void Prepare(double RenderSec)
+
+        public override void Prepare(double renderSec)
         {
             if (CurrentTime >= Duration.TotalSeconds) SM.Remove(this);
-            CurrentTime += RenderSec;
+            CurrentTime += renderSec;
         }
+
         public override void Activate(int layer)
         {
             base.Activate(layer);
             Generate();
         }
+
         public void Generate()
         {
-            directional = Range != Math.Range.Zero;
+            Directional = Range != Range.Zero;
 
             CurrentTime = 0;
             if (Amount > MaxAmount)
                 throw new Exception("PARTICLES: Amount exede the maximum of " + MaxAmount);
 
             List<float> motions = new List<float>();
-            List<int> rotations = new List<int>();
             Random r = new Random();
-            for(int i = 0; i < Amount; i++)
+            for (int i = 0; i < Amount; i++)
             {
-                Vector2 Mot = CalculateMotion();
+                Vector2 mot = CalculateMotion();
 
-                motions.AddRange(new float[] { Mot.X, Mot.Y, 0 });
+                motions.AddRange(new[] {mot.X, mot.Y, 0});
             }
+
             Movements = motions.ToArray();
         }
 
-        virtual public Vector2 CalculateMotion()
+        public virtual Vector2 CalculateMotion()
         {
-            Vector2 Mot = new Vector2();
-            Mot.X = directional ? Range.Value : 1;
-            Mot.Y = Speed.floatValue * 25;
+            Vector2 mot = new Vector2();
+            mot.X = Directional ? Range.Value : 1;
+            mot.Y = Speed.FloatValue * 25;
 
-            return Helper.Rotation.PositionFromRotation(Vector2.Zero, Mot, directional ? (Direction + 180) % 380 : SMGl.random.Next(0, 360));
+            return Rotation.PositionFromRotation(Vector2.Zero, mot,
+                Directional ? (Direction + 180) % 380 : SMGlobals.random.Next(0, 360));
         }
     }
 }

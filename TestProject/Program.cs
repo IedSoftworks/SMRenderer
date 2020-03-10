@@ -1,4 +1,4 @@
-﻿using SMRenderer.Objects;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SMRenderer.Animations;
-using SMRenderer.Drawing;
 using OpenTK;
 using OpenTK.Graphics;
-using SMRenderer.Renderers;
 using System.IO;
 using SMRenderer;
+using SMRenderer.Data;
+using SMRenderer.Visual;
+using SMRenderer.Visual.Drawing;
 
 namespace TestProject
 {
@@ -23,7 +24,7 @@ namespace TestProject
         {
             
             //Configure.UseScale = false;
-            GraficalConfig.ClearColor = Color.LightGray;
+            GraficalConfig.ClearColor = Color.White;
             GraficalConfig.AllowBloom = true;
 
             string title = "Testing window";
@@ -35,7 +36,7 @@ namespace TestProject
             GLWindow window = new GLWindow(500, 500);
             window.UpdateFrame += (a, b) =>
             {
-                window.Title = $"{title} | {window.camera.currentLocation.X}, {window.camera.currentLocation.Y} | {b.Time * 1000}ms";
+                window.Title = $"{title} | {window.camera.CurrentLocation.X}, {window.camera.CurrentLocation.Y} | {b.Time * 1000}ms";
             };
             window.KeyDown += (a, b) =>
             {
@@ -56,7 +57,7 @@ namespace TestProject
         }
         static void Test1()
         {
-            Scene.current.ambientLight = Color.White;
+            Scene.Current.ambientLight = Color.Blue;
             new TextureItem("Borderlands", new Bitmap("tex.jpg"));
 
             DrawItem item = new DrawItem
@@ -64,12 +65,13 @@ namespace TestProject
                 Color = Color.Red,
                 Size = new Vector2(20),
                 Position = new Vector2(250),
-                Texture = new TextureItem("Daconier's Wings", new Bitmap("draconier_logo.png")).ID,
+                Texture = new TextureHandler(new TextureItem("Daconier's Wings", new Bitmap("draconier_logo.png"))),
                 effectArgs = new VisualEffectArgs
                 {
                     BloomUsage = EffectBloomUsage.Render
                 }
             };
+            item.Texture.TexSize = new Vector2(32);
             SM.Add(item);
             particles = new Particles
             {
@@ -82,12 +84,12 @@ namespace TestProject
                 Origin = new Vector2(250),
                 VisualEffectArgs = new VisualEffectArgs
                 {
-                    BloomUsage = EffectBloomUsage.ObjectColor
+                    //BloomUsage = EffectBloomUsage.ObjectColor
                 },
                 Duration = TimeSpan.FromSeconds(5),
             };
             SM.Add(particles);
-            DataManager.C.Serialize(data);
+            //DataManager.C.Serialize(data);
             data.Close();
         }
         static void Test2()
