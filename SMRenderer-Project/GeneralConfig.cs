@@ -35,6 +35,9 @@ namespace SMRenderer
         /// </summary>
         public static bool UseGameController = false;
 
+        /// <summary>
+        /// Contains all types of render programs that need to load.
+        /// </summary>
         public static List<Type> Renderer = new List<Type>
         {
             typeof(GeneralRenderer),

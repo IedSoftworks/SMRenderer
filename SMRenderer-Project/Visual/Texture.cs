@@ -5,14 +5,21 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace SMRenderer.Visual
 {
+    /// <summary>
+    /// Contains the Texture, that is needed by OpenGL
+    /// </summary>
     public class Texture
     {
+        /// <summary>
+        /// Contains a one-pixel white texture.
+        /// </summary>
         public static Texture empty;
 
         /// <summary>
         ///     Creates a texture
         /// </summary>
-        /// <param name="bm"></param>
+        /// <param name="bm">The image data.</param>
+        /// <param name="autodispose">If true, its delete the image</param>
         public Texture(Bitmap bm, bool autodispose = false)
         {
             BitmapData data;
@@ -52,8 +59,17 @@ namespace SMRenderer.Visual
             if (autodispose) bm.Dispose();
         }
 
+        /// <summary>
+        /// The width of the texture.
+        /// </summary>
         public int Width { get; }
+        /// <summary>
+        /// The height of the texture
+        /// </summary>
         public int Height { get; }
+        /// <summary>
+        /// The texture handle for OpenGL.
+        /// </summary>
         public int TexId { get; } = -1;
 
         /// <summary>
@@ -64,6 +80,9 @@ namespace SMRenderer.Visual
             GL.DeleteTexture(TexId);
         }
 
+        /// <summary>
+        /// Creates the empty texture
+        /// </summary>
         public static void CreateEmpty()
         {
             Bitmap bit = new Bitmap(1, 1);

@@ -2,6 +2,9 @@
 
 namespace SMRenderer.ManagerIntergration.Attributes
 {
+    /// <summary>
+    /// Tells the SMManager to use the class as a VisualDataEntry for the specific type.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class FieldEntry : Attribute
     {
@@ -14,6 +17,9 @@ namespace SMRenderer.ManagerIntergration.Attributes
             Type = type;
         }
 
+        /// <summary>
+        /// The specific type
+        /// </summary>
         public Type Type { get; }
     }
 }

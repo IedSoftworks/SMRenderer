@@ -6,10 +6,17 @@ using Object = SMRenderer.Data.Object;
 
 namespace SMRenderer.Visual.ObjStorage
 {
+    /// <summary>
+    /// Contains all information of the Quad object
+    /// </summary>
     [Serializable]
     [NotInclude]
     public class Quad : Object
     {
+        /// <summary>
+        /// Creates the quad.
+        /// </summary>
+        /// <param name="id"></param>
         public Quad(string id) : base(id)
         {
             Vertices = new List<float>

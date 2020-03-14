@@ -19,6 +19,9 @@ namespace SMRenderer.Visual.Drawing
         /// </summary>
         public EffectBloomUsage BloomUsage = EffectBloomUsage.None;
 
+        /// <summary>
+        ///     Tells if the object should be affected by light.
+        /// </summary>
         public bool AffectedByLight = true;
     }
 }

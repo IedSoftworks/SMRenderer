@@ -4,6 +4,9 @@ using SMRenderer.Visual.Drawing;
 
 namespace SMRenderer.Animations
 {
+    /// <summary>
+    /// Contains presets for animations-savefunctions
+    /// </summary>
     [Serializable]
     public class SFPresets
     {

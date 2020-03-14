@@ -15,6 +15,9 @@ namespace SMRenderer.Visual.Drawing
         /// </summary>
         public Color4 Color = Color4.White;
 
+        /// <summary>
+        /// Sets the light direction.
+        /// </summary>
         public Vector2 Direction = Vector2.Zero;
 
         /// <summary>

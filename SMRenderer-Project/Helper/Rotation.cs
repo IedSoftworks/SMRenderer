@@ -7,6 +7,9 @@ using OpenTK;
 
 namespace SMRenderer.Helper
 {
+    /// <summary>
+    /// Contains functions for rotations
+    /// </summary>
     public static class Rotation
     {
         private static Vector3 _zeroVector = Vector3.Zero;

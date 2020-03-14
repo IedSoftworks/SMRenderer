@@ -15,39 +15,30 @@ namespace SMRenderer.Visual.Drawing
     [Serializable]
     public class DrawItem : SMItem
     {
+
+        /// <summary>
+        /// The actual position with Region already calculated.
+        /// </summary>
         public Vector2 ActualPosition = new Vector2(0, 0);
+        /// <summary>
+        /// The actual rotation with Region calculated.
+        /// </summary>
         public float ActualRotation;
 
         /// <summary>
         ///     Dictionary for all animations that are possible on this object; Key = identify-string; Value = Animation;
         /// </summary>
         public AnimationCollection Animations = new AnimationCollection();
-
-        // Private
+        
+        /// <summary>
+        /// Contains the current CenterPoint. Used to create the modelMatrix
+        /// </summary>
         public Vector2 CenterPoint = new Vector2(0, 0);
 
         /// <summary>
         ///     Determinant if the object will check if it is visible
         /// </summary>
         public bool CheckVisible = false;
-
-        /// <summary>
-        ///     Colorize the texture in that color; Default: White;
-        /// </summary>
-        public Color4 Color = Color4.White;
-
-        /// <summary>
-        ///     Contains all arguments for visual effects
-        /// </summary>
-        public VisualEffectArgs effectArgs = new VisualEffectArgs();
-
-        public Matrix4 modelMatrix;
-        public Matrix4 normalMatrix;
-
-        /// <summary>
-        ///     The object that need to be render.
-        /// </summary>
-        public int obj = DataManager.C["Meshes"].ID("Quad");
 
         /// <summary>
         ///     Specifies the position of the object
@@ -65,24 +56,16 @@ namespace SMRenderer.Visual.Drawing
         public Region Region = Region.zero;
 
         /// <summary>
+        ///     Determinant if the object is visible in the window
+        /// </summary>
+        public bool Visible { get; private set; } = true;
+
+        /// <summary>
         ///     Specifies the rotation of the object
         /// </summary>
         public float Rotation = 0;
 
-        /// <summary>
-        ///     Specifies the scale of the object
-        /// </summary>
-        public Vector2 Size = new Vector2(50, 50);
 
-        /// <summary>
-        ///     Specifies the used texture
-        /// </summary>
-        public TextureHandler Texture = new TextureHandler(-1);
-
-        /// <summary>
-        ///     Determinant if the object is visible in the window
-        /// </summary>
-        public bool Visible { get; private set; } = true;
 
         /// <summary>
         ///     Tell the program to actual draw the object
@@ -94,7 +77,7 @@ namespace SMRenderer.Visual.Drawing
             Matrix4.Transpose(ref modelMatrix, out normalMatrix);
             normalMatrix.Invert();
 
-            renderer.Draw((ObjectInfos) DataManager.C["Meshes"].Data(obj), this, viewMatrix, modelMatrix);
+            renderer.Draw((ObjectInfos) DataManager.C["Meshes"].Data(Object.obj), this, viewMatrix, modelMatrix);
         }
 
         /// <summary>
@@ -108,16 +91,16 @@ namespace SMRenderer.Visual.Drawing
 
             // Calculate the position
             ActualPosition = Helper.Rotation.PositionFromRotation(Region.GetPosition(), Position, Region.GetRotation());
-            CenterPoint = CalculatePositionAnchor(Position, Size, positionAnchor);
+            CenterPoint = CalculatePositionAnchor(Position, Object.Size, positionAnchor);
 
-            modelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) *
+            modelMatrix = Matrix4.CreateScale(Object.Size.X, Object.Size.Y, 1) *
                           Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(ActualRotation)) *
                           Matrix4.CreateTranslation(CenterPoint.X, CenterPoint.Y, 0);
 
             if (CheckVisible)
                 Visible = Rectangle.Intersect(GLWindow.Window.WindowRect,
-                    new Rectangle((int) (CenterPoint.X - Size.Y / 2), (int) (CenterPoint.Y - Size.Y / 2),
-                        (int) Size.X, (int) Size.Y)) != Rectangle.Empty;
+                    new Rectangle((int) (CenterPoint.X - Object.Size.X / 2), (int) (CenterPoint.Y - Object.Size.Y / 2),
+                        (int) Object.Size.X, (int) Object.Size.Y)) != Rectangle.Empty;
         }
 
         /// <summary>

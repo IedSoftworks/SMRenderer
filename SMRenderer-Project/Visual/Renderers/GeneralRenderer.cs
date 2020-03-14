@@ -5,10 +5,20 @@ using SMRenderer.Visual.Drawing;
 
 namespace SMRenderer.Visual.Renderers
 {
+    /// <summary>
+    /// The render program for any cases.
+    /// </summary>
     public sealed class GeneralRenderer : GenericObjectRenderer
     {
+        /// <summary>
+        /// Reference to the render program
+        /// </summary>
         public static GeneralRenderer program;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="window"></param>
         public GeneralRenderer(GLWindow window)
         {
             this.window = window;
@@ -35,15 +45,15 @@ namespace SMRenderer.Visual.Renderers
         {
             GL.UseProgram(mProgramId);
             DrawItem drawitem = (DrawItem) item;
-            Texture texture = drawitem.Texture.ID == -1
+            Texture texture = drawitem.Object.Texture.ID == -1
                 ? Texture.empty
-                : ((TextureItem) DataManager.C[drawitem.Texture.Category].Data(drawitem.Texture.ID)).texture;
+                : ((TextureItem) DataManager.C[drawitem.Object.Texture.Category].Data(drawitem.Object.Texture.ID)).texture;
             Matrix4 modelview = model * view;
 
-            PresetRendererCode.DrawEssencal(this, modelview, drawitem.Size);
-            PresetRendererCode.DrawTexturing(this, drawitem.Color, texture.TexId, drawitem.Texture);
-            PresetRendererCode.DrawLighting(this, drawitem.modelMatrix, drawitem.normalMatrix, drawitem.effectArgs);
-            PresetRendererCode.DrawBloom(this, drawitem.Color, drawitem.effectArgs);
+            PresetRendererCode.DrawEssencal(this, modelview, drawitem.Object.Size);
+            PresetRendererCode.DrawTexturing(this, drawitem.Object.Color, texture.TexId, drawitem.Object.Texture);
+            PresetRendererCode.DrawLighting(this, drawitem.modelMatrix, drawitem.normalMatrix, drawitem.Object.effectArgs);
+            PresetRendererCode.DrawBloom(this, drawitem.Object.Color, drawitem.Object.effectArgs);
 
             GL.BindVertexArray(quad.GetVAO());
             GL.DrawArrays(quad.PrimitiveType, 0, quad.GetVerticesCount());

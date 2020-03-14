@@ -5,17 +5,27 @@ namespace SMRenderer.ManagerIntergration.Attributes
 {
     /// <summary>
     ///     This attribute allow the field to be used by SMManager
+    /// <para>If set with a PresetField, it uses the PresetField</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class EditorField : Attribute
     {
-        public PresetField[] fields;
-
+        /// <summary>
+        /// Says if what field should be used.
+        /// </summary>
+        public PresetField field;
+        /// <summary>
+        /// Parameterless constructor for taging
+        /// </summary>
         public EditorField() { }
 
-        public EditorField(params PresetField[] fields)
+        /// <summary>
+        /// Constructor for setting a PresetField
+        /// </summary>
+        /// <param name="field">The wished PresetField</param>
+        public EditorField(PresetField field)
         {
-            this.fields = fields;
+            this.field = field;
         }
     }
 }

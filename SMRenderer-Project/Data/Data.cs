@@ -20,6 +20,9 @@ namespace SMRenderer.Data
         /// </summary>
         [EditorField] public string refName;
 
+        /// <summary>
+        /// Should contains the category, if set.
+        /// </summary>
         public string Category;
 
         /// <summary>

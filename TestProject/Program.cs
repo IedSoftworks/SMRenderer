@@ -44,11 +44,7 @@ namespace TestProject
             {
                 if (b.Key == OpenTK.Input.Key.P)
                     Console.WriteLine("p");
-                else
-                {
-                    if (!SM.Exists(particles)) SM.Add(particles);
-                    particles.Generate();
-                }
+                
             };
             window.Load += (ra, b) =>
             {
@@ -72,13 +68,15 @@ namespace TestProject
 
             DrawItem item = new DrawItem
             {
-                Size = new Vector2(20),
-                Rotation = 45,
+                Object = new DrawObject() { 
+                    Size = new Vector2(20),
+                    effectArgs = new VisualEffectArgs
+                    {
+                        BloomUsage = EffectBloomUsage.ObjectColor,
+                    }
+                },
                 Position = new Vector2(100),
-                effectArgs = new VisualEffectArgs
-                {
-                    BloomUsage = EffectBloomUsage.ObjectColor,
-                }
+                Rotation = 45
             };
             item.Animations = new AnimationCollection
             {
@@ -107,37 +105,46 @@ namespace TestProject
 
             particles = new Particles
             {
+                Object =
+                {
+                    effectArgs = new VisualEffectArgs
+                    {
+                        BloomUsage = EffectBloomUsage.Render
+                    },
+                    Color = Color.Red,
+                    Size = new Vector2(20),
+                },
+
                 RenderOrder = -1,
                 Direction = -45,
                 Range = new SMRenderer.Math.Range(5),
                 Speed = new SMRenderer.Math.Range(1,3),
-                Size = new Vector2(20),
                 Amount = 50,
-                Color = Color.Red,
                 Origin = new Vector2(500),
-                VisualEffectArgs = new VisualEffectArgs
-                {
-                    BloomUsage = EffectBloomUsage.Render
-                },
+                
                 Duration = TimeSpan.FromSeconds(20),
             };
             SM.Add(particles);
 
             Particles particles2 = new Particles
             {
+                Object =
+                {
+                    effectArgs = new VisualEffectArgs
+                    {
+                        BloomUsage = EffectBloomUsage.Render
+                    },
+                    Color = Color4.Blue,
+                    Size = new Vector2(20)
+                },
                 RenderOrder = -2,
                 Direction = 45,
                 Amount = 50,
-                Color = Color4.Blue,
                 Origin = new Vector2(0,500),
                 Range = new SMRenderer.Math.Range(5),
                 Speed = new SMRenderer.Math.Range(1, 3),
-                VisualEffectArgs = new VisualEffectArgs
-                {
-                    BloomUsage = EffectBloomUsage.Render
-                },
+                
                 Duration = TimeSpan.FromSeconds(20),
-                Size = new Vector2(20)
             };
             SM.Add(particles2);
         }

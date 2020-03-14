@@ -10,6 +10,10 @@ namespace SMRenderer
     /// </summary>
     public class Timer
     {
+        /// <summary>
+        /// Event args for the timer
+        /// </summary>
+        /// <param name="sender">The timer, that triggers the event.</param>
         public delegate void TimerEventArgs(Timer sender);
 
         /// <summary>

@@ -40,8 +40,7 @@ namespace SMRenderer.Visual
                 else
                 {
                     sourceTex = _framebufferTextureBloom1;
-                    if (i == loopCount - 1) GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-                    else GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferIdBloom2);
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, i == loopCount - 1 ? 0 : _framebufferIdBloom2);
                 }
 
                 BloomRenderer.program.DrawBloom(
@@ -56,7 +55,10 @@ namespace SMRenderer.Visual
 
             GL.UseProgram(0);
         }
-
+        /// <summary>
+        /// Checks if OpenGL had any errors
+        /// </summary>
+        /// <returns></returns>
         public static bool CheckGLErrors()
         {
             bool hasError = false;
@@ -72,13 +74,27 @@ namespace SMRenderer.Visual
 
         #region | Normal Rendering |
 
+        /// <summary>
+        /// Contains all renderer, that is used by this window
+        /// </summary>
         public RendererCollection rendererList = new RendererCollection();
+        /// <summary>
+        /// Contains the modelMatrix for the Bloom
+        /// </summary>
         private Matrix4 _modelMatrixBloom;
+        /// <summary>
+        /// Tells the program how to scale the deltatime
+        /// </summary>
         public float deltatimeScale = 1;
 
+        /// <summary>
+        /// Contains mouse information.
+        /// </summary>
         public Mouse mouse;
+        /// <summary>
+        /// Contains camera information.
+        /// </summary>
         public Camera camera;
-        public GameController controller;
 
         /// <summary>
         ///     Represents the Current window to the public
@@ -97,19 +113,29 @@ namespace SMRenderer.Visual
         /// </summary>
         public Rectangle WindowRect { get; private set; }
 
+        /// <summary>
+        /// Is true, if any error happend while loading.
+        /// </summary>
         public bool ErrorAtLoading = false;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="width">The width of the window</param>
+        /// <param name="height">The height of the window</param>
         public GLWindow(int width, int height) : base(width, height)
         {
             Title = "GLWíndow Default Title";
             Window = this;
 
             mouse = new Mouse {window = this};
-            if (GeneralConfig.UseGameController) controller = new GameController(this);
 
             MouseMove += mouse.SaveMousePosition;
         }
-
+        /// <summary>
+        ///     Updates all of the native features.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if (!Focused && GeneralConfig.OnlyRenderIfFocused) return;
@@ -123,14 +149,16 @@ namespace SMRenderer.Visual
 
             Timer.TickChange(time);
             Animation.Update(time);
-            controller?.Check();
 
             Scene.Current.matrixSetFunc(Scene.Current);
             Scene.Current.lights.CreateShaderArgs();
 
             base.OnUpdateFrame(e);
         }
-
+        /// <summary>
+        ///     Render the frame
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             double time = e.Time * deltatimeScale;
@@ -162,8 +190,15 @@ namespace SMRenderer.Visual
             SwapBuffers();
         }
 
+        /// <summary>
+        /// Contains the baseplate to prevent the bloom effect to play crazy.
+        /// </summary>
         public DrawItem Baseplate;
 
+        /// <summary>
+        ///     Loads a needed data. Such like the renderers...
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             GeneralConfig.Renderer.ForEach(a =>
@@ -179,7 +214,9 @@ namespace SMRenderer.Visual
 
             Baseplate = new DrawItem
             {
-                Color = GraficalConfig.ClearColor,
+                Object = new DrawObject() { 
+                    Color = GraficalConfig.ClearColor,
+                },
                 connected = this,
                 positionAnchor = "lu",
                 purpose = "The base plate of the skyplane. Prevents the bloom-Effect to play crazy."
@@ -209,11 +246,18 @@ namespace SMRenderer.Visual
             Console.Clear();
         }
 
+        /// <summary>
+        /// Preload stuff... (Not really usefull...)
+        /// </summary>
         public static void Preload()
         {
             Texture.CreateEmpty();
         }
 
+        /// <summary>
+        ///     Reconfigure the window, if the user resize it.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(ClientRectangle);
@@ -222,7 +266,9 @@ namespace SMRenderer.Visual
 
             InitializeFramebuffers(0);
         }
-
+        /// <summary>
+        /// Apply the size of the world.
+        /// </summary>
         private void ApplySize()
         {
             if (GeneralConfig.UseScale)
@@ -243,14 +289,16 @@ namespace SMRenderer.Visual
                                 Matrix4.LookAt(0, 0, 1, 0, 0, 0, 0, 1, 0) *
                                 Matrix4.CreateOrthographic(PxSize.X, PxSize.Y, .1f, 100f);
 
-            Baseplate.Size = PxSize;
+            Baseplate.Object.Size = PxSize;
             WindowRect = new Rectangle(0, 0, (int) PxSize.X, (int) PxSize.Y);
         }
 
         #endregion
 
         #region | Framebuffers |
+        // Self explained...
 
+        // Framebuffer IDs
         private int _framebufferIdMain = -1;
         private int _framebufferIdMainDownsampled = -1;
         private int _framebufferIdBloom1 = -1;
@@ -460,7 +508,9 @@ namespace SMRenderer.Visual
             _framebufferIdBloom2 = framebufferId;
             _framebufferTextureBloom2 = renderedTextureTemp2;
         }
-
+        /// <summary>
+        /// Used to test bloom problems...
+        /// </summary>
         private void DownsampleFramebufferDEBUG()
         {
             GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _framebufferIdMain);

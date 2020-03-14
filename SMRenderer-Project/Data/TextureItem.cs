@@ -13,8 +13,14 @@ namespace SMRenderer.Data
     [Serializable]
     public class TextureItem : Data
     {
+        /// <summary>
+        /// The source data.
+        /// </summary>
         [EditorField] public Bitmap bitmap;
 
+        /// <summary>
+        /// Parameterless constructor for automatic instance creation
+        /// </summary>
         public TextureItem()
         {
         }
@@ -22,7 +28,8 @@ namespace SMRenderer.Data
         /// <summary>
         ///     Creates a TextureItem
         /// </summary>
-        /// <param name="bitmap"></param>
+        /// <param name="name">Reference name</param>
+        /// <param name="bitmap">Image data</param>
         public TextureItem(string name, Bitmap bitmap)
         {
             refName = name;
@@ -30,7 +37,12 @@ namespace SMRenderer.Data
             Category = "Textures";
             DataManager.C.Add(this);
         }
-
+        /// <summary>
+        ///     Creates a TextureItem with specific category
+        /// </summary>
+        /// <param name="name">Reference Name</param>
+        /// <param name="category">Category name</param>
+        /// <param name="bitmap">Image data</param>
         public TextureItem(string name, string category, Bitmap bitmap)
         {
 
@@ -40,11 +52,20 @@ namespace SMRenderer.Data
             DataManager.C.Add(this);
         }
 
+        /// <summary>
+        /// The loaded texture
+        /// </summary>
         [field: NonSerialized] public Texture texture { get; private set; }
 
-        public Vector2 Size => new Vector2(texture.Width, texture.Height);
+        /// <summary>
+        /// Returns the size of the texture
+        /// </summary>
+        public Vector2 Size => new Vector2(bitmap.Width, bitmap.Height);
+
+        /// <inheritdoc />
         protected override bool IsLoaded => texture != null;
 
+        /// <inheritdoc />
         public override void Load()
         {
             texture = new Texture(bitmap);

@@ -5,12 +5,25 @@ using SMRenderer.Data;
 
 namespace SMRenderer.Visual.Renderers
 {
+    /// <summary>
+    /// Render program for the bloom
+    /// </summary>
     public class BloomRenderer : GenericRenderer
     {
+        /// <summary>
+        /// Reference to the created program.
+        /// </summary>
         public static BloomRenderer program;
 
+        /// <summary>
+        /// Attributes
+        /// </summary>
         public int MAttrVpos, MAttrVtex = -1;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="window"></param>
         public BloomRenderer(GLWindow window)
         {
             this.window = window;

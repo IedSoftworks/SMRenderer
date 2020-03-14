@@ -9,51 +9,89 @@ using SMRenderer.Visual.Renderers;
 
 namespace SMRenderer.Visual.Drawing
 {
+    /// <summary>
+    /// A particle system.
+    /// </summary>
     [Serializable]
     public class Particles : SMItem
     {
-        private const int MaxAmount = 2048;
+        /// <summary>
+        /// Contains the maximum amount of possible.
+        /// <para>Required for the shader program.</para>
+        /// </summary>
+        public const int MaxAmount = 2048;
+        /// <summary>
+        /// Apply additional rotation to the objects.
+        /// </summary>
         public int AdditionalRotation = 0;
+        /// <summary>
+        /// Specify the amount of particles.
+        /// <para>Watch the MaxAmount for the maximum</para>
+        /// </summary>
         public int Amount = 1;
-        public Color4 Color = Color4.White;
+        /// <summary>
+        /// The direction towards the particle travel.
+        /// </summary>
         public float Direction = 0;
-
-        public TimeSpan Duration = TimeSpan.FromSeconds(1);
-        public Matrix4 ModelMatrix;
-
-        public int Object = DataManager.C["Meshes"].ID("Quad");
+        /// <summary>
+        /// Specifies Origin of the particles
+        /// </summary>
         public Vector2 Origin = Vector2.Zero;
+        /// <summary>
+        /// Specifies the range the particles spread 
+        /// </summary>
         public Range Range = Range.Zero;
-        public Vector2 Size = Vector2.One;
+        /// <summary>
+        /// Specifies the speed the particles travel
+        /// </summary>
         public Range Speed = Range.CreateConst(1);
-        public TextureHandler Texture = new TextureHandler(-1);
-        public VisualEffectArgs VisualEffectArgs = new VisualEffectArgs();
+
+        /// <summary>
+        /// Specifies how long the particles should travel
+        /// </summary>
+        public TimeSpan Duration = TimeSpan.FromSeconds(1);
+        /// <summary>
+        /// Contains the shader information for the motions.
+        /// </summary>
         public float[] Movements { get; private set; }
+        /// <summary>
+        /// Contains the current time
+        /// </summary>
         public double CurrentTime { get; private set; }
+        /// <summary>
+        /// If true, the particles travel directional, otherwise they travel in random directions.
+        /// </summary>
         public bool Directional { get; private set; }
 
+        /// <inheritdoc />
         public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
         {
-            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((Direction + 180) % 360)) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
+            modelMatrix = Matrix4.CreateScale(Object.Size.X, Object.Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((Direction + 180) % 360)) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
 
-            Matrix4 no = Matrix4.Transpose(ModelMatrix);
+            Matrix4 no = Matrix4.Transpose(modelMatrix);
             no.Invert();
 
-            ParticleRenderer.program.Draw(this, ModelMatrix * matrix, no);
+            ParticleRenderer.program.Draw(this, modelMatrix * matrix, no);
         }
 
+        /// <inheritdoc />
         public override void Prepare(double renderSec)
         {
             if (CurrentTime >= Duration.TotalSeconds) SM.Remove(this);
             CurrentTime += renderSec;
         }
 
-        public override void Activate(int layer)
+        /// <inheritdoc />
+        public override void Activate(SMLayer layer)
         {
             base.Activate(layer);
             Generate();
         }
 
+        /// <summary>
+        ///     Generate the movements.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
         public void Generate()
         {
             Directional = Range != Range.Zero;
@@ -74,6 +112,10 @@ namespace SMRenderer.Visual.Drawing
             Movements = motions.ToArray();
         }
 
+        /// <summary>
+        /// Calculate how the particle should move.
+        /// </summary>
+        /// <returns></returns>
         public virtual Vector2 CalculateMotion()
         {
             Vector2 mot = new Vector2 { X = Directional ? Range.Value : 1, Y = Speed.FloatValue * 25 };

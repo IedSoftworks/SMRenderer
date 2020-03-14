@@ -5,19 +5,40 @@ using Microsoft.Win32;
 
 namespace SMRenderer.ManagerIntergration.WPFAddons
 {
+    /// <summary>
+    /// Extension from iedExt; It creates a selection for a file.
+    /// </summary>
     public class FileDialogWPF : Grid
     {
+        /// <summary>
+        /// The file dialog, that will be used
+        /// </summary>
         FileDialog fd;
+        /// <summary>
+        /// The entryBox
+        /// </summary>
         public TextBox entry;
+        /// <summary>
+        /// Returns / Sets the Text inside the entry.
+        /// </summary>
         public string Text { get => entry.Text; set => entry.Text = value; }
+        /// <summary>
+        /// Is true, if the entry is empty.
+        /// </summary>
         public bool Empty => entry.Text == "";
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fd">The FileDialog that it should use</param>
         public FileDialogWPF(FileDialog fd)
         {
             this.fd = fd;
             CreateVisual();
         }
-
+        /// <summary>
+        /// Create the visual.
+        /// </summary>
         private void CreateVisual()
         {
             ColumnDefinitions.Add(new ColumnDefinition());
@@ -48,6 +69,13 @@ namespace SMRenderer.ManagerIntergration.WPFAddons
             if (fd.ShowDialog() == true)
                 entry.Text = fd.FileName;
         }
+        /// <summary>
+        /// Sets the error state.
+        /// <para>0 = Nothing happend</para>
+        /// <para>1 = Error</para>
+        /// <para>2 = Success</para>
+        /// </summary>
+        /// <param name="state"></param>
         public void ErrorState(int state)
         {
             switch(state)

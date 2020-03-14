@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace SMRenderer.Visual.Drawing
 {
+    /// <summary>
+    /// Contains lights and shader information
+    /// </summary>
     [Serializable]
     public class LightCollection : List<LightSource>
     {

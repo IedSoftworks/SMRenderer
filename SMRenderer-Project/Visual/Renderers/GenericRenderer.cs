@@ -5,8 +5,14 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace SMRenderer.Visual.Renderers
 {
+    /// <summary>
+    /// Master class of all render programs.
+    /// </summary>
     public class GenericRenderer
     {
+        /// <summary>
+        /// Contains the OpenGL ID for the render program
+        /// </summary>
         public int mProgramId = -1;
 
         /// <summary>
@@ -15,7 +21,7 @@ namespace SMRenderer.Visual.Renderers
         public List<string> RequestedAttrib = new List<string>();
 
         /// <summary>
-        ///     Put here the requested fragdata
+        ///     Put here the requested fragment data
         /// </summary>
         public List<string> RequestedFragData = new List<string>();
 
@@ -24,16 +30,27 @@ namespace SMRenderer.Visual.Renderers
         /// </summary>
         public List<string> RequestedUniforms = new List<string>();
 
+        /// <summary>
+        /// The window.
+        /// </summary>
         public GLWindow window;
 
-        private static Dictionary<string, int> AttribIDs { get; } = new Dictionary<string, int>
+        /// <summary>
+        /// Contains all available attributes with IDs.
+        /// <para>Require to update to use new attributes</para> 
+        /// </summary>
+        public static Dictionary<string, int> AttribIDs = new Dictionary<string, int>
         {
             {"aPosition", 0},
             {"aNormal", 1},
             {"aTexture", 2}
         };
 
-        private static Dictionary<string, int> FragDataIDs { get; } = new Dictionary<string, int>
+        /// <summary>
+        /// Contains all available fragment data with IDs.
+        /// <para>Require to update to use new fragment data</para>
+        /// </summary>
+        public static Dictionary<string, int> FragDataIDs = new Dictionary<string, int>
         {
             {"color", 0},
             {"bloom", 1}
@@ -44,6 +61,10 @@ namespace SMRenderer.Visual.Renderers
         /// </summary>
         public Dictionary<string, int> Uniforms { get; } = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Creates the program.
+        /// <para>Make sure the selected attributes and fragment data are in the ID list.</para>
+        /// </summary>
         public void Create()
         {
             int i = -1;
@@ -103,7 +124,11 @@ namespace SMRenderer.Visual.Renderers
             for (i = 0; i < RequestedUniforms.Count; i++)
                 Uniforms.Add(RequestedUniforms[i], GL.GetUniformLocation(mProgramId, RequestedUniforms[i]));
         }
-
+        /// <summary>
+        /// Load a shader program fragment. (Don't have to be a fragment shader)
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public List<int> Load(ShaderProgramFragment s)
         {
             List<int> addrs = new List<int>();
@@ -116,7 +141,7 @@ namespace SMRenderer.Visual.Renderers
 
             foreach (string key in s)
             {
-                string source = Shaders.ShaderSource[key];
+                string source = key.StartsWith("ext:") ? Shaders.ShaderSource[key] : key;
 
                 int address = GL.CreateShader(s.type);
                 GL.ShaderSource(address, source);

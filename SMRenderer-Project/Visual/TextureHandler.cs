@@ -3,6 +3,10 @@ using SMRenderer.Data;
 
 namespace SMRenderer.Visual
 {
+    /// <summary>
+    ///     The handler to get a texture from the data.
+    ///     <para>Additional it adds some features to it</para>
+    /// </summary>
     public class TextureHandler : DataSelection
     {
         /// <summary>
@@ -20,27 +24,55 @@ namespace SMRenderer.Visual
         /// </summary>
         public Vector2 TexPosition = Vector2.Zero;
 
-        public TextureHandler() { }
-        public TextureHandler(int id)
-        {
-            ID = id;
-            Category = "Texture";
-        }
+        /// <summary>
+        /// Empty constructor for automatic creation
+        /// </summary>
+        public TextureHandler()
+        { }
+        /// <summary>
+        /// Creates a Handler based on the id.
+        /// </summary>
+        /// <param name="id"></param>
+        public TextureHandler(int id) : base(id, "Texture") 
+        { }
 
-        public TextureHandler(TextureItem item)
-        {
-            ID = item.ID;
-            Category = item.Category;
-        }
+        /// <summary>
+        /// Creates a Handler based on the textureItem.
+        /// </summary>
+        /// <param name="item"></param>
+        public TextureHandler(TextureItem item) : base(item.ID, item.Category)
+        { }
 
+        /// <summary>
+        /// Checks if both handlers are equal
+        /// </summary>
+        /// <param name="first">Left</param>
+        /// <param name="second">Right</param>
+        /// <returns></returns>
         public static bool operator ==(TextureHandler first, TextureHandler second) => first.Equals(second);
-
+        /// <summary>
+        /// Checks if both handlers are unequal
+        /// </summary>
+        /// <param name="first">Left</param>
+        /// <param name="second">Right</param>
+        /// <returns></returns>
         public static bool operator !=(TextureHandler first, TextureHandler second) => !(first == second);
-
+        /// <summary>
+        /// Checks if the ids are equal
+        /// </summary>
+        /// <param name="first">Left</param>
+        /// <param name="second">Right</param>
+        /// <returns></returns>
         public static bool operator ==(TextureHandler first, int second) => first.Equals(second);
-
+        /// <summary>
+        /// Checks if the ids are unequal
+        /// </summary>
+        /// <param name="first">Left</param>
+        /// <param name="second">Right</param>
+        /// <returns></returns>
         public static bool operator !=(TextureHandler first, int second) => !(first == second);
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj.GetType() == typeof(TextureHandler))
@@ -53,12 +85,17 @@ namespace SMRenderer.Visual
             }
             else return false;
         }
-
+        /// <summary>
+        /// Checks if both handlers are equal
+        /// </summary>
+        /// <param name="other">The other one</param>
+        /// <returns></returns>
         protected bool Equals(TextureHandler other)
         {
             return ID == other.ID && TexSize.Equals(other.TexSize) && TexPosition.Equals(other.TexPosition);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             unchecked

@@ -9,17 +9,32 @@ using SMRenderer.Visual.Drawing;
 
 namespace SMRenderer.Visual
 {
+    /// <summary>
+    /// Scenes contains the data to show something.
+    /// </summary>
     [Serializable]
     public class Scene
     {
+        /// <summary>
+        /// The default scene, mostly nothing special.
+        /// </summary>
         public static Scene Default;
 
         /// <summary>
         ///     Anything in this layer will be render above the DrawLayers
         ///     <para>Useful for HUDs</para>
+        ///     <para>Doesn't change if the scene is changing.</para>
         /// </summary>
         public static SMLayer Overlayer = new SMLayer();
 
+        /// <summary>
+        /// If true, the Overlayer is shown.
+        /// </summary>
+        public static bool ShowOverlayer = true;
+
+        /// <summary>
+        /// Contains the current scene.
+        /// </summary>
         private static Scene _current;
 
         /// <summary>
@@ -44,25 +59,36 @@ namespace SMRenderer.Visual
         public LightCollection lights = new LightCollection();
 
         /// <summary>
-        ///     used to set the matrices for the SMLayers
+        ///     Action to set the matrices for the SMLayers
         /// </summary>
         public Action<Scene> matrixSetFunc = a =>
         {
             foreach (SMLayer layer in a.DrawLayer.Values) layer.matrix = Camera.staticView;
         };
 
+        /// <summary>
+        /// Returns / Sets the current scene.
+        /// </summary>
         public static Scene Current
         {
             get => _current;
             set => SetCurrent(value);
         }
 
+        /// <summary>
+        /// Sets the current scene.
+        /// </summary>
+        /// <param name="nextScene"></param>
         private static void SetCurrent(Scene nextScene)
         {
             GLWindow.Window.camera = nextScene.camera;
             _current = nextScene;
         }
 
+        /// <summary>
+        /// Generate the normal drawlayer system.
+        /// </summary>
+        /// <param name="override"></param>
         public void GenerateDrawLayer(bool @override = false)
         {
             if (DrawLayer != null && !@override) return;
@@ -75,11 +101,15 @@ namespace SMRenderer.Visual
             matrixSetFunc = a =>
             {
                 a.DrawLayer[(int) SMLayerID.Normal].matrix = camera.ViewProjection;
-                foreach (SMLayer layer in a.DrawLayer.Values.Where(b => b.staticMatrix && b.matrix != Camera.staticView)
-                ) layer.matrix = Camera.staticView;
+                foreach (SMLayer layer in a.DrawLayer.Values.Where(b => b.staticMatrix && b.matrix != Camera.staticView)) 
+                    layer.matrix = Camera.staticView;
             };
         }
 
+        /// <summary>
+        /// Serialize the scene in the stream.
+        /// </summary>
+        /// <param name="stream"></param>
         public void Serialize(Stream stream)
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -94,6 +124,11 @@ namespace SMRenderer.Visual
             }
         }
 
+        /// <summary>
+        /// Deserialize the current stream to a scene
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns>The scene</returns>
         public static Scene Deserialize(Stream stream)
         {
             Scene scene;

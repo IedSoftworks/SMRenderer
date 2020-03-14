@@ -3,6 +3,9 @@ using SMRenderer.Data;
 
 namespace SMRenderer
 {
+    /// <summary>
+    /// Configure grafical settings
+    /// </summary>
     public class GraficalConfig
     {
         /// <summary>
@@ -15,6 +18,10 @@ namespace SMRenderer
         /// </summary>
         public static TextureItem defaultTexture;
 
+        /// <summary>
+        /// If true, the Bloom feature is active and ready to go.
+        /// <para>Bloom is a post-processing and require a lot computing time.</para>
+        /// </summary>
         public static bool AllowBloom = false;
     }
 }

@@ -4,41 +4,87 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace SMRenderer.Data
 {
+    /// <summary>
+    /// Contains object information like Vertices, UV coords, normals, etc...
+    /// </summary>
     [Serializable]
     public class ObjectInfos : Data
     {
+        /// <summary>
+        /// Contains a empty object.
+        /// </summary>
         public static ObjectInfos empty = new ObjectInfos("emptyObj", false);
 
+        /// <summary>
+        /// The Vertex Array Object
+        /// </summary>
         [NonSerialized] private int _vao = -1;
+        /// <summary>
+        /// Vertex count
+        /// </summary>
         [NonSerialized] private int _verticesCount = -1;
 
+        /// <summary>
+        /// Parameterless constructor for automatic instance creation
+        /// </summary>
         public ObjectInfos()
         {
         }
 
+        /// <summary>
+        /// Constuctor
+        /// </summary>
+        /// <param name="refname"></param>
+        /// <param name="add"></param>
         public ObjectInfos(string refname, bool add = true)
         {
             refName = refname;
             if (add) DataManager.C.Add("Meshes", this);
         }
 
-        public virtual List<float> Vertices { get; set; } = new List<float>();
-        public virtual List<float> UVs { get; set; } = new List<float>();
-        public virtual List<float> Normals { get; set; } = new List<float>();
-        public virtual PrimitiveType PrimitiveType { get; set; } = PrimitiveType.Points;
+        /// <summary>
+        /// Contains all Vertices for the object.
+        /// </summary>
+        public List<float> Vertices = new List<float>();
+        /// <summary>
+        /// Contains all UV coordinates for the object.
+        /// </summary>
+        public List<float> UVs = new List<float>();
+        /// <summary>
+        /// Contains all normals for the object.
+        /// </summary>
+        public List<float> Normals = new List<float>();
+        /// <summary>
+        /// Contains the primitiveType for the object
+        /// </summary>
+        public PrimitiveType PrimitiveType = PrimitiveType.Points;
 
+        /// <summary>
+        /// Returns true if the VAO is not -1
+        /// </summary>
         protected override bool IsLoaded => _vao != -1;
 
+        /// <summary>
+        /// Returns the VAO
+        /// </summary>
+        /// <returns></returns>
         public int GetVAO()
         {
             return _vao;
         }
 
+        /// <summary>
+        /// Returns the VerticesCount;
+        /// </summary>
+        /// <returns></returns>
         public int GetVerticesCount()
         {
             return _verticesCount;
         }
 
+        /// <summary>
+        /// Compiles the object and load it properly.
+        /// </summary>
         public void Compile()
         {
             _vao = GL.GenVertexArray();
@@ -75,6 +121,7 @@ namespace SMRenderer.Data
             _verticesCount = Vertices.Count / 3;
         }
 
+        /// <inheritdoc />
         public override void Load()
         {
             Compile();

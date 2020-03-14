@@ -21,10 +21,10 @@ namespace SMRenderer.Visual.Renderers
             {"particle_vertex", Read("Shaders.particle.main.vert", ass)},
             {"particle_frag", Read("Shaders.particle.main.frag", ass)},
 
-            {"ext.bloom", Read("Shaders.ext.bloom.frag", ass)},
-            {"ext.texture", Read("Shaders.ext.texturing.frag", ass)},
-            {"ext.lighting", Read("Shaders.ext.lighting.frag", ass)},
-            {"ext.funcs", Read("Shaders.ext.funcs.glsl", ass)}
+            {"ext:bloom", Read("Shaders.ext.bloom.frag", ass)},
+            {"ext:texture", Read("Shaders.ext.texturing.frag", ass)},
+            {"ext:lighting", Read("Shaders.ext.lighting.frag", ass)},
+            {"ext:funcs", Read("Shaders.ext.funcs.glsl", ass)}
         };
 
 
@@ -36,9 +36,9 @@ namespace SMRenderer.Visual.Renderers
                     vertex = new ShaderProgramFragment(ShaderSource["general_vertex"], ShaderType.VertexShader),
                     fragment = new ShaderProgramFragment(ShaderSource["general_frag"], ShaderType.FragmentShader)
                     {
-                        "ext.bloom",
-                        "ext.texture",
-                        "ext.lighting"
+                        "ext:bloom",
+                        "ext:texture",
+                        "ext:lighting"
                     }
                 }
             },
@@ -57,10 +57,10 @@ namespace SMRenderer.Visual.Renderers
                     vertex = new ShaderProgramFragment(ShaderSource["particle_vertex"], ShaderType.VertexShader),
                     fragment = new ShaderProgramFragment(ShaderSource["particle_frag"], ShaderType.FragmentShader)
                     {
-                        "ext.bloom",
-                        "ext.texture",
-                        "ext.lighting",
-                        "ext.funcs"
+                        "ext:bloom",
+                        "ext:texture",
+                        "ext:lighting",
+                        "ext:funcs"
                     }
                 }
             }

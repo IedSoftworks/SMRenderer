@@ -10,14 +10,19 @@ namespace SMRenderer.Animations
     [Serializable]
     public class Animation
     {
-        public delegate void ChangeEventHandler(double renderTime);
-
+        /// <summary>
+        /// Event args for the event, when the animation ends.
+        /// </summary>
+        /// <param name="sender"></param>
         public delegate void EndEventHandler(Animation sender);
 
+        /// <summary>
+        /// All current active animations
+        /// </summary>
         public static List<Animation> animations = new List<Animation>();
 
         /// <summary>
-        ///     Tells how long the animation took
+        ///     Tells how long the animation already took
         /// </summary>
         private double _curSeconds;
 
@@ -32,7 +37,7 @@ namespace SMRenderer.Animations
         public int curStep = 0;
 
         /// <summary>
-        ///     Contains the Current object
+        ///     Contains the current object
         ///     <para>Used in save functions and for debugging</para>
         /// </summary>
         public object Object;
@@ -47,10 +52,13 @@ namespace SMRenderer.Animations
         /// </summary>
         public TimeSpan time;
 
+        /// <summary>
+        ///     Determinant if the animation should repeat.
+        /// </summary>
         public bool Repeat = false;
 
         /// <summary>
-        ///     The Constructor
+        ///     Construct the animation
         /// </summary>
         /// <param name="time">The Duration</param>
         public Animation(TimeSpan time)

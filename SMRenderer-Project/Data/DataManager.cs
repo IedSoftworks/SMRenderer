@@ -36,9 +36,22 @@ namespace SMRenderer.Data
         /// </summary>
         private Assembly _lockedAssembly;
 
+        /// <summary>
+        /// Returns true, if the current assembly is the assembly that locked this data manager
+        /// </summary>
         public bool IsLockedAssembly => _lockedAssembly == Assembly.GetCallingAssembly();
+        /// <summary>
+        /// Returns true, if the data manger is locked.
+        /// </summary>
         public bool IsLocked => _lockedAssembly != null && !IsLockedAssembly;
 
+        /// <summary>
+        /// Locks the datamanger, if not.
+        /// <para>It isn't a secure way to prevent the user to override it.</para>
+        /// <para>If the user really wants to, he can unlock it easily.</para>
+        /// <para>This is a problem, that I can't repair though the way the SMRenderer is published.</para>
+        /// <para>Its only a way to prevent any other program to serialize it and do possible serious damage.</para>
+        /// </summary>
         public void Lock()
         {
             if (IsLocked) 
@@ -46,7 +59,9 @@ namespace SMRenderer.Data
 
             _lockedAssembly = Assembly.GetCallingAssembly();
         }
-
+        /// <summary>
+        /// Unlocks the data manager.
+        /// </summary>
         public void Unlock()
         {
             if (_lockedAssembly == null)
@@ -80,7 +95,12 @@ namespace SMRenderer.Data
                 return (dataCat ?  _dataCategories : _staticData).First(a => a.Key == name).Value;
             }
         }
-
+        /// <summary>
+        /// Returns a category with specific selected if static or not.
+        /// </summary>
+        /// <param name="name">Category name</param>
+        /// <param name="staticData">If it is true, its expected to be in a static category</param>
+        /// <returns>The DataContainer for the selected name</returns>
         public DataContainer this[string name, bool staticData]
         {
             get
@@ -113,11 +133,21 @@ namespace SMRenderer.Data
         {
             return AddCategory(name, new DataContainer());
         }
-
+        /// <summary>
+        ///     Create a new static category.
+        /// </summary>
+        /// <param name="name">The name of the category</param>
+        /// <returns>the newly created DataContainer</returns>
         public static DataContainer AddCategoryStatic(string name)
         {
             return AddCategoryStatic(name, new DataContainer());
         }
+        /// <summary>
+        ///     Add a category to the static data.
+        /// </summary>
+        /// <param name="name">Name of the category</param>
+        /// <param name="data">Data to add</param>
+        /// <returns>The inserted data.</returns>
         public static DataContainer AddCategoryStatic(string name, DataContainer data)
         {
             _staticData.Add(new KeyValuePair<string, DataContainer>(name, data));
@@ -143,15 +173,42 @@ namespace SMRenderer.Data
         {
             _dataCategories.ForEach(a => { a.Value.ForEach(b => b.Load()); });
         }
-
+        /// <summary>
+        /// Adds data to a category
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <param name="data">Data</param>
+        public static void Add(DataContainer category, Data data)
+        {
+            category.Add(data);
+        }
+        
+        /// <summary>
+        /// Adds data to the category
+        /// </summary>
+        /// <param name="category">category</param>
+        /// <param name="isStatic">True, if it should be static</param>
+        /// <param name="data">The data</param>
+        public void Add(string category, bool isStatic, Data data) 
+        {
+            Add(this[category, isStatic], data);
+        }
+        /// <summary>
+        /// Adds data to the category
+        /// </summary>
+        /// <param name="category">the category</param>
+        /// <param name="data">the data</param>
         public void Add(string category, Data data)
         {
-            this[category].Add(data);
+            Add(this[category], data);
         }
-
+        /// <summary>
+        /// Adds data to the datas category.
+        /// </summary>
+        /// <param name="data">The data.</param>
         public void Add(Data data)
         {
-            this[data.Category].Add(data);
+            Add(data.Category, data);
         }
         /// <summary>
         ///     Load a serialized DataManager
