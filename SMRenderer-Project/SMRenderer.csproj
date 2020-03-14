@@ -61,6 +61,7 @@
     <Compile Include="Animations\Value4Animation.cs" />
     <Compile Include="Animations\Value2Animation.cs" />
     <Compile Include="Animations\Value1Animation.cs" />
+    <Compile Include="Data\DataSelection.cs" />
     <Compile Include="GeneralConfig.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Data\DataContainer.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="ManagerIntergration\Attributes\FieldEntry.cs" />
     <Compile Include="ManagerIntergration\Attributes\NotInclude.cs" />
     <Compile Include="ManagerIntergration\Base\DataEntryReport.cs" />
+    <Compile Include="ManagerIntergration\Base\PresetField.cs" />
     <Compile Include="ManagerIntergration\Base\VisualDataEntry.cs" />
     <Compile Include="ManagerIntergration\VanillaEntry\BitmapEntry.cs" />
     <Compile Include="ManagerIntergration\VanillaEntry\StringEntry.cs" />

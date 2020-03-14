@@ -37,12 +37,12 @@ namespace SMRenderer.Visual.Renderers
             DrawItem drawitem = (DrawItem) item;
             Texture texture = drawitem.Texture.ID == -1
                 ? Texture.empty
-                : ((TextureItem) DataManager.C["Textures"].Data(drawitem.Texture.ID)).texture;
+                : ((TextureItem) DataManager.C[drawitem.Texture.Category].Data(drawitem.Texture.ID)).texture;
             Matrix4 modelview = model * view;
 
             PresetRendererCode.DrawEssencal(this, modelview, drawitem.Size);
             PresetRendererCode.DrawTexturing(this, drawitem.Color, texture.TexId, drawitem.Texture);
-            PresetRendererCode.DrawLighting(this, drawitem.modelMatrix, drawitem.normalMatrix);
+            PresetRendererCode.DrawLighting(this, drawitem.modelMatrix, drawitem.normalMatrix, drawitem.effectArgs);
             PresetRendererCode.DrawBloom(this, drawitem.Color, drawitem.effectArgs);
 
             GL.BindVertexArray(quad.GetVAO());

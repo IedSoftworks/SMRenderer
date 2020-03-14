@@ -3,13 +3,8 @@ using SMRenderer.Data;
 
 namespace SMRenderer.Visual
 {
-    public class TextureHandler
+    public class TextureHandler : DataSelection
     {
-        /// <summary>
-        ///     Contains the texture id
-        /// </summary>
-        public int ID;
-
         /// <summary>
         ///     Sets the visible area in the texture. (in pixels)
         ///     <para>The size of the object ís not effected</para>
@@ -29,11 +24,13 @@ namespace SMRenderer.Visual
         public TextureHandler(int id)
         {
             ID = id;
+            Category = "Texture";
         }
 
         public TextureHandler(TextureItem item)
         {
             ID = item.ID;
+            Category = item.Category;
         }
 
         public static bool operator ==(TextureHandler first, TextureHandler second) => first.Equals(second);

@@ -42,7 +42,7 @@ namespace SMRenderer.Visual.Renderers
 
             PresetRendererCode.DrawEssencal(this, mvp, item.Size);
             PresetRendererCode.DrawTexturing(this, item.Color, texture.TexId, item.Texture);
-            PresetRendererCode.DrawLighting(this, item.ModelMatrix, nMatrix);
+            PresetRendererCode.DrawLighting(this, item.ModelMatrix, nMatrix, item.VisualEffectArgs);
             PresetRendererCode.DrawBloom(this, item.Color, item.VisualEffectArgs);
 
             GL.Uniform3(Uniforms["uParticleMovements"], item.Amount, item.Movements);

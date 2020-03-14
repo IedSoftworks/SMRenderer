@@ -39,6 +39,7 @@ namespace SMRenderer.Visual.Renderers
                 "uN",
                 "uM",
 
+                "uLightAllowed",
                 "uLightPositions",
                 "uLightColors",
                 "uLightDirections",
@@ -48,11 +49,12 @@ namespace SMRenderer.Visual.Renderers
             });
         }
 
-        public static void DrawLighting(GenericRenderer r, Matrix4 modelm, Matrix4 normalm)
+        public static void DrawLighting(GenericRenderer r, Matrix4 modelm, Matrix4 normalm, VisualEffectArgs args)
         {
             GL.UniformMatrix4(r.Uniforms["uM"], false, ref modelm);
             GL.UniformMatrix4(r.Uniforms["uN"], false, ref normalm);
 
+            GL.Uniform1(r.Uniforms["uLightAllowed"], args.AffectedByLight ? 1 : 0);
             GL.Uniform4(r.Uniforms["uLightPositions"], Scene.Current.lights.Count,
                 Scene.Current.lights.ShaderArgsPositions);
             GL.Uniform4(r.Uniforms["uLightColors"], Scene.Current.lights.Count, Scene.Current.lights.ShaderArgsColors);

@@ -23,6 +23,8 @@ namespace SMRenderer.Data
         /// </summary>
         public static DataManager C;
 
+        private static List<KeyValuePair<string, DataContainer>> _staticData = new List<KeyValuePair<string, DataContainer>>();
+
         /// <summary>
         ///     Contains all DataCategories
         /// </summary>
@@ -68,8 +70,25 @@ namespace SMRenderer.Data
         {
             get
             {
-                if (_dataCategories.All(a => a.Key != name)) throw new Exception($"Category '{name}' doesn't exist.");
-                return _dataCategories.First(a => a.Key == name).Value;
+                bool dataCat = _dataCategories.Any(a => a.Key == name);
+                bool staticCat = _staticData.Any(a => a.Key == name);
+
+                if (dataCat && staticCat) throw new Exception($"Category '{name}' can be found in the static data and in the normal data. \nPlease use a second bool with 'true' to access the static data.\nOr use a unique category name.");
+                if (!dataCat && !staticCat) throw new Exception($"Category '{name}' doesn't exist.");
+
+
+                return (dataCat ?  _dataCategories : _staticData).First(a => a.Key == name).Value;
+            }
+        }
+
+        public DataContainer this[string name, bool staticData]
+        {
+            get
+            {
+                List<KeyValuePair<string, DataContainer>> list = staticData ? _staticData : _dataCategories;
+
+                if (list.All(a => a.Key == name)) throw new Exception($"Category '{name}' doesn't exist.");
+                return list.First(a => a.Key == name).Value;
             }
         }
 
@@ -93,6 +112,16 @@ namespace SMRenderer.Data
         public DataContainer AddCategory(string name)
         {
             return AddCategory(name, new DataContainer());
+        }
+
+        public static DataContainer AddCategoryStatic(string name)
+        {
+            return AddCategoryStatic(name, new DataContainer());
+        }
+        public static DataContainer AddCategoryStatic(string name, DataContainer data)
+        {
+            _staticData.Add(new KeyValuePair<string, DataContainer>(name, data));
+            return data;
         }
 
         /// <summary>
@@ -120,6 +149,10 @@ namespace SMRenderer.Data
             this[category].Add(data);
         }
 
+        public void Add(Data data)
+        {
+            this[data.Category].Add(data);
+        }
         /// <summary>
         ///     Load a serialized DataManager
         /// </summary>

@@ -47,6 +47,8 @@ namespace SMRenderer.Animations
         /// </summary>
         public TimeSpan time;
 
+        public bool Repeat = false;
+
         /// <summary>
         ///     The Constructor
         /// </summary>
@@ -97,8 +99,9 @@ namespace SMRenderer.Animations
         {
             if (!Active) return;
             animations.Remove(this);
-            End?.Invoke(this);
             Active = false;
+            End?.Invoke(this);
+            if (Repeat) Start();
         }
     }
 }

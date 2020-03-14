@@ -20,6 +20,8 @@ namespace SMRenderer.Data
         /// </summary>
         [EditorField] public string refName;
 
+        public string Category;
+
         /// <summary>
         ///     Returns true if IsLoaded
         /// </summary>

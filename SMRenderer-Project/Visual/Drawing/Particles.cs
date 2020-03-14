@@ -34,7 +34,7 @@ namespace SMRenderer.Visual.Drawing
 
         public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
         {
-            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
+            ModelMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((Direction + 180) % 360)) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
 
             Matrix4 no = Matrix4.Transpose(ModelMatrix);
             no.Invert();
@@ -76,12 +76,9 @@ namespace SMRenderer.Visual.Drawing
 
         public virtual Vector2 CalculateMotion()
         {
-            Vector2 mot = new Vector2();
-            mot.X = Directional ? Range.Value : 1;
-            mot.Y = Speed.FloatValue * 25;
+            Vector2 mot = new Vector2 { X = Directional ? Range.Value : 1, Y = Speed.FloatValue * 25 };
 
-            return Rotation.PositionFromRotation(Vector2.Zero, mot,
-                Directional ? (Direction + 180) % 380 : SMGlobals.random.Next(0, 360));
+            return mot;
         }
     }
 }

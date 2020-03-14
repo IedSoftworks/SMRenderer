@@ -1,4 +1,5 @@
 ﻿using System;
+using SMRenderer.ManagerIntergration.Base;
 
 namespace SMRenderer.ManagerIntergration.Attributes
 {
@@ -8,5 +9,13 @@ namespace SMRenderer.ManagerIntergration.Attributes
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class EditorField : Attribute
     {
+        public PresetField[] fields;
+
+        public EditorField() { }
+
+        public EditorField(params PresetField[] fields)
+        {
+            this.fields = fields;
+        }
     }
 }

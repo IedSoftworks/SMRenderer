@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security.RightsManagement;
 
 namespace SMRenderer.Data
@@ -10,9 +11,7 @@ namespace SMRenderer.Data
     /// </summary>
     [Serializable]
     public class DataContainer : List<Data>
-    {
-        public DataManager ParentManager;
-
+    { 
         /// <summary>
         ///     Saved the next ID
         /// </summary>
@@ -30,6 +29,8 @@ namespace SMRenderer.Data
         public new void Add(Data data)
         {
             if (this.Any(a => a.refName == data.refName))
+                
+                
                 throw new Exception($"INSERT DATA FAILED: The referenceName '{data.refName}' exist already.");
             base.Add(data);
             data.ID = index++;

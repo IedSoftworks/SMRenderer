@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Markup;
 using OpenTK;
 using SMRenderer.ManagerIntergration.Attributes;
 using SMRenderer.Visual;
@@ -26,7 +27,17 @@ namespace SMRenderer.Data
         {
             refName = name;
             this.bitmap = bitmap;
-            DataManager.C.Add("Textures", this);
+            Category = "Textures";
+            DataManager.C.Add(this);
+        }
+
+        public TextureItem(string name, string category, Bitmap bitmap)
+        {
+
+            refName = name;
+            this.bitmap = bitmap;
+            Category = category;
+            DataManager.C.Add(this);
         }
 
         [field: NonSerialized] public Texture texture { get; private set; }
