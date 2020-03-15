@@ -105,6 +105,7 @@
     <Compile Include="Visual\Drawing\LightCollection.cs" />
     <Compile Include="Visual\Drawing\LightSource.cs" />
     <Compile Include="Visual\Drawing\Particles.cs" />
+    <Compile Include="Animations\TextureAnimation.cs" />
     <Compile Include="Visual\TextureHandler.cs" />
     <Compile Include="Visual\Drawing\VisualEffectArgs.cs" />
     <Compile Include="Visual\GLWindow.cs" />
