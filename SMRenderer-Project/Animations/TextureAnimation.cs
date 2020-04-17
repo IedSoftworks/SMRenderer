@@ -42,6 +42,11 @@ namespace SMRenderer.Animations
         /// </summary>
         public int FramesPerSecond;
 
+        /// <summary>
+        /// Repeats the animation
+        /// </summary>
+        public bool Repeat = true;
+
         /// <inheritdoc />
         public TextureAnimation()
         {
@@ -91,10 +96,15 @@ namespace SMRenderer.Animations
                     return;
                 }
 
-
                 if (CurrentFrame > MaximalFrames)
                 {
-                    Stop();
+                    if (Repeat)
+                    {
+                        CurrentFrame = 0;
+                        TexPosition = Vector2.Zero;
+                    }
+                    else Stop();
+
                     return;
                 }
                 CurrentFrame++;
@@ -107,6 +117,7 @@ namespace SMRenderer.Animations
         /// </summary>
         public void Stop()
         {
+            TexPosition = Vector2.Zero;
             _active = false;
 
         }

@@ -14,6 +14,7 @@ using SMRenderer.Visual.Drawing;
 using SMRenderer.Visual.Renderers;
 using Keyboard = OpenTK.Input.Keyboard;
 using Mouse = SMRenderer.Input.Mouse;
+using MouseButton = System.Windows.Input.MouseButton;
 
 namespace SMRenderer.Visual
 {
@@ -75,10 +76,6 @@ namespace SMRenderer.Visual
         #region | Normal Rendering |
 
         /// <summary>
-        /// Contains all renderer, that is used by this window
-        /// </summary>
-        public RendererCollection rendererList = new RendererCollection();
-        /// <summary>
         /// Contains the modelMatrix for the Bloom
         /// </summary>
         private Matrix4 _modelMatrixBloom;
@@ -138,9 +135,15 @@ namespace SMRenderer.Visual
         /// <param name="e"></param>
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            SMGlobals.focused = Focused;
+
+            SMGlobals.keyboardState = Keyboard.GetState();
+            SMGlobals.mouseState = OpenTK.Input.Mouse.GetState();
+
+            KeybindCollection.AutoExecute.CheckAndExecute();
+
             if (!Focused && GeneralConfig.OnlyRenderIfFocused) return;
 
-            KeyboardState state = Keyboard.GetState();
 
             double time = (float) e.Time * deltatimeScale;
 
@@ -161,12 +164,14 @@ namespace SMRenderer.Visual
         /// <param name="e"></param>
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            base.OnRenderFrame(e);
+
             double time = e.Time * deltatimeScale;
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, GraficalConfig.AllowBloom ? _framebufferIdMain : 0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Baseplate.Prepare(e.Time);
-            Baseplate.Draw(Camera.staticView, (GenericObjectRenderer) rendererList[rendererList["GeneralRenderer"]]);
+            Baseplate.Draw(Camera.staticView);
 
             foreach (SMLayer layer in Scene.Current.DrawLayer.Values) layer.Order();
             Scene.Current.DrawLayer =
@@ -176,18 +181,21 @@ namespace SMRenderer.Visual
             {
                 pair.Value.ToList().ForEach(a => a.Prepare(time));
                 pair.Value.ForEach(a =>
-                    a.Draw(pair.Value.matrix, (GenericObjectRenderer) rendererList[pair.Value.renderer]));
+                    a.Draw(pair.Value.matrix));
             }
 
             Scene.Overlayer.Order();
             Scene.Overlayer.ToList().ForEach(a => a.Prepare(time));
             Scene.Overlayer.ForEach(a =>
-                a.Draw(Scene.Overlayer.matrix, (GenericObjectRenderer) rendererList[Scene.Overlayer.renderer]));
+                a.Draw(Scene.Overlayer.matrix));
 
             DownsampleFramebuffer();
             if (GraficalConfig.AllowBloom) ApplyBloom();
 
             SwapBuffers();
+
+            if (CheckGLErrors())
+                Console.WriteLine("ERROR");
         }
 
         /// <summary>
@@ -203,7 +211,7 @@ namespace SMRenderer.Visual
         {
             GeneralConfig.Renderer.ForEach(a =>
             {
-                rendererList.Add((GenericRenderer) Activator.CreateInstance(a, this));
+                Activator.CreateInstance(a, this);
             });
 
             DataManager.C = GeneralConfig.UseDataManager == null
@@ -215,7 +223,7 @@ namespace SMRenderer.Visual
             Baseplate = new DrawItem
             {
                 Object = new DrawObject() { 
-                    Color = GraficalConfig.ClearColor,
+                    Color = GraficalConfig.ClearColor
                 },
                 connected = this,
                 positionAnchor = "lu",
@@ -251,7 +259,7 @@ namespace SMRenderer.Visual
         /// </summary>
         public static void Preload()
         {
-            Texture.CreateEmpty();
+            TextureItem.CreateEmpty();
         }
 
         /// <summary>

@@ -8,12 +8,14 @@ vec2 pos;
 void Bloom();
 void Lighting();
 void Texturing();
+void Depth();
 
 void main() {
 	pos = vPosition.xy * uObjectSize + vec2(uObjectSize.x / 2, uObjectSize.y /2);
 	
 	Texturing();
 	Lighting();
+	Depth();
 	Bloom();
 }
 

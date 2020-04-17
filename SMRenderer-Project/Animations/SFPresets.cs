@@ -13,7 +13,7 @@ namespace SMRenderer.Animations
         /// <summary>
         ///     Animation function for position
         /// </summary>
-        public static Action<Value2Animation, Vector2> DrawItemPosition = (a, b) => ((DrawItem) a.Object).Position = b;
+        public static Action<Value2Animation, Vector3> DrawItemPosition = (a, b) => ((DrawItem) a.Object).Position = b;
 
         /// <summary>
         ///     Animation function for rotation

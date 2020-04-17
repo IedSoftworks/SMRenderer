@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenTK;
+using SMRenderer.Data;
 using SMRenderer.ManagerIntergration.Attributes;
 using SMRenderer.Visual.Drawing;
 using SMRenderer.Visual.Renderers;
@@ -14,6 +15,11 @@ namespace SMRenderer.Visual
     public class SMItem
     {
         /// <summary>
+        /// 
+        /// </summary>
+        public GenericObjectRenderer renderer;
+
+        /// <summary>
         ///     Connect the DrawItem with a object. Usefully for debugging
         /// </summary>
         public object connected = new object();
@@ -22,10 +28,6 @@ namespace SMRenderer.Visual
         /// Contains the modelMatrix
         /// </summary>
         public Matrix4 modelMatrix;
-        /// <summary>
-        /// Contains the normalMatrix, used for light calculation
-        /// </summary>
-        public Matrix4 normalMatrix;
 
         /// <summary>
         /// Saves in what layer the item is in.
@@ -49,10 +51,34 @@ namespace SMRenderer.Visual
         /// <summary>
         /// Tells the program to render stuff.
         /// </summary>
-        /// <param name="matrix">The viewMatrix</param>
-        /// <param name="renderer">The render program</param>
-        public virtual void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
+        /// <param name="viewMatrix">The viewMatrix</param>
+        public virtual void Draw(Matrix4 viewMatrix)
         {
+        }
+
+        public void Draw(Matrix4 view, Matrix4 model, bool normal = true)
+        {
+            Draw(Object, view, model, normal);
+        }
+
+        public void Draw(DrawObject obj, Matrix4 view, Matrix4 model, bool normal = true)
+        {
+            if (renderer == null)
+            {
+                if (!GenericObjectRenderer.TRC.ContainsKey(GetType()))
+                    throw new Exception("[ERROR]\nThis type has no renderer.");
+
+                renderer = GenericObjectRenderer.TRC[GetType()];
+            }
+
+            Matrix4 normalmatrix = Matrix4.Zero;
+            if (normal)
+            {
+                normalmatrix = Matrix4.Transpose(model);
+                normalmatrix.Invert();
+            }
+
+            renderer.Draw(obj, this, view, model, normalmatrix);
         }
 
         /// <summary>
@@ -81,6 +107,7 @@ namespace SMRenderer.Visual
         /// <param name="RenderSec"></param>
         public virtual void Prepare(double RenderSec)
         {
+            Object.Update(RenderSec);
         }
     }
 }

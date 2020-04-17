@@ -36,29 +36,37 @@ namespace SMRenderer.Visual.Drawing
             Create(region);
         }
 
-        private void Create(Vector2 position)
+        private void Create(Vector2 pos)
         {
+            Vector3 position = new Vector3(pos);
             RenderOrder = 255;
             purpose = "AxisHelper at " + position.X + " " + position.Y;
             items.AddRange(new[]
             {
                 new DrawItem
                 {
-                    Position = position + new Vector2(0, 5),
-                    Size = new Vector2(5, 15),
+                    Object =
+                    {
+
+                        Color = Color4.Blue,
+                        Size = new Vector2(5, 15),
+                    },
+                    Position = position + new Vector3(0, 5, 0),
                     positionAnchor = "lu",
                     connected = this,
                     Rotation = 0,
-                    Color = Color4.Blue
                 },
                 new DrawItem
                 {
-                    Position = position + new Vector2(5, 0),
-                    Size = new Vector2(15, 5),
+                    Object =
+                    {
+                        Color = Color4.Red,
+                        Size = new Vector2(15, 5),
+                    },
+                    Position = position + new Vector3(5, 0,0),
                     positionAnchor = "lu",
                     connected = this,
                     Rotation = 0,
-                    Color = Color4.Red
                 }
             });
         }
@@ -71,23 +79,30 @@ namespace SMRenderer.Visual.Drawing
             {
                 new DrawItem
                 {
+                    Object =
+                    {
+
+                        Color = Color4.Blue,
+                        Size = new Vector2(5, 15),
+                    },
                     Region = region,
-                    Position = new Vector2(0, 5),
-                    Size = new Vector2(5, 15),
+                    Position = new Vector3(0, 5, 0),
                     positionAnchor = "lu",
                     connected = this,
                     Rotation = 0,
-                    Color = Color4.Blue
                 },
                 new DrawItem
                 {
+                    Object =
+                    {
+                        Color = Color4.Red,
+                        Size = new Vector2(15, 5),
+                    },
                     Region = region,
-                    Position = new Vector2(5, 0),
-                    Size = new Vector2(15, 5),
+                    Position = new Vector3(5, 0, 0),
                     positionAnchor = "lu",
                     connected = this,
                     Rotation = 0,
-                    Color = Color4.Red
                 }
             });
         }

@@ -13,13 +13,23 @@ namespace SMRenderer.Data
     [Serializable]
     public class TextureItem : Data
     {
+        public static TextureItem empty;
+
+        public static void CreateEmpty()
+        {
+            Bitmap bit = new Bitmap(1, 1);
+            bit.SetPixel(0, 0, Color.White);
+            empty = new TextureItem { bitmap = bit };
+            empty.Load();
+        }
+
         /// <summary>
-        /// The source data.
+        ///     The source data.
         /// </summary>
         [EditorField] public Bitmap bitmap;
 
         /// <summary>
-        /// Parameterless constructor for automatic instance creation
+        ///     Parameterless constructor for automatic instance creation
         /// </summary>
         public TextureItem()
         {

@@ -64,14 +64,11 @@ namespace SMRenderer.Visual.Drawing
         public bool Directional { get; private set; }
 
         /// <inheritdoc />
-        public override void Draw(Matrix4 matrix, GenericObjectRenderer renderer)
+        public override void Draw(Matrix4 matrix)
         {
             modelMatrix = Matrix4.CreateScale(Object.Size.X, Object.Size.Y, 1) * Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((Direction + 180) % 360)) * Matrix4.CreateTranslation(Origin.X, Origin.Y, 0);
 
-            Matrix4 no = Matrix4.Transpose(modelMatrix);
-            no.Invert();
-
-            ParticleRenderer.program.Draw(this, modelMatrix * matrix, no);
+            Draw(matrix, modelMatrix);
         }
 
         /// <inheritdoc />

@@ -1,4 +1,5 @@
 ﻿using System;
+using OpenTK.Input;
 
 namespace SMRenderer.Data
 {
@@ -22,9 +23,14 @@ namespace SMRenderer.Data
         /// </summary>
         public static double currentDeltaTimeUnscaled = 0;
 
+        public static bool focused;
+
         /// <summary>
         /// A global randomizer.
         /// </summary>
         public static Random random = new Random();
+
+        public static KeyboardState keyboardState;
+        public static MouseState mouseState;
     }
 }

@@ -3,15 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SMRenderer.Animations;
-using OpenTK;
-using OpenTK.Graphics;
 using System.IO;
+using OpenTK;
+using OpenTK.Input;
 using SMRenderer;
 using SMRenderer.Data;
+using SMRenderer.Input;
 using SMRenderer.Visual;
 using SMRenderer.Visual.Drawing;
 
@@ -25,7 +22,7 @@ namespace TestProject
         {
             
             //Configure.UseScale = false;
-            GraficalConfig.ClearColor = Color.White;
+            GraficalConfig.ClearColor = Color.Black;
             GraficalConfig.AllowBloom = true;
 
             string title = "Testing window";
@@ -36,7 +33,7 @@ namespace TestProject
             DataManager.AddCategoryStatic("sTextures");
 
             GLWindow window = new GLWindow(500, 500);
-            window.UpdateFrame += (a, b) =>
+            window.RenderFrame += (a, b) =>
             {
                 window.Title = $"{title} | {window.camera.CurrentLocation.X}, {window.camera.CurrentLocation.Y} | {b.Time * 1000}ms";
             };
@@ -55,98 +52,39 @@ namespace TestProject
         }
         static void Test1()
         {
-            Scene.Current.ambientLight = Color.Black;
-            //new TextureItem("Borderlands", new Bitmap("tex.jpg"));
+            Scene.Current.depthSettings = DepthSettings.Default;
 
-            Scene.Current.lights.Add(new LightSource()
-            {
-                Color = Color.White,
-                Position = new Vector2(0,250),
-                Intensity = 1,
-                Direction = new Vector2(1,0)
-            });
+            TextureItem tex = new TextureItem("tex1", "sTextures", new Bitmap("draconier_logo.png"));
 
-            DrawItem item = new DrawItem
-            {
-                Object = new DrawObject() { 
-                    Size = new Vector2(20),
-                    effectArgs = new VisualEffectArgs
-                    {
-                        BloomUsage = EffectBloomUsage.ObjectColor,
-                    }
-                },
-                Position = new Vector2(100),
-                Rotation = 45
-            };
-            item.Animations = new AnimationCollection
-            {
+            DrawItem i1 = new DrawItem {
+                Position = new Vector3(100,250,-1),
+                Object = new DrawObject
                 {
-                    "move1",
-                    new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(100), new Vector2(100,400), SFPresets.DrawItemPosition) {Object = item}
-                },
-                {
-                    "move2",
-                    new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(100,400), new Vector2(400), SFPresets.DrawItemPosition) {Object = item}
-                },
-                {
-                    "move3",
-                    new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(400), new Vector2(400,100), SFPresets.DrawItemPosition) {Object = item}
-                },
-                {
-                    "move4",
-                    new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(400,100), new Vector2(100), SFPresets.DrawItemPosition) {Object = item}
+                    Size = new Vector2(50),
+                    Texture = new TextureHandler(tex)
                 }
             };
-            SM.Add(item);
-            item.Animations["move1"].End += sender => { item.Animations["move2"].Start(); }; 
-            item.Animations["move2"].End += sender => { item.Animations["move3"].Start(); }; 
-            item.Animations["move3"].End += sender => { item.Animations["move4"].Start(); };
-            item.Animations["move1"].Start();
-
-            particles = new Particles
+            SM.Add(i1);
+            DrawItem i2 = new DrawItem
             {
-                Object =
+                Position = new Vector3(400, 250, 0),
+                Object = new DrawObject
                 {
-                    effectArgs = new VisualEffectArgs
-                    {
-                        BloomUsage = EffectBloomUsage.Render
-                    },
-                    Color = Color.Red,
-                    Size = new Vector2(20),
-                },
-
-                RenderOrder = -1,
-                Direction = -45,
-                Range = new SMRenderer.Math.Range(5),
-                Speed = new SMRenderer.Math.Range(1,3),
-                Amount = 50,
-                Origin = new Vector2(500),
-                
-                Duration = TimeSpan.FromSeconds(20),
+                    Size = new Vector2(50)
+                }
             };
-            SM.Add(particles);
+            SM.Add(i2);
 
-            Particles particles2 = new Particles
-            {
-                Object =
+            DrawItem i3 = new DrawItem {
+                Position = new Vector3(100, 400, 0),
+                Object = new DrawObject
                 {
-                    effectArgs = new VisualEffectArgs
-                    {
-                        BloomUsage = EffectBloomUsage.Render
-                    },
-                    Color = Color4.Blue,
-                    Size = new Vector2(20)
+                    Size = new Vector2(300, 50),
                 },
-                RenderOrder = -2,
-                Direction = 45,
-                Amount = 50,
-                Origin = new Vector2(0,500),
-                Range = new SMRenderer.Math.Range(5),
-                Speed = new SMRenderer.Math.Range(1, 3),
-                
-                Duration = TimeSpan.FromSeconds(20),
+                positionAnchor = "lu"
             };
-            SM.Add(particles2);
+            i3.Object.effectArgs.BloomUsage = EffectBloomUsage.Render;
+            SM.Add(i3);
         }
         static void Test2()
         {

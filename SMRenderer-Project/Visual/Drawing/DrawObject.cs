@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
+using SMRenderer.Animations;
 using SMRenderer.Data;
 
 namespace SMRenderer.Visual.Drawing
@@ -16,7 +17,7 @@ namespace SMRenderer.Visual.Drawing
         /// <summary>
         ///     The object that need to be render.
         /// </summary>
-        public int obj = DataManager.C["Meshes"].ID("Quad");
+        public DataSelection obj = new DataSelection("Quad", "Meshes");
 
         /// <summary>
         ///     Specifies the scale of the object
@@ -31,5 +32,10 @@ namespace SMRenderer.Visual.Drawing
         ///     Contains all arguments for visual effects
         /// </summary>
         public VisualEffectArgs effectArgs = new VisualEffectArgs();
+
+        public virtual void Update(double deltatime)
+        {
+            if (Texture.GetType() == typeof(TextureAnimation)) ((TextureAnimation) Texture).Update(deltatime);
+        }
     }
 }

@@ -41,12 +41,12 @@ namespace SMRenderer.Data
         /// </summary>
         public bool IsLockedAssembly => _lockedAssembly == Assembly.GetCallingAssembly();
         /// <summary>
-        /// Returns true, if the data manger is locked.
+        /// Returns true, if the data manager is locked.
         /// </summary>
-        public bool IsLocked => _lockedAssembly != null && !IsLockedAssembly;
+        public bool IsLocked => _lockedAssembly != null;
 
         /// <summary>
-        /// Locks the datamanger, if not.
+        /// Locks the datamanager, if not.
         /// <para>It isn't a secure way to prevent the user to override it.</para>
         /// <para>If the user really wants to, he can unlock it easily.</para>
         /// <para>This is a problem, that I can't repair though the way the SMRenderer is published.</para>
@@ -70,7 +70,7 @@ namespace SMRenderer.Data
                 return;
             }
 
-            if (!IsLockedAssembly) 
+            if (_lockedAssembly != Assembly.GetCallingAssembly()) 
                 throw new Exception($"ERROR AT UNLOCKING:\n  This dataManager doesn't have its lock from the selected assembly.\n\n  Selected Assembly: {Assembly.GetCallingAssembly().FullName}");
 
             _lockedAssembly = null;

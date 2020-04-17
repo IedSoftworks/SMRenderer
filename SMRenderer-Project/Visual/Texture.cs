@@ -79,16 +79,5 @@ namespace SMRenderer.Visual
         {
             GL.DeleteTexture(TexId);
         }
-
-        /// <summary>
-        /// Creates the empty texture
-        /// </summary>
-        public static void CreateEmpty()
-        {
-            Bitmap bit = new Bitmap(1, 1);
-            bit.SetPixel(0, 0, Color.White);
-            empty = new Texture(bit);
-            bit.Dispose();
-        }
     }
 }

@@ -5,15 +5,16 @@
     /// </summary>
     public class DataSelection
     {
+
         /// <summary>
         /// Returns the data selection
         /// </summary>
-        public Data Data => DataManager.C[Category].Data(ID);
+        public Data Data => GetData();
 
         /// <summary>
         /// Contains the dataID
         /// </summary>
-        public int ID;
+        public int ID = -1;
         /// <summary>
         /// Contains the category for the data.
         /// </summary>
@@ -33,6 +34,20 @@
         {
             ID = id;
             Category = category;
+        }
+        public DataSelection(string reference, string category)
+        {
+            ID = DM.C[category].ID(reference);
+            Category = category;
+        }
+
+        /// <summary>
+        /// Returns the data, that is selected
+        /// </summary>
+        /// <returns></returns>
+        public virtual Data GetData()
+        {
+            return DataManager.C[Category].Data(ID);
         }
     }
 }

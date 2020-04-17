@@ -15,7 +15,7 @@ namespace SMRenderer.ManagerIntergration.Attributes
         /// </summary>
         public PresetField field;
         /// <summary>
-        /// Parameterless constructor for taging
+        /// Parameter-less constructor for tagging
         /// </summary>
         public EditorField() { }
 

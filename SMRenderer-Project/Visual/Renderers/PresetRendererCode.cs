@@ -15,7 +15,6 @@ namespace SMRenderer.Visual.Renderers
                     list.Add(a);
         }
 
-
         public static void UniformEssencal(GenericRenderer renderer)
         {
             AddRangeIfNotExist(renderer.RequestedAttrib, new[] {"aPosition", "aTexture"});
@@ -65,6 +64,17 @@ namespace SMRenderer.Visual.Renderers
             GL.Uniform4(r.Uniforms["uAmbientLight"], Scene.Current.ambientLight);
         }
 
+        public static void UniformDepth(GenericRenderer r)
+        {
+            AddRangeIfNotExist(r.RequestedAttrib, new[] { "aPosition"});
+            AddRangeIfNotExist(r.RequestedFragData, new[] { "color" });
+            AddRangeIfNotExist(r.RequestedUniforms, new [] {"uDepthSettings"});
+        }
+
+        public static void DrawDepth(GenericRenderer r)
+        {
+            GL.Uniform3(r.Uniforms["uDepthSettings"], Scene.Current.depthSettings.ShaderArgument());
+        }
 
         public static void UniformTexturing(GenericRenderer renderer)
         {

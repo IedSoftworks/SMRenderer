@@ -58,6 +58,8 @@ namespace SMRenderer.Visual
         /// </summary>
         public LightCollection lights = new LightCollection();
 
+        public DepthSettings depthSettings = DepthSettings.None;
+
         /// <summary>
         ///     Action to set the matrices for the SMLayers
         /// </summary>

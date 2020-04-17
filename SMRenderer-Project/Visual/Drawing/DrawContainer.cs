@@ -20,9 +20,9 @@ namespace SMRenderer.Visual.Drawing
         /// </summary>
         /// <param name="viewMatrix">Current viewMatrix</param>
         /// <param name="renderer">The Current renderer</param>
-        public override void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
+        public override void Draw(Matrix4 viewMatrix)
         {
-            items.ForEach(a => { a.Draw(viewMatrix, renderer); });
+            items.ForEach(a => { a.Draw(viewMatrix); });
         }
 
         /// <summary>

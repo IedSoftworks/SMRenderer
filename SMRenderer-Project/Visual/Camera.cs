@@ -44,7 +44,7 @@ namespace SMRenderer.Visual
         /// <summary>
         /// Returns where the camera currently is.
         /// </summary>
-        public Vector2 CurrentLocation => useAnchor ? anchor.Position : position;
+        public Vector2 CurrentLocation => useAnchor ? anchor.Position.Xy : position;
 
         /// <summary>
         /// Updates the projection
@@ -63,7 +63,7 @@ namespace SMRenderer.Visual
         /// <returns></returns>
         public Matrix4 CreateView()
         {
-            Vector2 pos = useAnchor ? anchor.Position : position;
+            Vector2 pos = useAnchor ? anchor.Position.Xy : position;
             return Matrix4.LookAt(pos.X, pos.Y, 1, pos.X, pos.Y, 0, 0, 1, 0);
         }
     }

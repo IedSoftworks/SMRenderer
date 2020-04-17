@@ -13,7 +13,7 @@ float weight[9] = float[] (.4, .2,.1,.075,.05,.01,.0075,.005,.0001);
 vec2 tex_offset = vec2(1,1);
 
 float bloomSizeFactor = 0.00075;
-float multiplier = 1;
+float multiplier = 2;
 
 void main() {
 	vec3 result = texture(uTextureBloom, vTex).rgb * weight[0];

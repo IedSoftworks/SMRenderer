@@ -19,7 +19,7 @@ namespace SMRenderer.ManagerIntergration.Base
         /// <summary>
         /// Create a report to stop the loading
         /// </summary>
-        /// <param name="action">The action what happends after it stopped</param>
+        /// <param name="action">The action what happens after it stopped</param>
         /// <returns>The report</returns>
         public static DataEntryReport StopLoading(Action action)
         {

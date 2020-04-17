@@ -43,7 +43,7 @@ namespace SMRenderer.Visual.Drawing
         /// <summary>
         ///     Specifies the position of the object
         /// </summary>
-        public Vector2 Position = Vector2.Zero;
+        public Vector3 Position = Vector3.Zero;
         
         /// <summary>
         ///     Specifies the anchor for the position
@@ -66,36 +66,30 @@ namespace SMRenderer.Visual.Drawing
         public float Rotation = 0;
 
 
-
-        /// <summary>
-        ///     Tell the program to actual draw the object
-        /// </summary>
-        public override void Draw(Matrix4 viewMatrix, GenericObjectRenderer renderer)
+        /// <inheritdoc />
+        public override void Draw(Matrix4 viewMatrix)
         {
             if (!Visible) return; // Stops the drawing process, if the object is not visible
 
-            Matrix4.Transpose(ref modelMatrix, out normalMatrix);
-            normalMatrix.Invert();
-
-            renderer.Draw((ObjectInfos) DataManager.C["Meshes"].Data(Object.obj), this, viewMatrix, modelMatrix);
+            Draw(Object, viewMatrix, modelMatrix);
         }
 
-        /// <summary>
-        ///     Prepare the object to drawing
-        /// </summary>
-        /// <param name="i"></param>
+
+        /// <inheritdoc />
         public override void Prepare(double i)
         {
+            base.Prepare(i);
+
             ActualRotation = Rotation + Region.GetRotation();
             ActualRotation %= 360;
 
             // Calculate the position
-            ActualPosition = Helper.Rotation.PositionFromRotation(Region.GetPosition(), Position, Region.GetRotation());
-            CenterPoint = CalculatePositionAnchor(Position, Object.Size, positionAnchor);
+            ActualPosition = Helper.Rotation.PositionFromRotation(Region.GetPosition().Xy, Position.Xy, Region.GetRotation());
+            CenterPoint = CalculatePositionAnchor(Position.Xy, Object.Size, positionAnchor);
 
             modelMatrix = Matrix4.CreateScale(Object.Size.X, Object.Size.Y, 1) *
                           Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(ActualRotation)) *
-                          Matrix4.CreateTranslation(CenterPoint.X, CenterPoint.Y, 0);
+                          Matrix4.CreateTranslation(CenterPoint.X, CenterPoint.Y, Position.Z);
 
             if (CheckVisible)
                 Visible = Rectangle.Intersect(GLWindow.Window.WindowRect,

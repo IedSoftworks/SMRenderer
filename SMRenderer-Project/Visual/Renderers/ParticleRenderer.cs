@@ -6,11 +6,11 @@ using SMRenderer.Visual.Drawing;
 
 namespace SMRenderer.Visual.Renderers
 {
-    internal class ParticleRenderer : GenericRenderer
+    internal class ParticleRenderer : GenericObjectRenderer
     {
         public static ParticleRenderer program;
 
-        public ParticleRenderer(GLWindow window)
+        public ParticleRenderer(GLWindow window) : base(typeof(Particles))
         {
             this.window = window;
 
@@ -31,23 +31,24 @@ namespace SMRenderer.Visual.Renderers
             program = this;
         }
 
-        internal void Draw(Particles item, Matrix4 mvp, Matrix4 nMatrix)
+        internal override void Draw(DrawObject drawObject, SMItem inputItem, Matrix4 viewMatrix, Matrix4 modelMatrix, Matrix4 normalMatrix)
         {
-            Texture texture = item.Texture == -1
-                ? Texture.empty
-                : ((TextureItem) DataManager.C["Textures"].Data(item.Texture.ID)).texture;
-            ObjectInfos obj = (ObjectInfos) DataManager.C["Meshes"].Data(item.Object);
+            Matrix4 mvp = modelMatrix * viewMatrix;
+
+            Particles item = (Particles) inputItem;
+            Texture texture = ((TextureItem) item.Object.Texture.Data).texture;
+            ObjectInfos obj = (ObjectInfos) item.Object.obj.Data;
 
             GL.UseProgram(mProgramId);
 
-            PresetRendererCode.DrawEssencal(this, mvp, item.Size);
-            PresetRendererCode.DrawTexturing(this, item.Color, texture.TexId, item.Texture);
-            PresetRendererCode.DrawLighting(this, item.ModelMatrix, nMatrix, item.VisualEffectArgs);
-            PresetRendererCode.DrawBloom(this, item.Color, item.VisualEffectArgs);
+            PresetRendererCode.DrawEssencal(this, mvp, item.Object.Size);
+            PresetRendererCode.DrawTexturing(this, item.Object.Color, texture.TexId, item.Object.Texture);
+            PresetRendererCode.DrawLighting(this, modelMatrix, normalMatrix, item.Object.effectArgs);
+            PresetRendererCode.DrawBloom(this, item.Object.Color, item.Object.effectArgs);
 
             GL.Uniform3(Uniforms["uParticleMovements"], item.Amount, item.Movements);
             GL.Uniform1(Uniforms["uParticleTime"], (float) item.CurrentTime);
-            GL.Uniform2(Uniforms["uSize"], item.Size);
+            GL.Uniform2(Uniforms["uSize"], item.Object.Size);
 
             GL.BindVertexArray(obj.GetVAO());
             GL.DrawArraysInstanced(obj.PrimitiveType, 0, obj.GetVerticesCount(), item.Amount);

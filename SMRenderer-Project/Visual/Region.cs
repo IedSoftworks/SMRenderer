@@ -13,7 +13,7 @@ namespace SMRenderer.Visual
         /// <summary>
         ///     Static of a zero region.
         /// </summary>
-        public static Region zero = new Region {Position = new Vector2(0), Rotation = 0};
+        public static Region zero = new Region {Position = new Vector3(0), Rotation = 0};
 
         /// <summary>
         ///     The region will always follow the anchor; This value will make all other values irrelevant;
@@ -22,7 +22,7 @@ namespace SMRenderer.Visual
         /// <summary>
         /// The region position
         /// </summary>
-        public Vector2 Position = new Vector2(0, 0);
+        public Vector3 Position = new Vector3(0);
         /// <summary>
         /// The region rotation
         /// </summary>
@@ -32,7 +32,7 @@ namespace SMRenderer.Visual
         /// Returns the right position, based on current inputs.
         /// </summary>
         /// <returns></returns>
-        public Vector2 GetPosition()
+        public Vector3 GetPosition()
         {
             return anchor?.Position ?? Position;
         }

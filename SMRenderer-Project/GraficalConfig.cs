@@ -20,7 +20,7 @@ namespace SMRenderer
 
         /// <summary>
         /// If true, the Bloom feature is active and ready to go.
-        /// <para>Bloom is a post-processing and require a lot computing time.</para>
+        /// <para>Bloom is a post-processing effect and requires a lot of computing time.</para>
         /// </summary>
         public static bool AllowBloom = false;
     }

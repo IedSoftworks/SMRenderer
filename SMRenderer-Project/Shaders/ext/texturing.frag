@@ -19,7 +19,8 @@ vec4 textureProcess(bool form) {
 	vec2 orgTexSize = textureSize(uTexture,0);
 	texPos = vTexture;
 
-	texPos *= ((uTexSize == vec2(0,0)) ? 1 : uTexSize / orgTexSize) + (uTexPosition / orgTexSize);
+	texPos *= (uTexSize.x == 0 || uTexSize.y == 0) ? vec2(1) : uTexSize / orgTexSize;
+	texPos += uTexPosition / orgTexSize;
 
 	vec4 tex = texture(uTexture, texPos);
 

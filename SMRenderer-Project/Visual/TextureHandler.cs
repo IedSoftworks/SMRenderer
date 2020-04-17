@@ -43,6 +43,12 @@ namespace SMRenderer.Visual
         public TextureHandler(TextureItem item) : base(item.ID, item.Category)
         { }
 
+        /// <inheritdoc />
+        public override Data.Data GetData()
+        {
+            return ID != -1 ? base.GetData() : TextureItem.empty;
+        }
+
         /// <summary>
         /// Checks if both handlers are equal
         /// </summary>

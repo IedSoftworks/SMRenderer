@@ -24,7 +24,8 @@ namespace SMRenderer.Visual.Renderers
             {"ext:bloom", Read("Shaders.ext.bloom.frag", ass)},
             {"ext:texture", Read("Shaders.ext.texturing.frag", ass)},
             {"ext:lighting", Read("Shaders.ext.lighting.frag", ass)},
-            {"ext:funcs", Read("Shaders.ext.funcs.glsl", ass)}
+            {"ext:funcs", Read("Shaders.ext.funcs.glsl", ass)},
+            {"ext:depth", Read("Shaders.ext.depth.frag", ass) }
         };
 
 
@@ -38,7 +39,8 @@ namespace SMRenderer.Visual.Renderers
                     {
                         "ext:bloom",
                         "ext:texture",
-                        "ext:lighting"
+                        "ext:lighting",
+                        "ext:depth"
                     }
                 }
             },
@@ -60,7 +62,8 @@ namespace SMRenderer.Visual.Renderers
                         "ext:bloom",
                         "ext:texture",
                         "ext:lighting",
-                        "ext:funcs"
+                        "ext:funcs",
+                        "ext:depth"
                     }
                 }
             }

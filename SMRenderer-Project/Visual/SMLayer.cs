@@ -20,10 +20,6 @@ namespace SMRenderer.Visual
         /// </summary>
         public Matrix4 matrix = Camera.staticView;
         /// <summary>
-        /// layer specific renderer.
-        /// </summary>
-        public int renderer = GLWindow.Window.rendererList["GeneralRenderer"];
-        /// <summary>
         /// If true, it uses the static view matrix.
         /// </summary>
         public bool staticMatrix = true;
