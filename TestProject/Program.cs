@@ -1,87 +1,94 @@
-﻿using SMRenderer.Objects;
+﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SMRenderer.Animations;
-using SMRenderer.Drawing;
-using OpenTK;
-using OpenTK.Graphics;
-using SMRenderer.Renderers;
 using System.IO;
+using OpenTK;
+using OpenTK.Input;
 using SMRenderer;
+using SMRenderer.Data;
+using SMRenderer.Input;
+using SMRenderer.Visual;
+using SMRenderer.Visual.Drawing;
 
 namespace TestProject
 {
     class Program
     {
-        static DrawItem item1, item2;
-        static FileStream scene1, data;
+        static FileStream scene1, data; 
+        static Particles particles;
         static void Main(string[] args)
         {
+            
             //Configure.UseScale = false;
-            GraficalConfig.ClearColor = Color.White;
+            GraficalConfig.ClearColor = Color.Black;
             GraficalConfig.AllowBloom = true;
 
             string title = "Testing window";
-            scene1 = new FileStream("scene1.scn", FileMode.OpenOrCreate);
-            data = new FileStream("data.scn", FileMode.OpenOrCreate);
 
-            GeneralConfig.UseDataManager = data;
+
+            //GeneralConfig.UseDataManager = data;
+
+            DataManager.AddCategoryStatic("sTextures");
 
             GLWindow window = new GLWindow(500, 500);
-            window.UpdateFrame += (a, b) =>
+            window.RenderFrame += (a, b) =>
             {
-                window.Title = $"{title} | {window.camera.currentLocation.X}, {window.camera.currentLocation.Y} | {b.Time * 1000}ms";
+                window.Title = $"{title} | {window.camera.CurrentLocation.X}, {window.camera.CurrentLocation.Y} | {b.Time * 1000}ms";
             };
             window.KeyDown += (a, b) =>
             {
                 if (b.Key == OpenTK.Input.Key.P)
                     Console.WriteLine("p");
+                
             };
             window.Load += (ra, b) =>
             {
-                //Test1();
-                Test2();
+                Test1();
+                //Test2();
             };
             window.Run();
         }
         static void Test1()
         {
-            OM.LoadModelFile("UziLong","UziLong.obj");
-            Scene.current.ambientLight = Color.Blue;
-            item1 = new DrawItem
-            {
-                Size = new Vector2(50),
-                Position = new Vector2(250),
-                Color = Color.Red,
-                Texture = new TextureItem("testing", new Bitmap("draconier_logo.png")).ID
-        };
-            SM.Add(item1);
-            item2 = new DrawItem
-            {
-                Size = new Vector2(100),
-                Position = new Vector2(400),
-                Color = Color.Blue,
+            Scene.Current.depthSettings = DepthSettings.Default;
 
-            };
-            SM.Add(item2);
-            item1.Animations = new AnimationCollection()
+            TextureItem tex = new TextureItem("tex1", "sTextures", new Bitmap("draconier_logo.png"));
+
+            DrawItem i1 = new DrawItem {
+                Position = new Vector3(100,250,-1),
+                Object = new DrawObject
                 {
-                    { "move", new Value2Animation(TimeSpan.FromSeconds(2), new Vector2(250), new Vector2(25), SFPresets.DrawItem_Position) { Object = item1} }
-                };
+                    Size = new Vector2(50),
+                    Texture = new TextureHandler(tex)
+                }
+            };
+            SM.Add(i1);
+            DrawItem i2 = new DrawItem
+            {
+                Position = new Vector3(400, 250, 0),
+                Object = new DrawObject
+                {
+                    Size = new Vector2(50)
+                }
+            };
+            SM.Add(i2);
 
-            Scene.current.lights.Add(new LightSource { Position = new Vector2(200) });
-            Scene.current.Serialize(scene1);
-            DM.C.Serialize(data);
-            scene1.Close();
-            data.Close();
+            DrawItem i3 = new DrawItem {
+                Position = new Vector3(100, 400, 0),
+                Object = new DrawObject
+                {
+                    Size = new Vector2(300, 50),
+                },
+                positionAnchor = "lu"
+            };
+            i3.Object.effectArgs.BloomUsage = EffectBloomUsage.Render;
+            SM.Add(i3);
         }
         static void Test2()
         {
-            Scene.current = Scene.Deserialize(scene1);
+
         }
     }
 }

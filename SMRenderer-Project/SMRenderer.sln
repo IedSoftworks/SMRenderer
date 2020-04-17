@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMRenderer", "SMRenderer.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "..\TestProject\TestProject.csproj", "{46A64B79-9988-4AD4-9457-EA5A8B095DF1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SMRenderer", "SMRenderer", "{DC1C5C1B-5F73-47F9-B8B1-AC4CFB4CDA32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMRenderer.Core", "..\SMRenderer.Core\SMRenderer.Core.csproj", "{97799C91-C01D-4DD6-AC31-DF11DE895C81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +25,16 @@ Global
 		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46A64B79-9988-4AD4-9457-EA5A8B095DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97799C91-C01D-4DD6-AC31-DF11DE895C81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97799C91-C01D-4DD6-AC31-DF11DE895C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97799C91-C01D-4DD6-AC31-DF11DE895C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97799C91-C01D-4DD6-AC31-DF11DE895C81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{97799C91-C01D-4DD6-AC31-DF11DE895C81} = {DC1C5C1B-5F73-47F9-B8B1-AC4CFB4CDA32}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2DB16B41-2537-43FE-9025-F871AB4E751F}
